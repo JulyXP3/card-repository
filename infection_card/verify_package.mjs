@@ -301,6 +301,14 @@ assert(
 
 const card = readJson(join(dist, "infection-card-v1.0.json"));
 assert(
+  !card.data.alternate_greetings.join("\n").includes("远方的信号重新落进死寂的空气里"),
+  "starter still uses old distant-signal wording",
+);
+assert(
+  card.data.alternate_greetings.join("\n").includes("六条路都通向同一个问题"),
+  "starter missing identity-agnostic opening bridge",
+);
+assert(
   card.name === "感染" && card.data.name === "感染",
   "card name not renamed to 感染",
 );

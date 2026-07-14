@@ -27,7 +27,7 @@
     "system_prompt": "",
     "post_history_instructions": "",
     "alternate_greetings": [
-      "已经是第3个月了，远方的信号重新落进死寂的空气里。\n\n你没有亲眼看见文明最初崩塌的样子。回来的时候，墙已经立起，路已经断开，旧秩序只剩下封锁线、废墟、废墟里的低吼。\n\n你是谁? 从何而来? 又终将归往何处? \n\n<OpeningSelectorImpl/>\n<StatusPlaceHolderImpl/>"
+      "沦陷期第3个月末，文明边缘还在发出零碎回声。\n\n有人从山脊瞭望塔听见封锁频率，有人在废弃露营地拍到冷藏箱，有人在边境哨站、极寒观测站、深山巡护站或外海灯塔守到最后一班无人接收的信号。\n\n你没有站在城市崩塌的中心。你一直在边缘工作、等待、记录或求生。现在补给见底，路标失效，远处的灯号、枪声和脚印都在逼你离开原地。\n\n六条路都通向同一个问题：你从哪里回到沦陷后的世界？\n\n<OpeningSelectorImpl/>\n<StatusPlaceHolderImpl/>"
     ],
     "group_only_greetings": [],
     "tags": [
