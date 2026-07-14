@@ -1084,8 +1084,6 @@
               `<section class="panel ${i === 0 ? "active" : ""}" role="tabpanel" data-panel="${t}">${panels[t]}</section>`,
           )
           .join("");
-        if (stat.__fallback)
-          setNotice("未读取到最新变量，当前显示安全占位数据。", "danger");
         if (riskTone(survival.infection_risk) === "risk-high")
           setNotice("感染风险处于高危状态，请优先处理生存状态。", "danger");
         document.querySelectorAll(".tab").forEach((btn) =>

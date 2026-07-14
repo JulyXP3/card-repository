@@ -2,7 +2,7 @@
   "id": "infection-regex-opening-selector-remote-v010",
   "scriptName": "03-开场选择器远程加载",
   "findRegex": "/<OpeningSelectorImpl\\s*\\/>/g",
-  "replaceString": "```html\n<body style=\"margin:0;background:transparent!important\"><script>document.documentElement.style.background='transparent';document.body.style.background='transparent';if(window.frameElement){window.frameElement.style.background='transparent';window.frameElement.setAttribute('allowtransparency','true');}$('body').load('https://julyxp3.github.io/card-repository/infection_card/opening_selector/index.html?v=1.0-122');</script></body>\n```",
+  "replaceString": "```html\n<body style=\"margin:0;background:transparent!important\"><script>document.documentElement.style.background='transparent';document.body.style.background='transparent';if(window.frameElement){window.frameElement.style.background='transparent';window.frameElement.setAttribute('allowtransparency','true');}$('body').load('https://julyxp3.github.io/card-repository/infection_card/opening_selector/index.html?v=1.0-123');</script></body>\n```",
   "trimStrings": [],
   "placement": [
     2

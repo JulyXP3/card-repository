@@ -194,7 +194,11 @@ assert(
 assert(statusbar.includes("time.weather"), "statusbar missing weather display");
 assert(!statusbar.includes("阶段闸门"), "statusbar still displays phase gate");
 assert(
-  statusbar.includes("searchParams.get('demo') === '50'"),
+  !statusbar.includes("未读取到最新变量，当前显示安全占位数据。"),
+  "statusbar still shows fallback placeholder notice",
+);
+assert(
+  statusbar.includes('searchParams.get("demo") === "50"'),
   "statusbar missing demo=50 gate",
 );
 assert(
@@ -290,7 +294,7 @@ const localOpeningRegex = readJson(
 );
 assert(
   localOpeningRegex.replaceString.includes(
-    "opening_selector/index.html?v=1.0-122",
+    "opening_selector/index.html?v=1.0-123",
   ),
   "local opening regex missing cache-busting URL",
 );

@@ -1660,7 +1660,7 @@ const frontendBaseUrl = (process.env.FRONTEND_BASE_URL || "").replace(
   /\/$/,
   "",
 );
-const frontendVersionQuery = `?v=${version.replace(/^v/, "")}-122`;
+const frontendVersionQuery = `?v=${version.replace(/^v/, "")}-123`;
 const statusbarRemoteUrl = frontendBaseUrl
   ? `${frontendBaseUrl}/statusbar/index.html${frontendVersionQuery}`
   : "https://example.invalid/infection-survival/statusbar/index.html";
