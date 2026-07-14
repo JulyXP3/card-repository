@@ -1,8 +1,8 @@
-# 感染发布检查单 v0.1.0
+# 感染发布检查单 v1.0
 
 ## 发布包必须包含
 
-- `dist/infection-card-v0.1.0.json`
+- `dist/infection-card-v1.0.json`
 
 ## 部件分发可选包含
 

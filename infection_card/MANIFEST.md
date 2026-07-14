@@ -1,4 +1,4 @@
-# 感染部件清单 v0.1.0
+# 感染部件清单 v1.0
 
 ## 世界书
 
@@ -81,6 +81,6 @@
 
 ## 完整角色卡
 
-- `dist/infection-card-v0.1.0.json`
+- `dist/infection-card-v1.0.json`
   - 完整 V3 角色卡 JSON
   - 内嵌世界书、酒馆助手脚本、正则、README 开场页和起手页
