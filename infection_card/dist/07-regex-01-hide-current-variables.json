@@ -1,0 +1,17 @@
+{
+  "id": "infection-regex-hide-current-variables-v010",
+  "scriptName": "01-隐藏读取变量",
+  "findRegex": "/<status_current_variables>[\\s\\S]*?<\\/status_current_variables>/gm",
+  "replaceString": "",
+  "trimStrings": [],
+  "placement": [
+    2
+  ],
+  "disabled": false,
+  "markdownOnly": true,
+  "promptOnly": true,
+  "runOnEdit": true,
+  "substituteRegex": 0,
+  "minDepth": null,
+  "maxDepth": null
+}

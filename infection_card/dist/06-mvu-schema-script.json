@@ -1,0 +1,17 @@
+{
+  "type": "script",
+  "enabled": true,
+  "name": "感染-变量结构",
+  "id": "infection-schema-v010",
+  "content": "// 感染 Schema v0.1.0\n// v0.1.0: 初版变量结构\nimport { registerMvuSchema } from 'https://testingcf.jsdelivr.net/gh/StageDog/tavern_resource/dist/util/mvu_zod.js';\n\nconst str = (d = '') => z.string().default(d).catch(d);\nconst num = (d = 0) => z.coerce.number().default(d).catch(d);\nconst arr = () => z.array(z.any()).default([]).catch([]);\nconst item = z.union([z.string().transform(name => ({ name })), z.object({ id: str(), name: str(), quantity: z.union([z.string(), z.number()]).default(1).catch(1), subtype: str(), status: str(), note: str() }).catchall(z.any()).default({}).catch({})]).default({}).catch({});\nconst relation = z.object({ name: str(), faction: str(), relationship: str('陌生'), trust: str('观察'), status: str('未遇见'), side_quest: str('未触发'), notes: arr() }).default({}).catch({});\nconst faction = z.object({ name: str(), stance: str('未知'), trust: str('陌生'), internal_balance: str(''), notes: arr() }).default({}).catch({});\n\nexport const Schema = z.object({\n  meta: z.object({ character_version: str('0.1.0'), update_format: str('RFC6902_JSONPatch') }).default({}).catch({}),\n  user_profile: z.object({ name: str('{{user}}'), origin_identity: str(), opening_location: str(), current_location: str(), current_goal: str(), skills: arr(), notes: arr() }).default({}).catch({}),\n  world_time: z.object({ period: str('沦陷期'), phase_gate: str('身份开场'), rough_day: num(0), day_period: str('白天'), weather: str('阴冷'), major_events: arr() }).default({}).catch({}),\n  survival: z.object({ health: str('正常'), infection_risk: str('无'), fatigue: str('清醒'), hunger_thirst: str('充足'), mental_pressure: str('稳定'), body_temperature: str('正常'), load: str('轻装') }).default({}).catch({}),\n  inventory: z.object({ weapons_ammo: z.array(item).default([]).catch([]), normal_items: z.array(item).default([]).catch([]), key_items: z.array(item).default([]).catch([]) }).default({}).catch({}),\n  mainline: z.object({ stage: str('未接触'), discovered_layers: arr(), discovered_clues: arr(), key_items: z.object({ blacklight_sample_case: str('未发现'), project_j_record_disk: str('未发现'), federal_lockdown_chip: str('未发现'), anteater_model_core: str('未发现'), strange_knife: str('未发现') }).default({}).catch({}), unlocked_locations: arr(), decisions: arr() }).default({}).catch({}),\n  factions: z.object({ xindu_camp: faction, laiyi_brotherhood: faction, west_institute: faction, student_union: faction, federal_epidemic_army: faction, riverside_hospital: faction }).default({}).catch({}),\n  npcs: z.object({ anna_chen: relation, sophia_kim: relation, adler: relation, west: relation, xu_yin: relation, pastor: relation, ishii_yusuke: relation, sarah: relation, carl_j_reyes: relation, lucas_carre: relation, one_eye: relation }).default({}).catch({}),\n  quests: z.object({ active: arr(), completed: arr(), failed: arr(), dormant: arr() }).default({}).catch({}),\n  local_events: z.object({ active: arr(), completed: arr() }).default({}).catch({}),\n  monster_knowledge: z.object({ known_types: z.array(z.string()).default(['普通感染者', '奔跑种', '食腐种', '夜视种']).catch(['普通感染者', '奔跑种', '食腐种', '夜视种']), encountered_types: arr(), confirmed_weaknesses: arr(), hive_activity: str('未发现') }).default({}).catch({}),\n}).default({}).catch({});\n\n$(() => { registerMvuSchema(Schema); });\n",
+  "info": "酒馆助手脚本库导入；schema 改动后需重载脚本并重开对话。",
+  "button": {
+    "enabled": false,
+    "buttons": []
+  },
+  "data": {},
+  "export_with": {
+    "data": true,
+    "button": true
+  }
+}

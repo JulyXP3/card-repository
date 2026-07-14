@@ -1,0 +1,17 @@
+{
+  "type": "script",
+  "enabled": true,
+  "name": "感染-MVU加载器",
+  "id": "infection-mvu-loader-v010",
+  "content": "// 感染 MVU 加载器 v0.1.0\nimport 'https://testingcf.jsdelivr.net/gh/MagicalAstrogy/MagVarUpdate/artifact/bundle.js';\n",
+  "info": "酒馆助手脚本库导入；启用后提供 MVU 本体。",
+  "button": {
+    "enabled": false,
+    "buttons": []
+  },
+  "data": {},
+  "export_with": {
+    "data": true,
+    "button": true
+  }
+}

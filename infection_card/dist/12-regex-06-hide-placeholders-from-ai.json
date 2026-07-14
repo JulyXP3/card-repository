@@ -1,0 +1,18 @@
+{
+  "id": "infection-regex-hide-placeholders-v010",
+  "scriptName": "06-对AI隐藏前端占位符",
+  "findRegex": "/<(?:StatusPlaceHolderImpl|OpeningSelectorImpl)\\s*\\/>/g",
+  "replaceString": "",
+  "trimStrings": [],
+  "placement": [
+    1,
+    2
+  ],
+  "disabled": false,
+  "markdownOnly": false,
+  "promptOnly": true,
+  "runOnEdit": true,
+  "substituteRegex": 0,
+  "minDepth": null,
+  "maxDepth": null
+}

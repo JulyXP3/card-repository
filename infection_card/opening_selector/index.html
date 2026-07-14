@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>感染开场选择</title>
+  <style>
+    :root {
+      color-scheme: normal;
+      --bg: #0f172a;
+      --surface: #111827;
+      --surface-2: #1e293b;
+      --border: #475569;
+      --text: #f8fafc;
+      --subtle: #cbd5e1;
+      --dim: #94a3b8;
+      --accent: #22c55e;
+      --warn: #f59e0b;
+      --radius: 8px;
+      font-family: "Fira Sans", "Segoe UI", system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      background: transparent !important;
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 0;
+    }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 0;
+    }
+    .opening-shell {
+      width: min(100%, 1040px);
+      margin: 0;
+      border: 1px solid rgba(148, 163, 184, .32);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(30, 41, 59, .96), rgba(15, 23, 42, .99));
+      overflow: hidden;
+    }
+    .header {
+      padding: 14px;
+      border-bottom: 1px solid rgba(148, 163, 184, .22);
+      background: rgba(15, 23, 42, .76);
+    }
+    h1 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: 0;
+    }
+    .sub {
+      margin: 6px 0 0;
+      color: var(--subtle);
+    }
+    .identity-row {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 6px;
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(148, 163, 184, .18);
+    }
+    .identity-btn {
+      min-height: 44px;
+      padding: 8px 6px;
+      border: 1px solid rgba(148, 163, 184, .25);
+      border-radius: var(--radius);
+      background: rgba(17, 24, 39, .84);
+      color: var(--text);
+      cursor: pointer;
+      font: inherit;
+      font-size: 13px;
+      text-align: center;
+      transition: border-color .18s ease, background .18s ease, transform .18s ease;
+    }
+    .identity-btn:hover,
+    .identity-btn:focus-visible,
+    .identity-btn.active {
+      border-color: rgba(34, 197, 94, .8);
+      background: rgba(34, 197, 94, .14);
+      outline: none;
+    }
+    .identity-btn:active { transform: scale(.99); }
+    .panel {
+      min-height: 430px;
+      padding: 14px;
+      background: rgba(15, 23, 42, .58);
+    }
+    .panel h2 {
+      margin: 0 0 6px;
+      font-size: 18px;
+    }
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin: 10px 0 12px;
+    }
+    .meta-card {
+      padding: 9px;
+      border: 1px solid rgba(148, 163, 184, .22);
+      border-radius: var(--radius);
+      background: rgba(17, 24, 39, .68);
+      min-width: 0;
+    }
+    .meta-card strong {
+      display: block;
+      color: var(--dim);
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+    .opening-text {
+      white-space: pre-wrap;
+      color: var(--subtle);
+      border: 1px solid rgba(148, 163, 184, .18);
+      border-radius: var(--radius);
+      padding: 12px;
+      background: rgba(2, 6, 23, .28);
+    }
+    .custom-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    label {
+      display: grid;
+      gap: 5px;
+      color: var(--subtle);
+      font-weight: 700;
+    }
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid rgba(148, 163, 184, .28);
+      border-radius: var(--radius);
+      background: rgba(15, 23, 42, .9);
+      color: var(--text);
+      font: inherit;
+      padding: 8px;
+    }
+    textarea { min-height: 70px; resize: vertical; }
+    input::placeholder, textarea::placeholder { color: #7c8ca5; }
+    .wide { grid-column: 1 / -1; }
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px 12px;
+      color: var(--dim);
+      border-top: 1px solid rgba(148, 163, 184, .16);
+    }
+    .start-btn {
+      min-width: 128px;
+      min-height: 38px;
+      border: 0;
+      border-radius: var(--radius);
+      background: var(--accent);
+      color: #052e16;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 800;
+    }
+    .start-btn:disabled { opacity: .55; cursor: default; }
+    .status { color: var(--subtle); }
+    .opening-shell.chosen .panel { display: none; }
+    .opening-shell.chosen .identity-row { display: none; }
+    .chosen-panel {
+      display: none;
+      padding: 14px;
+      border-top: 1px solid rgba(148, 163, 184, .16);
+      background: rgba(34, 197, 94, .10);
+    }
+    .opening-shell.chosen .chosen-panel { display: block; }
+    .chosen-title {
+      margin: 0;
+      font-weight: 750;
+      color: #dcfce7;
+    }
+    .chosen-note {
+      margin: 4px 0 0;
+      color: var(--subtle);
+    }
+    @media (max-width: 720px) {
+      .identity-row { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .meta, .custom-grid { grid-template-columns: 1fr; }
+      .wide { grid-column: auto; }
+    }
+    @media (max-width: 420px) {
+      .identity-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .footer { display: block; }
+      .start-btn { width: 100%; margin-top: 8px; }
+      .status { margin-top: 6px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="opening-shell" aria-label="感染开场选择器" id="openingShell">
+    <section class="header">
+      <h1>选择你从哪里回来</h1>
+      <p class="sub">先选身份查看开场正文，确认后点击底部开始按钮。</p>
+    </section>
+    <section class="identity-row" id="identityRow" aria-label="身份列表"></section>
+    <section class="panel" id="panel"></section>
+    <section class="chosen-panel" aria-live="polite">
+      <p class="chosen-title" id="chosenTitle">已开始</p>
+      <p class="chosen-note">开局文本已处理。这个选择器不会在后续状态栏中继续出现。</p>
+    </section>
+    <section class="footer">
+      <span class="status" id="statusText">等待选择</span>
+      <button class="start-btn" type="button" id="startButton">开始</button>
+    </section>
+  </main>
+  <script>
+    const identities = [
+      {
+        name: '看火人',
+        place: '努尔山脉旧防火瞭望塔',
+        items: '旧式步枪与少量子弹、手摇无线电、防火斧、努尔山脉巡查图',
+        skills: '高处观察、林火与风向判断、孤立值守',
+        text: `努尔山脉的旧防火瞭望塔已经很久没有收到正式呼叫。最后一份纸质巡查表被压在窗边，边角卷起，铅笔字被潮气洇开。你在这里守了几个月，最初还按时记录烟柱、风向和林线变化，后来记录变成了另一种东西：山下哪条路没再出现车灯，哪片林子里的鸟忽然安静，夜里哪些声音不像野兽。
+
+今晚无线电又响了。
+
+不是正常频道。杂音里有人反复念着新都，又像是被军方旧频率切断。几段破碎词句从电流中挤出来：封锁、转运失败、不要走山口。随后只剩一阵像呼吸一样的低噪。
+
+你站到瞭望台外，风从山脊上压过来。远处林线正在移动，不是火，也不是鹿群。几簇黑影在树间停下，像是在观察坡度。更远处，新都方向的天空没有城市光，只有一层灰红色的反光。
+
+塔里还有旧式步枪、少量子弹、手摇无线电、防火斧和努尔山脉巡查图。水不多，食物也不多。你可以继续守着这座塔，等下一个信号；也可以在天亮前下山，去弄清楚山外到底还剩下什么。`
+      },
+      {
+        name: '野外生存博主',
+        place: '努尔山脉边缘废弃露营基地',
+        items: '运动相机与备用存储卡、多功能刀、轻便滤水器、野外背包',
+        skills: '临时庇护搭建、水源与食物辨识、影像记录',
+        text: `废弃露营基地的招牌倒在泥里，上面还残留着灾难前的彩色广告。你曾经在类似地方拍过太多视频：如何过滤溪水，如何用湿木生火，如何在没有帐篷时撑过雨夜。那时候评论区总有人说，真到了末日你一定活得很好。现在你知道这句话有多轻。
+
+相机还在工作。电量不多，但备用存储卡没有丢。你原本只是想回看几天前拍到的山路，确认自己有没有错过人类活动的痕迹。画面里先是雾，树影，废弃栈道，然后是一队武装运输人员。他们走得很快，肩上有枪，几个人抬着一只冷藏箱。箱体侧面有被泥抹掉的标识，仍能看出联邦旧封条的轮廓。
+
+你反复播放那段影像。队伍没有往新都走，而是绕向更偏的山道。镜头最后几秒，有个男人突然回头，看向你藏摄像机的方向。
+
+基地周围太安静了。滤水器、野外背包、多功能刀都还在，罐头只剩几份。你可以把这段影像当成筹码，去找愿意交换情报的人；也可以先沿着山道追过去。问题是，能押送冷藏箱的人不会喜欢被拍到，而山里已经不只他们在移动。`
+      },
+      {
+        name: '边境哨站合同医生',
+        place: '联邦沦陷区北面废弃边境哨站',
+        items: '急救包、基础抗生素、便携体温计与检测试纸、边境哨站医疗记录',
+        skills: '伤情分诊、感染风险识别、低资源治疗',
+        text: `废弃边境哨站的医务室里有一股消毒水、霉味和旧血混在一起的味道。你在这里做合同医生，本来只负责处理巡逻擦伤、冻伤、胃病和偶尔的斗殴。后来通讯断了，换岗的人没来，哨站外的路被封，病历上的字迹也越来越急。
+
+桌上还摊着几份被撕过的医疗记录。你把碎页拼起来，看见一句被划了几道线的话：北面样本转运失败，接触者需就地隔离。下面的签名被墨水涂黑，只剩一个军方识别码。
+
+夜里，封锁线方向亮起灯号。不是求救灯，也不是常规识别。几次短闪后，远处传来枪声，然后是更长的寂静。你走到门口，听见哨站后方的铁丝网被什么东西慢慢拨动。声音很轻，像有人用指甲试探金属。
+
+你手里有急救包、基础抗生素、便携体温计、检测试纸和那几页医疗记录。你能判断伤情，也能判断谁还有移动机会。可现在最难判断的是方向：向封锁线走，可能遇到军方，也可能遇到他们想拦住的东西；向南走，迟早要进入新都或11区的秩序里。`
+      },
+      {
+        name: '极地科考越冬队员',
+        place: '联邦沦陷区北面极寒隔离观测站',
+        items: '保温服、低温样本箱、卫星定位终端、科考站维修工具',
+        skills: '低温生存、设备维护、样本保存',
+        text: `极寒隔离观测站的供暖系统又停了一次。你戴着手套拆开发电机外壳，听见风在金属墙外刮过，像有人用刀背慢慢刮门。越冬队早就散了，有人乘撤离机离开，有人留在雪线另一头失联。
+
+凌晨，卫星定位终端收到一段延迟数据包。发送源显示为联邦核心区旧实验网络，时间戳混乱，内容残缺，但有一串编号反复出现：黑光-III 样本链。你见过类似命名规则。那不是普通气象样本，也不像地质材料。
+
+随后冷链设备开始报警。
+
+低温样本箱的指示灯由绿转黄，备用电池读数异常。你打开外层保险扣，看见箱内并非你熟悉的科考样本，而是一枚带有联邦旧封条的内匣。封条边缘像被人重新压过，标签只剩半截。
+
+观测站外的雪地上出现了脚印。不是人的，也不像大型野兽。它们停在排风口附近，绕了几圈，又朝南方消失。你有保温服、低温样本箱、卫星定位终端和维修工具。样本需要冷链，人需要路线，而南方是联邦沦陷区北面。`
+      },
+      {
+        name: '深山巡护员',
+        place: '努尔山脉深处巡护站',
+        items: '巡护砍刀、绳索与登山扣、动物夹和简易陷阱材料、山区巡护日志',
+        skills: '追踪与反追踪、山地穿行、陷阱布置',
+        text: `努尔山脉深处的巡护站比地图上更孤单。木门被风吹得轻轻发响，墙上的旧照片还停在灾难前的植被调查季。你在这里熟悉每条兽道、每处滑坡、每片容易起雾的山谷。
+
+连续几天，你在旧林道附近发现同一种足迹。它不属于熊，也不像普通感染者。脚掌拖痕很轻，停顿点却很清楚，像那东西知道什么时候该压低声音。更奇怪的是，足迹旁边还有人为刻下的路线标记。不是官方巡护标识，是莱伊兄弟会那种给搜刮队看的暗记。
+
+巡护日志最后一页被你写得很满：夜间有远距离追击声，山谷水源疑似污染，东侧坡道出现不明拖拽痕。你把砍刀、绳索、登山扣、动物夹和简易陷阱材料收进包里。窗外的林子没有鸟叫。
+
+你可以顺着足迹往深处查，弄清楚山里到底多了什么；也可以沿旧林道去找兄弟会留下的路线。无论哪条路，都可能把你带向新都边缘。山外的世界已经变了，但山里这些变化，像是更早听见了某种召唤。`
+      },
+      {
+        name: '海岛灯塔看守',
+        place: '伊甸港外海旧灯塔岛',
+        items: '信号灯维护工具、航海图、手持信号枪、少量罐头和淡水',
+        skills: '海况与信号判断、设备值守、孤岛生存',
+        text: `伊甸港外海的旧灯塔每晚仍会亮几次，不是因为还有船按航线返港，而是因为你需要知道发电机还能撑多久。海雾压得很低，岸上的港口灯早就灭了。
+
+今晚，远处有船只打来灯号。
+
+它没有靠岸，也没有报身份。灯号断断续续，只重复一个方向和一组旧军方编码。你回灯后，对方沉默了很久，随后一只密封箱被小艇推到礁石附近。等你赶到岸边时，小艇已经离开，海面只剩发动机声被雾吞掉。
+
+箱子上有军方旧封条，收件标识被刮掉，边角还残留冷藏警示。你没有立刻打开。灯塔仓库里只剩信号灯维护工具、航海图、手持信号枪、少量罐头和淡水。海况正在变坏，潮水会在天亮前把小艇痕迹抹干净。
+
+你可以守着灯塔，等下一次灯号；也可以带上箱子，想办法靠岸。伊甸港可能已经不是港口，新都可能也不再欢迎陌生人。但这只箱子显然不是送错了，它只是被交给了还活着的人。`
+      },
+      { name: '自定义身份', custom: true }
+    ];
+
+    const statusText = document.getElementById('statusText');
+    const openingShell = document.getElementById('openingShell');
+    const chosenTitle = document.getElementById('chosenTitle');
+    const row = document.getElementById('identityRow');
+    const panel = document.getElementById('panel');
+    const startButton = document.getElementById('startButton');
+    let selected = identities[0];
+
+    try {
+      document.documentElement.style.background = 'transparent';
+      document.body.style.background = 'transparent';
+      if (window.frameElement) {
+        window.frameElement.style.background = 'transparent';
+        window.frameElement.setAttribute('allowtransparency', 'true');
+      }
+    } catch (_) {}
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[char]));
+    }
+
+    function renderTabs() {
+      row.innerHTML = identities.map(item => `<button class="identity-btn ${item === selected ? 'active' : ''}" type="button" data-name="${item.name}">${item.name}</button>`).join('');
+    }
+
+    function renderPreset(item) {
+      panel.innerHTML = `<h2>${item.name}</h2>
+        <div class="meta">
+          <div class="meta-card"><strong>开场地点</strong>${item.place}</div>
+          <div class="meta-card"><strong>随身物品</strong>${item.items}</div>
+          <div class="meta-card"><strong>独特技能</strong>${item.skills}</div>
+        </div>
+        <div class="opening-text">${escapeHtml(item.text)}</div>`;
+      statusText.textContent = `将发送：开始, ${item.name}`;
+    }
+
+    function renderCustom() {
+      panel.innerHTML = `<h2>自定义身份</h2>
+        <div class="custom-grid">
+          <label>身份/职业<input id="customIdentity" placeholder="例如：废弃电台维修员"></label>
+          <label>开场地点<select id="customPlace"><option>努尔山脉</option><option>新都</option><option>11区</option><option>封锁线</option><option>伊甸港</option></select></label>
+          <label class="wide">随身物品<textarea id="customItems" placeholder="例如：维修工具、旧电台、半盒电池、短刀"></textarea></label>
+          <label>独特技能<textarea id="customSkills" placeholder="例如：修理无线电、辨识旧军方频段、临时布线"></textarea></label>
+          <label>经历介绍<textarea id="customHistory" placeholder="灾难前后经历、为什么独自在外、为什么要回到文明边缘"></textarea></label>
+          <label class="wide">样貌穿搭<textarea id="customLook" placeholder="外貌、衣着、装备状态、明显伤痕或个人标识"></textarea></label>
+        </div>`;
+      statusText.textContent = '将发送：开始, 请根据以下提供的信息开局';
+    }
+
+    function render() {
+      renderTabs();
+      if (selected.custom) renderCustom();
+      else renderPreset(selected);
+    }
+
+    function valueOf(id) {
+      const element = document.getElementById(id);
+      return element ? element.value.trim() : '';
+    }
+
+    function customMessage() {
+      return `开始, 请根据以下提供的信息开局\n身份/职业: ${valueOf('customIdentity')}\n开场地点: ${valueOf('customPlace')}\n随身物品: ${valueOf('customItems')}\n独特技能: ${valueOf('customSkills')}\n经历介绍: ${valueOf('customHistory')}\n样貌穿搭: ${valueOf('customLook')}`;
+    }
+
+    async function sendMessage(message, label) {
+      row.querySelectorAll('button').forEach(button => { button.disabled = true; });
+      startButton.disabled = true;
+      openingShell.classList.add('chosen');
+      chosenTitle.textContent = `已开始：${label}`;
+      try {
+        const p = window.parent || window;
+        if (typeof p.triggerSlash === 'function') {
+          await p.triggerSlash('/setinput ' + message);
+        } else {
+          const textarea = p.document && p.document.querySelector('#send_textarea, textarea[name="send_textarea"]');
+          if (textarea) {
+            textarea.value = message;
+            textarea.dispatchEvent(new Event('input', { bubbles: true }));
+          }
+        }
+        setTimeout(() => {
+          const sendBtn = p.document && p.document.querySelector('#send_but');
+          if (sendBtn) sendBtn.click();
+        }, 100);
+        statusText.textContent = `已发送：${label}`;
+      } catch (err) {
+        statusText.textContent = '发送失败，请手动复制当前开局信息到输入框';
+        openingShell.classList.remove('chosen');
+        row.querySelectorAll('button').forEach(button => { button.disabled = false; });
+        startButton.disabled = false;
+      }
+    }
+
+    row.addEventListener('click', (event) => {
+      const button = event.target.closest('.identity-btn');
+      if (!button) return;
+      selected = identities.find(item => item.name === button.dataset.name) || identities[0];
+      render();
+    });
+
+    startButton.addEventListener('click', () => {
+      const message = selected.custom ? customMessage() : `开始, ${selected.name}`;
+      sendMessage(message, selected.name);
+    });
+
+    render();
+  </script>
+</body>
+</html>
