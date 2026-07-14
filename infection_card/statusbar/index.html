@@ -1,658 +1,1112 @@
 <!doctype html>
 <html lang="zh-CN">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>感染状态栏</title>
-  <style>
-    :root {
-      color-scheme: dark;
-      --bg: rgba(5, 10, 18, .82);
-      --panel: rgba(13, 20, 32, .86);
-      --panel-strong: rgba(20, 30, 45, .94);
-      --panel-soft: rgba(33, 45, 64, .58);
-      --stroke: rgba(155, 176, 202, .2);
-      --stroke-strong: rgba(214, 232, 255, .36);
-      --text: #f6f8fb;
-      --subtle: #c7d2df;
-      --muted: #7f8ea3;
-      --green: #52f0a5;
-      --cyan: #66d9ff;
-      --amber: #f0b75a;
-      --red: #ff6b74;
-      --violet: #b9a5ff;
-      --shadow: 0 18px 48px rgba(0, 0, 0, .42);
-      --radius: 8px;
-      --edge: 8px;
-      font-family: "Inter", "HarmonyOS Sans SC", "MiSans", "Microsoft YaHei", "PingFang SC", "Segoe UI", system-ui, sans-serif;
-    }
-    * { box-sizing: border-box; }
-    html, body {
-      margin: 0;
-      min-height: 0;
-      background: transparent !important;
-      color: var(--text);
-      font-size: 14px;
-      line-height: 1.5;
-      text-rendering: geometricPrecision;
-    }
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 0;
-    }
-    button { font: inherit; }
-    .status-shell {
-      position: relative;
-      width: 100%;
-      margin: 0;
-      overflow: hidden;
-      isolation: isolate;
-      border: 1px solid rgba(197, 220, 255, .22);
-      border-radius: var(--radius);
-      background: rgba(6, 10, 17, .18);
-      box-shadow: none;
-    }
-    .status-shell::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      z-index: -1;
-      display: none;
-    }
-    .status-shell::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      z-index: -1;
-      pointer-events: none;
-      display: none;
-    }
-    .topbar {
-      display: grid;
-      grid-template-columns: minmax(260px, .9fr) minmax(360px, 1.2fr) minmax(220px, .72fr);
-      gap: 10px;
-      padding: 12px var(--edge);
-      border-bottom: 1px solid rgba(197, 220, 255, .15);
-    }
-    .identity, .environment, .signal {
-      position: relative;
-      min-width: 0;
-      overflow: hidden;
-      border: 1px solid var(--stroke);
-      border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(23, 34, 50, .78), rgba(10, 15, 25, .68));
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06);
-    }
-    .identity {
-      padding: 12px;
-    }
-    .brand-row {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 800;
-    }
-    .brand-mark {
-      display: inline-grid;
-      place-items: center;
-      width: 30px;
-      height: 30px;
-      border: 1px solid rgba(82, 240, 165, .34);
-      border-radius: 7px;
-      color: var(--green);
-      background: rgba(82, 240, 165, .09);
-      box-shadow: 0 0 24px rgba(82, 240, 165, .12);
-    }
-    .brand-kicker { color: var(--green); }
-    .title {
-      margin: 10px 0 0;
-      color: #ffffff;
-      font-size: clamp(20px, 3.4vw, 30px);
-      line-height: 1.05;
-      font-weight: 850;
-      letter-spacing: 0;
-    }
-    .meta-line {
-      display: grid;
-      gap: 7px;
-      margin-top: 12px;
-    }
-    .chip {
-      display: grid;
-      grid-template-columns: 18px minmax(44px, auto) minmax(0, 1fr);
-      align-items: center;
-      gap: 7px;
-      min-height: 30px;
-      padding: 5px 8px;
-      border: 1px solid rgba(197, 220, 255, .13);
-      border-radius: 7px;
-      color: var(--subtle);
-      background: rgba(5, 11, 20, .42);
-    }
-    .chip strong { color: var(--muted); font-size: 12px; font-weight: 700; }
-    .icon {
-      width: 18px;
-      height: 18px;
-      color: currentColor;
-      stroke-width: 1.8;
-      flex: 0 0 auto;
-    }
-    .signal-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-      min-width: 0;
-    }
-    .signal {
-      min-height: 128px;
-      padding: 12px;
-      transition: transform .22s ease, border-color .22s ease, background .22s ease, box-shadow .22s ease;
-    }
-    .signal:hover, .card:hover, .item:hover {
-      transform: translateY(-2px);
-      border-color: rgba(82, 240, 165, .32);
-      box-shadow: 0 16px 34px rgba(0, 0, 0, .26), inset 0 1px 0 rgba(255, 255, 255, .08);
-    }
-    .signal-head, .card-title, .notice, .tab, .item-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .signal-head {
-      justify-content: space-between;
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 750;
-    }
-    .signal-icon {
-      display: inline-grid;
-      place-items: center;
-      width: 32px;
-      height: 32px;
-      border-radius: 7px;
-      color: var(--green);
-      background: rgba(82, 240, 165, .1);
-      border: 1px solid rgba(82, 240, 165, .2);
-    }
-    .signal-value {
-      display: block;
-      margin-top: 14px;
-      color: #fff;
-      font-size: 20px;
-      line-height: 1.15;
-      font-weight: 850;
-      overflow-wrap: anywhere;
-    }
-    .signal-note {
-      display: block;
-      margin-top: 7px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-    .environment {
-      display: grid;
-      align-content: stretch;
-      padding: 10px;
-      gap: 8px;
-    }
-    .env-row {
-      display: grid;
-      grid-template-columns: 24px minmax(0, 1fr);
-      align-items: center;
-      gap: 8px;
-      min-height: 34px;
-      padding: 6px 8px;
-      border-radius: 7px;
-      color: var(--subtle);
-      background: rgba(5, 11, 20, .36);
-      border: 1px solid rgba(197, 220, 255, .12);
-    }
-    .env-row b {
-      display: block;
-      color: #fff;
-      font-size: 13px;
-      font-weight: 800;
-    }
-    .env-row span { color: var(--muted); font-size: 11px; }
-    .notice-wrap {
-      min-height: 0;
-      padding: 0;
-    }
-    .notice {
-      max-height: 0;
-      overflow: hidden;
-      margin: 0;
-      padding: 0 10px;
-      border: 1px solid transparent;
-      border-radius: 7px;
-      color: var(--subtle);
-      background: rgba(10, 15, 25, .58);
-      opacity: 0;
-      transform: translateY(-6px);
-      transition: max-height .22s ease, padding .22s ease, margin .22s ease, opacity .22s ease, transform .22s ease, border-color .22s ease;
-    }
-    .notice.show {
-      max-height: 72px;
-      margin: 10px 0 0;
-      padding: 9px 10px;
-      opacity: 1;
-      transform: translateY(0);
-      border-color: rgba(240, 183, 90, .3);
-    }
-    .notice.danger { border-color: rgba(255, 107, 116, .35); }
-    .notice .icon { color: var(--amber); }
-    .notice.danger .icon { color: var(--red); }
-    .tabs {
-      position: relative;
-      display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-      gap: 1px;
-      padding: 8px var(--edge) 0;
-    }
-    .tab {
-      justify-content: center;
-      min-height: 46px;
-      border: 1px solid rgba(197, 220, 255, .12);
-      border-bottom-color: rgba(197, 220, 255, .2);
-      border-radius: 8px 8px 0 0;
-      color: var(--muted);
-      background: rgba(6, 11, 19, .52);
-      cursor: pointer;
-      font-weight: 800;
-      transition: color .18s ease, background .18s ease, border-color .18s ease, transform .18s ease;
-    }
-    .tab:hover {
-      color: var(--text);
-      transform: translateY(-1px);
-      background: rgba(28, 42, 60, .74);
-    }
-    .tab:focus-visible {
-      outline: 2px solid rgba(102, 217, 255, .88);
-      outline-offset: -3px;
-    }
-    .tab[aria-selected="true"] {
-      color: #061014;
-      border-color: rgba(82, 240, 165, .48);
-      background: linear-gradient(180deg, rgba(82, 240, 165, .98), rgba(102, 217, 255, .82));
-      box-shadow: 0 0 28px rgba(82, 240, 165, .16);
-    }
-    .tab[aria-selected="true"] .icon { color: #061014; }
-    #panels {
-      height: 390px;
-      overflow: hidden;
-      padding: 12px var(--edge);
-      background: transparent;
-    }
-    .panel {
-      display: none;
-      height: 100%;
-      overflow-y: auto;
-      padding-right: 0;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(82, 240, 165, .58) rgba(5, 10, 18, .72);
-    }
-    .panel::-webkit-scrollbar { width: 8px; }
-    .panel::-webkit-scrollbar-track { background: rgba(5, 10, 18, .72); }
-    .panel::-webkit-scrollbar-thumb {
-      border-radius: 999px;
-      background: rgba(82, 240, 165, .58);
-    }
-    .panel.active {
-      display: block;
-      animation: panelIn .24s ease both;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-    }
-    .fill-grid {
-      min-height: 100%;
-      grid-auto-rows: minmax(0, 1fr);
-    }
-    .fill-grid > .card { min-height: 100%; }
-    .split-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .card {
-      position: relative;
-      min-width: 0;
-      overflow: hidden;
-      border: 1px solid rgba(197, 220, 255, .16);
-      border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(20, 30, 45, .78), rgba(9, 14, 23, .72));
-      padding: 11px;
-      transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
-    }
-    .card::before, .item::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .08), transparent);
-      transform: translateX(-80%);
-      transition: opacity .18s ease, transform .46s ease;
-    }
-    .card:hover::before, .item:hover::before {
-      opacity: 1;
-      transform: translateX(80%);
-    }
-    .card-title {
-      margin: 0 0 9px;
-      color: #fff;
-      font-size: 14px;
-      font-weight: 850;
-    }
-    .card-title .icon { color: var(--green); }
-    .row {
-      display: grid;
-      grid-template-columns: minmax(84px, .72fr) minmax(0, 1.28fr);
-      gap: 8px;
-      padding: 7px 0;
-      border-top: 1px solid rgba(197, 220, 255, .1);
-    }
-    .row:first-of-type { border-top: 0; }
-    .row span:first-child { color: var(--muted); font-weight: 700; }
-    .row span:last-child { color: var(--subtle); overflow-wrap: anywhere; }
-    .list { display: grid; gap: 8px; }
-    .item {
-      position: relative;
-      overflow: hidden;
-      padding: 9px;
-      border: 1px solid rgba(197, 220, 255, .14);
-      border-radius: 7px;
-      background: rgba(5, 11, 20, .42);
-      transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
-    }
-    .item-title { color: #fff; font-weight: 800; }
-    .item-title .icon { width: 16px; height: 16px; color: var(--cyan); }
-    .item-note { margin-top: 4px; color: var(--muted); font-size: 12px; }
-    .empty {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      min-height: 48px;
-      padding: 10px;
-      border: 1px dashed rgba(197, 220, 255, .18);
-      border-radius: 7px;
-      color: var(--muted);
-      background: rgba(5, 11, 20, .28);
-    }
-    .empty .icon { color: var(--violet); }
-    .risk-high { color: var(--red) !important; }
-    .risk-mid { color: var(--amber) !important; }
-    .tone-cyan .signal-icon, .tone-cyan .card-title .icon { color: var(--cyan); background: rgba(102, 217, 255, .1); border-color: rgba(102, 217, 255, .2); }
-    .tone-amber .signal-icon, .tone-amber .card-title .icon { color: var(--amber); background: rgba(240, 183, 90, .1); border-color: rgba(240, 183, 90, .2); }
-    @keyframes panelIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes sweep {
-      0%, 46% { transform: translateX(-120%); opacity: 0; }
-      56% { opacity: 1; }
-      72%, 100% { transform: translateX(120%); opacity: 0; }
-    }
-    @media (max-width: 860px) {
-      .topbar { grid-template-columns: 1fr; }
-      .environment { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      .signal-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    }
-    @media (max-width: 720px) {
-      .tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      .environment, .signal-grid, .grid, .split-grid { grid-template-columns: 1fr; }
-      .fill-grid { min-height: 0; grid-auto-rows: auto; }
-      .fill-grid > .card { min-height: 0; }
-      #panels { height: 460px; }
-    }
-    @media (max-width: 420px) {
-      body { font-size: 13px; }
-      :root { --edge: 6px; }
-      .topbar { padding: 10px var(--edge); }
-      #panels { padding: 10px var(--edge); }
-      .tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); padding-inline: var(--edge); }
-      .row { grid-template-columns: 1fr; gap: 2px; }
-      .chip { grid-template-columns: 18px 1fr; }
-      .chip strong { display: none; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation: none !important; transition: none !important; }
-    }
-  </style>
-</head>
-<body>
-  <main class="status-shell" aria-label="感染状态栏">
-    <section class="topbar">
-      <div class="identity">
-        <div class="brand-row">
-          <span class="brand-mark" aria-hidden="true" id="brandIcon"></span>
-          <span><span class="brand-kicker">infection</span> 生存档案</span>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>感染状态栏</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: rgba(5, 10, 18, 0.82);
+        --panel: rgba(13, 20, 32, 0.86);
+        --panel-strong: rgba(20, 30, 45, 0.94);
+        --panel-soft: rgba(33, 45, 64, 0.58);
+        --stroke: rgba(155, 176, 202, 0.2);
+        --stroke-strong: rgba(214, 232, 255, 0.36);
+        --text: #f6f8fb;
+        --subtle: #c7d2df;
+        --muted: #7f8ea3;
+        --green: #52f0a5;
+        --cyan: #66d9ff;
+        --amber: #f0b75a;
+        --red: #ff6b74;
+        --violet: #b9a5ff;
+        --shadow: 0 18px 48px rgba(0, 0, 0, 0.42);
+        --radius: 8px;
+        --edge: 8px;
+        font-family:
+          "Inter", "HarmonyOS Sans SC", "MiSans", "Microsoft YaHei",
+          "PingFang SC", "Segoe UI", system-ui, sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        min-height: 0;
+        background: transparent !important;
+        color: var(--text);
+        font-size: 14px;
+        line-height: 1.5;
+        text-rendering: geometricPrecision;
+      }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 0;
+      }
+      button {
+        font: inherit;
+      }
+      .status-shell {
+        position: relative;
+        width: 100%;
+        margin: 0;
+        overflow: hidden;
+        isolation: isolate;
+        border: 1px solid rgba(197, 220, 255, 0.22);
+        border-radius: var(--radius);
+        background: rgba(6, 10, 17, 0.18);
+        box-shadow: none;
+      }
+      .status-shell::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        display: none;
+      }
+      .status-shell::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        display: none;
+      }
+      .topbar {
+        display: grid;
+        grid-template-columns: minmax(260px, 0.9fr) minmax(360px, 1.2fr) minmax(
+            220px,
+            0.72fr
+          );
+        gap: 10px;
+        padding: 12px var(--edge);
+        border-bottom: 1px solid rgba(197, 220, 255, 0.15);
+      }
+      .identity,
+      .environment,
+      .signal {
+        position: relative;
+        min-width: 0;
+        overflow: hidden;
+        border: 1px solid var(--stroke);
+        border-radius: var(--radius);
+        background: linear-gradient(
+          180deg,
+          rgba(23, 34, 50, 0.78),
+          rgba(10, 15, 25, 0.68)
+        );
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      }
+      .identity {
+        padding: 12px;
+      }
+      .brand-row {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 800;
+      }
+      .brand-mark {
+        display: inline-grid;
+        place-items: center;
+        width: 30px;
+        height: 30px;
+        border: 1px solid rgba(82, 240, 165, 0.34);
+        border-radius: 7px;
+        color: var(--green);
+        background: rgba(82, 240, 165, 0.09);
+        box-shadow: 0 0 24px rgba(82, 240, 165, 0.12);
+      }
+      .brand-kicker {
+        color: var(--green);
+      }
+      .title {
+        margin: 10px 0 0;
+        color: #ffffff;
+        font-size: clamp(20px, 3.4vw, 30px);
+        line-height: 1.05;
+        font-weight: 850;
+        letter-spacing: 0;
+      }
+      .meta-line {
+        display: grid;
+        gap: 7px;
+        margin-top: 12px;
+      }
+      .chip {
+        display: grid;
+        grid-template-columns: 18px minmax(44px, auto) minmax(0, 1fr);
+        align-items: center;
+        gap: 7px;
+        min-height: 30px;
+        padding: 5px 8px;
+        border: 1px solid rgba(197, 220, 255, 0.13);
+        border-radius: 7px;
+        color: var(--subtle);
+        background: rgba(5, 11, 20, 0.42);
+      }
+      .chip strong {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .icon {
+        width: 18px;
+        height: 18px;
+        color: currentColor;
+        stroke-width: 1.8;
+        flex: 0 0 auto;
+      }
+      .signal-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        min-width: 0;
+      }
+      .signal {
+        min-height: 128px;
+        padding: 12px;
+        transition:
+          transform 0.22s ease,
+          border-color 0.22s ease,
+          background 0.22s ease,
+          box-shadow 0.22s ease;
+      }
+      .signal:hover,
+      .card:hover,
+      .item:hover {
+        transform: translateY(-2px);
+        border-color: rgba(82, 240, 165, 0.32);
+        box-shadow:
+          0 16px 34px rgba(0, 0, 0, 0.26),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      }
+      .signal-head,
+      .card-title,
+      .notice,
+      .tab,
+      .item-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .signal-head {
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 750;
+      }
+      .signal-icon {
+        display: inline-grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 7px;
+        color: var(--green);
+        background: rgba(82, 240, 165, 0.1);
+        border: 1px solid rgba(82, 240, 165, 0.2);
+      }
+      .signal-value {
+        display: block;
+        margin-top: 14px;
+        color: #fff;
+        font-size: 20px;
+        line-height: 1.15;
+        font-weight: 850;
+        overflow-wrap: anywhere;
+      }
+      .signal-note {
+        display: block;
+        margin-top: 7px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .environment {
+        display: grid;
+        align-content: stretch;
+        padding: 10px;
+        gap: 8px;
+      }
+      .env-row {
+        display: grid;
+        grid-template-columns: 24px minmax(0, 1fr);
+        align-items: center;
+        gap: 8px;
+        min-height: 34px;
+        padding: 6px 8px;
+        border-radius: 7px;
+        color: var(--subtle);
+        background: rgba(5, 11, 20, 0.36);
+        border: 1px solid rgba(197, 220, 255, 0.12);
+      }
+      .env-row b {
+        display: block;
+        color: #fff;
+        font-size: 13px;
+        font-weight: 800;
+      }
+      .env-row span {
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .notice-wrap {
+        min-height: 0;
+        padding: 0;
+      }
+      .notice {
+        max-height: 0;
+        overflow: hidden;
+        margin: 0;
+        padding: 0 10px;
+        border: 1px solid transparent;
+        border-radius: 7px;
+        color: var(--subtle);
+        background: rgba(10, 15, 25, 0.58);
+        opacity: 0;
+        transform: translateY(-6px);
+        transition:
+          max-height 0.22s ease,
+          padding 0.22s ease,
+          margin 0.22s ease,
+          opacity 0.22s ease,
+          transform 0.22s ease,
+          border-color 0.22s ease;
+      }
+      .notice.show {
+        max-height: 72px;
+        margin: 10px 0 0;
+        padding: 9px 10px;
+        opacity: 1;
+        transform: translateY(0);
+        border-color: rgba(240, 183, 90, 0.3);
+      }
+      .notice.danger {
+        border-color: rgba(255, 107, 116, 0.35);
+      }
+      .notice .icon {
+        color: var(--amber);
+      }
+      .notice.danger .icon {
+        color: var(--red);
+      }
+      .tabs {
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 1px;
+        padding: 8px var(--edge) 0;
+      }
+      .tab {
+        justify-content: center;
+        min-height: 46px;
+        border: 1px solid rgba(197, 220, 255, 0.12);
+        border-bottom-color: rgba(197, 220, 255, 0.2);
+        border-radius: 8px 8px 0 0;
+        color: var(--muted);
+        background: rgba(6, 11, 19, 0.52);
+        cursor: pointer;
+        font-weight: 800;
+        transition:
+          color 0.18s ease,
+          background 0.18s ease,
+          border-color 0.18s ease,
+          transform 0.18s ease;
+      }
+      .tab:hover {
+        color: var(--text);
+        transform: translateY(-1px);
+        background: rgba(28, 42, 60, 0.74);
+      }
+      .tab:focus-visible {
+        outline: 2px solid rgba(102, 217, 255, 0.88);
+        outline-offset: -3px;
+      }
+      .tab[aria-selected="true"] {
+        color: #061014;
+        border-color: rgba(82, 240, 165, 0.48);
+        background: linear-gradient(
+          180deg,
+          rgba(82, 240, 165, 0.98),
+          rgba(102, 217, 255, 0.82)
+        );
+        box-shadow: 0 0 28px rgba(82, 240, 165, 0.16);
+      }
+      .tab[aria-selected="true"] .icon {
+        color: #061014;
+      }
+      #panels {
+        height: 390px;
+        overflow: hidden;
+        padding: 12px var(--edge);
+        background: transparent;
+      }
+      .panel {
+        display: none;
+        height: 100%;
+        overflow-y: auto;
+        padding-right: 0;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(82, 240, 165, 0.58) rgba(5, 10, 18, 0.72);
+      }
+      .panel::-webkit-scrollbar {
+        width: 8px;
+      }
+      .panel::-webkit-scrollbar-track {
+        background: rgba(5, 10, 18, 0.72);
+      }
+      .panel::-webkit-scrollbar-thumb {
+        border-radius: 999px;
+        background: rgba(82, 240, 165, 0.58);
+      }
+      .panel.active {
+        display: block;
+        animation: panelIn 0.24s ease both;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .fill-grid {
+        min-height: 100%;
+        grid-auto-rows: minmax(0, 1fr);
+      }
+      .fill-grid > .card {
+        min-height: 100%;
+      }
+      .split-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .card {
+        position: relative;
+        min-width: 0;
+        overflow: hidden;
+        border: 1px solid rgba(197, 220, 255, 0.16);
+        border-radius: var(--radius);
+        background: linear-gradient(
+          180deg,
+          rgba(20, 30, 45, 0.78),
+          rgba(9, 14, 23, 0.72)
+        );
+        padding: 11px;
+        transition:
+          transform 0.22s ease,
+          border-color 0.22s ease,
+          box-shadow 0.22s ease;
+      }
+      .card::before,
+      .item::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.08),
+          transparent
+        );
+        transform: translateX(-80%);
+        transition:
+          opacity 0.18s ease,
+          transform 0.46s ease;
+      }
+      .card:hover::before,
+      .item:hover::before {
+        opacity: 1;
+        transform: translateX(80%);
+      }
+      .card-title {
+        margin: 0 0 9px;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 850;
+      }
+      .card-title .icon {
+        color: var(--green);
+      }
+      .row {
+        display: grid;
+        grid-template-columns: minmax(84px, 0.72fr) minmax(0, 1.28fr);
+        gap: 8px;
+        padding: 7px 0;
+        border-top: 1px solid rgba(197, 220, 255, 0.1);
+      }
+      .row:first-of-type {
+        border-top: 0;
+      }
+      .row span:first-child {
+        color: var(--muted);
+        font-weight: 700;
+      }
+      .row span:last-child {
+        color: var(--subtle);
+        overflow-wrap: anywhere;
+      }
+      .list {
+        display: grid;
+        gap: 8px;
+      }
+      .item {
+        position: relative;
+        overflow: hidden;
+        padding: 9px;
+        border: 1px solid rgba(197, 220, 255, 0.14);
+        border-radius: 7px;
+        background: rgba(5, 11, 20, 0.42);
+        transition:
+          transform 0.18s ease,
+          border-color 0.18s ease,
+          box-shadow 0.18s ease;
+      }
+      .item-title {
+        color: #fff;
+        font-weight: 800;
+      }
+      .item-title .icon {
+        width: 16px;
+        height: 16px;
+        color: var(--cyan);
+      }
+      .item-note {
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .empty {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 48px;
+        padding: 10px;
+        border: 1px dashed rgba(197, 220, 255, 0.18);
+        border-radius: 7px;
+        color: var(--muted);
+        background: rgba(5, 11, 20, 0.28);
+      }
+      .empty .icon {
+        color: var(--violet);
+      }
+      .risk-high {
+        color: var(--red) !important;
+      }
+      .risk-mid {
+        color: var(--amber) !important;
+      }
+      .tone-cyan .signal-icon,
+      .tone-cyan .card-title .icon {
+        color: var(--cyan);
+        background: rgba(102, 217, 255, 0.1);
+        border-color: rgba(102, 217, 255, 0.2);
+      }
+      .tone-amber .signal-icon,
+      .tone-amber .card-title .icon {
+        color: var(--amber);
+        background: rgba(240, 183, 90, 0.1);
+        border-color: rgba(240, 183, 90, 0.2);
+      }
+      @keyframes panelIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes sweep {
+        0%,
+        46% {
+          transform: translateX(-120%);
+          opacity: 0;
+        }
+        56% {
+          opacity: 1;
+        }
+        72%,
+        100% {
+          transform: translateX(120%);
+          opacity: 0;
+        }
+      }
+      @media (max-width: 860px) {
+        .topbar {
+          grid-template-columns: 1fr;
+        }
+        .environment {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        .signal-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+      @media (max-width: 720px) {
+        .tabs {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        .environment,
+        .signal-grid,
+        .grid,
+        .split-grid {
+          grid-template-columns: 1fr;
+        }
+        .fill-grid {
+          min-height: 0;
+          grid-auto-rows: auto;
+        }
+        .fill-grid > .card {
+          min-height: 0;
+        }
+        #panels {
+          height: 460px;
+        }
+      }
+      @media (max-width: 420px) {
+        body {
+          font-size: 13px;
+        }
+        :root {
+          --edge: 6px;
+        }
+        .topbar {
+          padding: 10px var(--edge);
+        }
+        #panels {
+          padding: 10px var(--edge);
+        }
+        .tabs {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          padding-inline: var(--edge);
+        }
+        .row {
+          grid-template-columns: 1fr;
+          gap: 2px;
+        }
+        .chip {
+          grid-template-columns: 18px 1fr;
+        }
+        .chip strong {
+          display: none;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="status-shell" aria-label="感染状态栏">
+      <section class="topbar">
+        <div class="identity">
+          <div class="brand-row">
+            <span class="brand-mark" aria-hidden="true" id="brandIcon"></span>
+            <span><span class="brand-kicker">System</span> 生存档案</span>
+          </div>
+          <h1 class="title" id="identityTitle">幸存者</h1>
+          <div class="meta-line" id="metaLine"></div>
         </div>
-        <h1 class="title" id="identityTitle">幸存者</h1>
-        <div class="meta-line" id="metaLine"></div>
+        <div class="signal-grid" id="signalGrid"></div>
+        <aside
+          class="environment"
+          id="environmentPanel"
+          aria-label="环境读数"
+        ></aside>
+      </section>
+      <div class="notice-wrap">
+        <div class="notice" id="notice" role="status" aria-live="polite"></div>
       </div>
-      <div class="signal-grid" id="signalGrid"></div>
-      <aside class="environment" id="environmentPanel" aria-label="环境读数"></aside>
-    </section>
-    <div class="notice-wrap"><div class="notice" id="notice" role="status" aria-live="polite"></div></div>
-    <nav class="tabs" aria-label="状态栏分页" id="tabs"></nav>
-    <section id="panels"></section>
-  </main>
-  <script>
-    const fallback = {
-      __fallback: true,
-      user_profile: { origin_identity: '未选择身份', current_location: '未知区域', current_goal: '等待开场', skills: [] },
-      world_time: { period: '沦陷期', phase_gate: '身份开场', rough_day: 0, day_period: '白天', weather: '阴冷', major_events: [] },
-      survival: { health: '正常', infection_risk: '无', fatigue: '清醒', hunger_thirst: '充足', mental_pressure: '稳定', body_temperature: '正常', load: '轻装' },
-      inventory: { weapons_ammo: [], normal_items: [], key_items: [] },
-      mainline: { stage: '未接触', discovered_layers: [], key_items: {}, discovered_clues: [] },
-      factions: {},
-      npcs: {},
-      quests: { active: [], completed: [], failed: [], dormant: [] },
-      monster_knowledge: { known_types: ['普通感染者', '奔跑种', '食腐种', '夜视种'], encountered_types: [], confirmed_weaknesses: [], hive_activity: '未发现' }
-    };
-    const tabs = ['总览', '状态', '背包', '人物', '势力', '主线'];
-    const tabIcons = { 总览: 'radar', 状态: 'pulse', 背包: 'pack', 人物: 'users', 势力: 'network', 主线: 'layers' };
-    const labels = {
-      health: '健康',
-      infection_risk: '感染风险',
-      fatigue: '疲劳',
-      hunger_thirst: '饥渴',
-      mental_pressure: '精神压力',
-      body_temperature: '体温',
-      load: '负重',
-      blacklight_sample_case: '黑光-III 低温样本匣',
-      project_j_record_disk: '拓展 J 临床记录盘',
-      federal_lockdown_chip: '联邦防疫军封锁指令芯片',
-      anteater_model_core: '食蚁兽预测模型核心',
-      strange_knife: '奇怪的刀'
-    };
-    const icons = {
-      shield: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6l7-3z"/><path d="M9 12l2 2 4-5"/></svg>',
-      id: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 10h5M8 14h8M16 10h1"/></svg>',
-      pin: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 21s6-5 6-11a6 6 0 0 0-12 0c0 6 6 11 6 11z"/><circle cx="12" cy="10" r="2"/></svg>',
-      target: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M22 12h-3M12 22v-3M2 12h3"/></svg>',
-      calendar: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>',
-      weather: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 17a4 4 0 0 1 1-7 6 6 0 0 1 11 3 3 3 0 0 1-1 6H7z"/><path d="M8 21h8"/></svg>',
-      pulse: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 13h4l2-7 4 13 2-6h4"/></svg>',
-      radar: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="8"/><path d="M12 12l5-5M12 4v2M12 18v2M4 12h2M18 12h2"/></svg>',
-      alert: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3l10 18H2L12 3z"/><path d="M12 9v5M12 17h.01"/></svg>',
-      pack: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 8V6a5 5 0 0 1 10 0v2"/><rect x="5" y="8" width="14" height="13" rx="2"/><path d="M9 13h6"/></svg>',
-      users: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 11a3 3 0 0 0 0-6M17 20a5 5 0 0 0-2-4"/></svg>',
-      network: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 11l6-4M9 13l6 4"/></svg>',
-      layers: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 12l9 5 9-5M3 16l9 5 9-5"/></svg>',
-      box: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 8l8-4 8 4-8 4-8-4z"/><path d="M4 8v8l8 4 8-4V8M12 12v8"/></svg>',
-      note: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 3h9l3 3v15H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg>',
-      spark: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"/><path d="M18 16l.8 2.2L21 19l-2.2.8L18 22l-.8-2.2L15 19l2.2-.8L18 16z"/></svg>'
-    };
-    const safe = (v, d = '未记录') => (v === undefined || v === null || v === '' ? d : String(v));
-    const arr = (v) => Array.isArray(v) ? v : [];
-    function compactValue(v) {
-      if (v === undefined || v === null || v === '') return '';
-      if (Array.isArray(v)) return v.map(compactValue).filter(Boolean).join('、');
-      if (typeof v === 'object') return Object.entries(v).map(([k, val]) => `${k}:${compactValue(val)}`).filter(x => !x.endsWith(':')).join('；');
-      return String(v);
-    }
-    function itemView(x) {
-      if (!x || typeof x !== 'object') return { title: safe(x), note: '' };
-      const known = new Set(['id', 'name', 'title', 'label', 'display_name', '名称', '物品', '物品名', '武器', '道具', 'quantity', 'count', 'subtype', 'type', 'status', 'note', '备注']);
-      const dynamicKey = Object.keys(x).find(k => !known.has(k) && !/^\d+$/.test(k) && compactValue(x[k]));
-      const nestedName = Object.values(x).find(v => v && typeof v === 'object' && (v.name || v['名称'] || v['物品名']));
-      const textValue = Object.values(x).find(v => typeof v === 'string' && v.trim());
-      const title = x.name || x.id || x.title || x.label || x.display_name || x['名称'] || x['物品'] || x['物品名'] || x['武器'] || x['道具'] || (nestedName && (nestedName.name || nestedName['名称'] || nestedName['物品名'])) || dynamicKey || textValue || compactValue(x) || '未命名物品';
-      const parts = [x.subtype, x.status, x.note];
-      if (x.quantity !== undefined && x.quantity !== null && x.quantity !== '' && x.quantity !== 1) parts.push(`数量 ${x.quantity}`);
-      for (const [k, v] of Object.entries(x)) {
-        if (!known.has(k) && k !== dynamicKey) {
-          const text = compactValue(v);
-          if (text) parts.push(`${k} ${text}`);
-        }
+      <nav class="tabs" aria-label="状态栏分页" id="tabs"></nav>
+      <section id="panels"></section>
+    </main>
+    <script>
+      const fallback = {
+        __fallback: true,
+        user_profile: {
+          origin_identity: "未选择身份",
+          current_location: "未知区域",
+          current_goal: "等待开场",
+          skills: [],
+        },
+        world_time: {
+          period: "沦陷期",
+          phase_gate: "身份开场",
+          rough_day: 0,
+          day_period: "白天",
+          weather: "阴冷",
+          major_events: [],
+        },
+        survival: {
+          health: "正常",
+          infection_risk: "无",
+          fatigue: "清醒",
+          hunger_thirst: "充足",
+          mental_pressure: "稳定",
+          body_temperature: "正常",
+          load: "轻装",
+        },
+        inventory: { weapons_ammo: [], normal_items: [], key_items: [] },
+        mainline: {
+          stage: "未接触",
+          discovered_layers: [],
+          key_items: {},
+          discovered_clues: [],
+        },
+        factions: {},
+        npcs: {},
+        quests: { active: [], completed: [], failed: [], dormant: [] },
+        monster_knowledge: {
+          known_types: ["普通感染者", "奔跑种", "食腐种", "夜视种"],
+          encountered_types: [],
+          confirmed_weaknesses: [],
+          hive_activity: "未发现",
+        },
+      };
+      const tabs = ["总览", "状态", "背包", "人物", "势力", "主线"];
+      const tabIcons = {
+        总览: "radar",
+        状态: "pulse",
+        背包: "pack",
+        人物: "users",
+        势力: "network",
+        主线: "layers",
+      };
+      const labels = {
+        health: "健康",
+        infection_risk: "感染风险",
+        fatigue: "疲劳",
+        hunger_thirst: "饥渴",
+        mental_pressure: "精神压力",
+        body_temperature: "体温",
+        load: "负重",
+        blacklight_sample_case: "黑光-III 低温样本匣",
+        project_j_record_disk: "拓展 J 临床记录盘",
+        federal_lockdown_chip: "联邦防疫军封锁指令芯片",
+        anteater_model_core: "食蚁兽预测模型核心",
+        strange_knife: "奇怪的刀",
+      };
+      const icons = {
+        shield:
+          '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6l7-3z"/><path d="M9 12l2 2 4-5"/></svg>',
+        id: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 10h5M8 14h8M16 10h1"/></svg>',
+        pin: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 21s6-5 6-11a6 6 0 0 0-12 0c0 6 6 11 6 11z"/><circle cx="12" cy="10" r="2"/></svg>',
+        target:
+          '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M22 12h-3M12 22v-3M2 12h3"/></svg>',
+        calendar:
+          '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>',
+        weather:
+          '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 17a4 4 0 0 1 1-7 6 6 0 0 1 11 3 3 3 0 0 1-1 6H7z"/><path d="M8 21h8"/></svg>',
+        pulse:
+          '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 13h4l2-7 4 13 2-6h4"/></svg>',
+        radar:
+          '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="8"/><path d="M12 12l5-5M12 4v2M12 18v2M4 12h2M18 12h2"/></svg>',
+        alert:
+          '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3l10 18H2L12 3z"/><path d="M12 9v5M12 17h.01"/></svg>',
+        pack: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 8V6a5 5 0 0 1 10 0v2"/><rect x="5" y="8" width="14" height="13" rx="2"/><path d="M9 13h6"/></svg>',
+        users:
+          '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 11a3 3 0 0 0 0-6M17 20a5 5 0 0 0-2-4"/></svg>',
+        network:
+          '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 11l6-4M9 13l6 4"/></svg>',
+        layers:
+          '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 12l9 5 9-5M3 16l9 5 9-5"/></svg>',
+        box: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 8l8-4 8 4-8 4-8-4z"/><path d="M4 8v8l8 4 8-4V8M12 12v8"/></svg>',
+        note: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 3h9l3 3v15H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg>',
+        spark:
+          '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"/><path d="M18 16l.8 2.2L21 19l-2.2.8L18 22l-.8-2.2L15 19l2.2-.8L18 16z"/></svg>',
+      };
+      const safe = (v, d = "未记录") =>
+        v === undefined || v === null || v === "" ? d : String(v);
+      const arr = (v) => (Array.isArray(v) ? v : []);
+      function compactValue(v) {
+        if (v === undefined || v === null || v === "") return "";
+        if (Array.isArray(v))
+          return v.map(compactValue).filter(Boolean).join("、");
+        if (typeof v === "object")
+          return Object.entries(v)
+            .map(([k, val]) => `${k}:${compactValue(val)}`)
+            .filter((x) => !x.endsWith(":"))
+            .join("；");
+        return String(v);
       }
-      return { title: safe(title), note: parts.map(compactValue).filter(Boolean).join(' · ') };
-    }
-    try {
-      document.documentElement.style.background = 'transparent';
-      document.body.style.background = 'transparent';
-      if (window.frameElement) {
-        window.frameElement.style.background = 'transparent';
-        window.frameElement.setAttribute('allowtransparency', 'true');
-      }
-    } catch (_) {}
-    function readStat() {
-      try {
-        const p = parent || window;
-        const mvu = p && p.Mvu;
-        const reads = [
-          () => mvu && typeof mvu.getMvuData === 'function' && mvu.getMvuData({ type: 'message', message_id: 'latest' }),
-          () => mvu && typeof mvu.getMvuData === 'function' && mvu.getMvuData('latest'),
-          () => p && typeof p.getVariables === 'function' && p.getVariables({ type: 'message', message_id: 'latest' }),
-          () => p && typeof p.getVariables === 'function' && p.getVariables({ type: 'message' }),
-          () => p && typeof p.getVariables === 'function' && p.getVariables({ type: 'chat' })
-        ];
-        for (const read of reads) {
-          const vars = read();
-          if (vars && vars.stat_data) return vars.stat_data;
-        }
-        return fallback;
-      } catch (_) { return fallback; }
-    }
-    function readUserName(stat) {
-      try {
-        const sources = [window, parent].filter(Boolean);
-        for (const source of sources) {
-          if (typeof source.getContext === 'function') {
-            const context = source.getContext();
-            const name = context && (context.name1 || context.userName || context.username || context.personaName || context.name);
-            if (name) return name;
+      function itemView(x) {
+        if (!x || typeof x !== "object") return { title: safe(x), note: "" };
+        const known = new Set([
+          "id",
+          "name",
+          "title",
+          "label",
+          "display_name",
+          "名称",
+          "物品",
+          "物品名",
+          "武器",
+          "道具",
+          "quantity",
+          "count",
+          "subtype",
+          "type",
+          "status",
+          "note",
+          "备注",
+        ]);
+        const dynamicKey = Object.keys(x).find(
+          (k) => !known.has(k) && !/^\d+$/.test(k) && compactValue(x[k]),
+        );
+        const nestedName = Object.values(x).find(
+          (v) =>
+            v && typeof v === "object" && (v.name || v["名称"] || v["物品名"]),
+        );
+        const textValue = Object.values(x).find(
+          (v) => typeof v === "string" && v.trim(),
+        );
+        const title =
+          x.name ||
+          x.id ||
+          x.title ||
+          x.label ||
+          x.display_name ||
+          x["名称"] ||
+          x["物品"] ||
+          x["物品名"] ||
+          x["武器"] ||
+          x["道具"] ||
+          (nestedName &&
+            (nestedName.name || nestedName["名称"] || nestedName["物品名"])) ||
+          dynamicKey ||
+          textValue ||
+          compactValue(x) ||
+          "未命名物品";
+        const parts = [x.subtype, x.status, x.note];
+        if (
+          x.quantity !== undefined &&
+          x.quantity !== null &&
+          x.quantity !== "" &&
+          x.quantity !== 1
+        )
+          parts.push(`数量 ${x.quantity}`);
+        for (const [k, v] of Object.entries(x)) {
+          if (!known.has(k) && k !== dynamicKey) {
+            const text = compactValue(v);
+            if (text) parts.push(`${k} ${text}`);
           }
-          if (source.SillyTavern && typeof source.SillyTavern.getContext === 'function') {
-            const context = source.SillyTavern.getContext();
-            const name = context && (context.name1 || context.userName || context.username || context.personaName || context.name);
-            if (name) return name;
-          }
-          const vars = typeof source.getVariables === 'function' ? source.getVariables({ type: 'global' }) : null;
-          const name = vars && (vars.name1 || vars.user || vars.user_name || vars.persona_name);
-          if (name) return name;
         }
-        const domName = parent && parent.document && parent.document.querySelector('#persona_name, #user_name, [data-user-name]');
-        if (domName) return domName.value || domName.textContent || domName.getAttribute('data-user-name');
-      } catch (_) {}
-      return safe(stat && stat.user_profile && stat.user_profile.name, '幸存者');
-    }
-    function icon(name) { return icons[name] || icons.note; }
-    function row(k, v) { return `<div class="row"><span>${labels[k] || k}</span><span>${safe(v)}</span></div>`; }
-    function title(text, iconName = 'note') { return `<h3 class="card-title">${icon(iconName)}<span>${text}</span></h3>`; }
-    function empty(text) { return `<div class="empty">${icon('spark')}<span>${text}</span></div>`; }
-    function list(items, emptyText = '暂无记录') {
-      if (!arr(items).length) return empty(emptyText);
-      return `<div class="list">${items.map(x => { const item = itemView(x); return `<div class="item"><div class="item-title">${icon('box')}<span>${item.title}</span></div>${item.note ? `<div class="item-note">${item.note}</div>` : ''}</div>`; }).join('')}</div>`;
-    }
-    function signal(label, value, iconName, note, tone = '') {
-      return `<div class="signal ${tone}"><div class="signal-head"><span>${label}</span><span class="signal-icon">${icon(iconName)}</span></div><span class="signal-value">${safe(value)}</span><span class="signal-note">${safe(note, '实时变量读数')}</span></div>`;
-    }
-    function env(label, value, iconName) {
-      return `<div class="env-row">${icon(iconName)}<div><span>${label}</span><b>${safe(value)}</b></div></div>`;
-    }
-    function riskTone(v) {
-      const text = safe(v, '');
-      if (/高|重|危险|感染|失控/.test(text)) return 'risk-high';
-      if (/中|警|可疑|上升/.test(text)) return 'risk-mid';
-      return '';
-    }
-    function setNotice(text, type = '') {
-      const notice = document.getElementById('notice');
-      notice.className = `notice show ${type}`.trim();
-      notice.innerHTML = `${icon(type === 'danger' ? 'alert' : 'radar')}<span>${text}</span>`;
-      window.clearTimeout(setNotice.timer);
-      setNotice.timer = window.setTimeout(() => notice.classList.remove('show'), 2600);
-    }
-    function withDemoNpcs(stat) {
-      const searchParams = new URLSearchParams(location.search);
-      if (searchParams.get('demo') === '50') {
-      const demo = JSON.parse(JSON.stringify(stat));
-      const factions = ['新都幸存者营地', '莱伊兄弟会', '韦斯特研究所', '学联互助团', '临时联邦防疫军', '沿江医院营地'];
-      const roles = ['侦察员', '军医', '司机', '拾荒者', '技工', '巡逻队长', '通讯员', '学生代表', '狙击手', '研究助理'];
-      const states = ['可合作', '谨慎观望', '互相利用', '欠下人情', '立场摇摆'];
-      demo.npcs = { ...(demo.npcs || {}) };
-      for (let i = 1; i <= 50; i += 1) {
-        demo.npcs[`demo_${i}`] = {
-          name: `测试人物 ${String(i).padStart(2, '0')}`,
-          faction: factions[(i - 1) % factions.length],
-          relationship: states[(i - 1) % states.length],
-          trust: `${20 + ((i * 7) % 70)} / 100`,
-          status: '已遇见',
-          side_quest: `${roles[(i - 1) % roles.length]}线索待跟进`
+        return {
+          title: safe(title),
+          note: parts.map(compactValue).filter(Boolean).join(" · "),
         };
       }
-      return demo;
+      try {
+        document.documentElement.style.background = "transparent";
+        document.body.style.background = "transparent";
+        if (window.frameElement) {
+          window.frameElement.style.background = "transparent";
+          window.frameElement.setAttribute("allowtransparency", "true");
+        }
+      } catch (_) {}
+      function readStat() {
+        try {
+          const p = parent || window;
+          const mvu = p && p.Mvu;
+          const reads = [
+            () =>
+              mvu &&
+              typeof mvu.getMvuData === "function" &&
+              mvu.getMvuData({ type: "message", message_id: "latest" }),
+            () =>
+              mvu &&
+              typeof mvu.getMvuData === "function" &&
+              mvu.getMvuData("latest"),
+            () =>
+              p &&
+              typeof p.getVariables === "function" &&
+              p.getVariables({ type: "message", message_id: "latest" }),
+            () =>
+              p &&
+              typeof p.getVariables === "function" &&
+              p.getVariables({ type: "message" }),
+            () =>
+              p &&
+              typeof p.getVariables === "function" &&
+              p.getVariables({ type: "chat" }),
+          ];
+          for (const read of reads) {
+            const vars = read();
+            if (vars && vars.stat_data) return vars.stat_data;
+          }
+          return fallback;
+        } catch (_) {
+          return fallback;
+        }
       }
-      return stat;
-    }
-    function render() {
-      const stat = withDemoNpcs(readStat());
-      const profile = stat.user_profile || {};
-      const time = stat.world_time || {};
-      const survival = stat.survival || {};
-      const inv = stat.inventory || {}, main = stat.mainline || {}, factions = stat.factions || {}, npcs = stat.npcs || {}, quests = stat.quests || {}, monster = stat.monster_knowledge || {};
-      document.getElementById('brandIcon').innerHTML = icon('shield');
-      document.getElementById('identityTitle').textContent = readUserName(stat);
-      document.getElementById('metaLine').innerHTML = [
-        ['身份', profile.origin_identity, 'id'], ['位置', profile.current_location, 'pin'], ['目标', profile.current_goal, 'target']
-      ].map(([k, v, i]) => `<span class="chip">${icon(i)}<strong>${k}</strong><span>${safe(v)}</span></span>`).join('');
-      document.getElementById('signalGrid').innerHTML = [
-        signal('时期', time.period, 'calendar', `第 ${safe(time.rough_day, '未知')} 天`, 'tone-cyan'),
-        signal('天气', time.weather, 'weather', safe(time.day_period, '昼夜未记录'), 'tone-amber'),
-        signal('感染风险', survival.infection_risk, 'pulse', safe(survival.health, '健康未记录'))
-      ].join('');
-      document.querySelector('#signalGrid .signal:nth-child(3) .signal-value').className = `signal-value ${riskTone(survival.infection_risk)}`.trim();
-      document.getElementById('environmentPanel').innerHTML = [
-        env('昼夜', time.day_period, 'weather'),
-        env('体温', survival.body_temperature, 'pulse'),
-        env('负重', survival.load, 'pack')
-      ].join('');
-      document.getElementById('tabs').innerHTML = tabs.map((t, i) => `<button class="tab" type="button" role="tab" aria-selected="${i === 0}" data-tab="${t}">${icon(tabIcons[t])}<span>${t}</span></button>`).join('');
-      const activeNpcs = Object.values(npcs).filter(n => n && n.status !== '未遇见');
-      const factionList = Object.values(factions);
-      const detailSurvival = Object.entries(survival).filter(([k]) => !['health', 'infection_risk', 'body_temperature', 'load'].includes(k));
-      const panels = {
-        '总览': `<div class="grid fill-grid"><div class="card">${title('世界', 'radar')}${row('重大事件', arr(time.major_events).join('；'))}</div><div class="card tone-cyan">${title('任务', 'target')}${list(arr(quests.active), '暂无进行中任务')}</div><div class="card tone-amber">${title('怪物情报', 'alert')}${row('已知类型', arr(monster.known_types).join('、'))}${row('母巢活动', monster.hive_activity)}</div></div>`,
-        '状态': `<div class="grid split-grid fill-grid"><div class="card">${title('生存状态', 'pulse')}${detailSurvival.map(([k, v]) => row(k, v)).join('') || empty('暂无额外状态记录')}</div><div class="card tone-cyan">${title('身份技能', 'id')}${list(profile.skills, '暂无技能记录')}</div></div>`,
-        '背包': `<div class="grid fill-grid"><div class="card">${title('武器弹药', 'pack')}${list(inv.weapons_ammo)}</div><div class="card tone-cyan">${title('普通物品', 'box')}${list(inv.normal_items)}</div><div class="card tone-amber">${title('任务关键物品', 'layers')}${list(inv.key_items)}</div></div>`,
-        '人物': `<div class="grid">${activeNpcs.map(n => `<div class="card">${title(safe(n.name), 'users')}${row('势力', n.faction)}${row('关系', n.relationship)}${row('信任', n.trust)}${row('支线', n.side_quest)}</div>`).join('') || empty('暂无已遇见人物')}</div>`,
-        '势力': `<div class="grid">${factionList.map(f => `<div class="card tone-cyan">${title(safe(f.name), 'network')}${row('立场', f.stance)}${row('信任', f.trust)}${row('备注', arr(f.notes).join('；'))}</div>`).join('') || empty('暂无势力记录')}</div>`,
-        '主线': `<div class="grid fill-grid"><div class="card">${title('真相层级', 'layers')}${row('阶段', main.stage)}${row('已确认', arr(main.discovered_layers).join('、'))}</div><div class="card tone-amber">${title('关键物', 'box')}${Object.entries(main.key_items || {}).map(([k, v]) => row(k, v)).join('') || empty('暂无关键物记录')}</div><div class="card tone-cyan">${title('线索', 'note')}${list(main.discovered_clues)}</div></div>`
-      };
-      document.getElementById('panels').innerHTML = tabs.map((t, i) => `<section class="panel ${i === 0 ? 'active' : ''}" role="tabpanel" data-panel="${t}">${panels[t]}</section>`).join('');
-      if (stat.__fallback) setNotice('未读取到最新变量，当前显示安全占位数据。', 'danger');
-      if (riskTone(survival.infection_risk) === 'risk-high') setNotice('感染风险处于高危状态，请优先处理生存状态。', 'danger');
-      document.querySelectorAll('.tab').forEach(btn => btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab').forEach(b => b.setAttribute('aria-selected', String(b === btn)));
-        document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.dataset.panel === btn.dataset.tab));
-      }));
-    }
-    render();
-  </script>
-</body>
+      function readUserName(stat) {
+        try {
+          const sources = [window, parent].filter(Boolean);
+          for (const source of sources) {
+            if (typeof source.getContext === "function") {
+              const context = source.getContext();
+              const name =
+                context &&
+                (context.name1 ||
+                  context.userName ||
+                  context.username ||
+                  context.personaName ||
+                  context.name);
+              if (name) return name;
+            }
+            if (
+              source.SillyTavern &&
+              typeof source.SillyTavern.getContext === "function"
+            ) {
+              const context = source.SillyTavern.getContext();
+              const name =
+                context &&
+                (context.name1 ||
+                  context.userName ||
+                  context.username ||
+                  context.personaName ||
+                  context.name);
+              if (name) return name;
+            }
+            const vars =
+              typeof source.getVariables === "function"
+                ? source.getVariables({ type: "global" })
+                : null;
+            const name =
+              vars &&
+              (vars.name1 || vars.user || vars.user_name || vars.persona_name);
+            if (name) return name;
+          }
+          const domName =
+            parent &&
+            parent.document &&
+            parent.document.querySelector(
+              "#persona_name, #user_name, [data-user-name]",
+            );
+          if (domName)
+            return (
+              domName.value ||
+              domName.textContent ||
+              domName.getAttribute("data-user-name")
+            );
+        } catch (_) {}
+        return safe(
+          stat && stat.user_profile && stat.user_profile.name,
+          "幸存者",
+        );
+      }
+      function icon(name) {
+        return icons[name] || icons.note;
+      }
+      function row(k, v) {
+        return `<div class="row"><span>${labels[k] || k}</span><span>${safe(v)}</span></div>`;
+      }
+      function title(text, iconName = "note") {
+        return `<h3 class="card-title">${icon(iconName)}<span>${text}</span></h3>`;
+      }
+      function empty(text) {
+        return `<div class="empty">${icon("spark")}<span>${text}</span></div>`;
+      }
+      function list(items, emptyText = "暂无记录") {
+        if (!arr(items).length) return empty(emptyText);
+        return `<div class="list">${items
+          .map((x) => {
+            const item = itemView(x);
+            return `<div class="item"><div class="item-title">${icon("box")}<span>${item.title}</span></div>${item.note ? `<div class="item-note">${item.note}</div>` : ""}</div>`;
+          })
+          .join("")}</div>`;
+      }
+      function signal(label, value, iconName, note, tone = "") {
+        return `<div class="signal ${tone}"><div class="signal-head"><span>${label}</span><span class="signal-icon">${icon(iconName)}</span></div><span class="signal-value">${safe(value)}</span><span class="signal-note">${safe(note, "实时变量读数")}</span></div>`;
+      }
+      function env(label, value, iconName) {
+        return `<div class="env-row">${icon(iconName)}<div><span>${label}</span><b>${safe(value)}</b></div></div>`;
+      }
+      function riskTone(v) {
+        const text = safe(v, "");
+        if (/高|重|危险|感染|失控/.test(text)) return "risk-high";
+        if (/中|警|可疑|上升/.test(text)) return "risk-mid";
+        return "";
+      }
+      function setNotice(text, type = "") {
+        const notice = document.getElementById("notice");
+        notice.className = `notice show ${type}`.trim();
+        notice.innerHTML = `${icon(type === "danger" ? "alert" : "radar")}<span>${text}</span>`;
+        window.clearTimeout(setNotice.timer);
+        setNotice.timer = window.setTimeout(
+          () => notice.classList.remove("show"),
+          2600,
+        );
+      }
+      function withDemoNpcs(stat) {
+        const searchParams = new URLSearchParams(location.search);
+        if (searchParams.get("demo") === "50") {
+          const demo = JSON.parse(JSON.stringify(stat));
+          const factions = [
+            "新都幸存者营地",
+            "莱伊兄弟会",
+            "韦斯特研究所",
+            "学联互助团",
+            "临时联邦防疫军",
+            "沿江医院营地",
+          ];
+          const roles = [
+            "侦察员",
+            "军医",
+            "司机",
+            "拾荒者",
+            "技工",
+            "巡逻队长",
+            "通讯员",
+            "学生代表",
+            "狙击手",
+            "研究助理",
+          ];
+          const states = [
+            "可合作",
+            "谨慎观望",
+            "互相利用",
+            "欠下人情",
+            "立场摇摆",
+          ];
+          demo.npcs = { ...(demo.npcs || {}) };
+          for (let i = 1; i <= 50; i += 1) {
+            demo.npcs[`demo_${i}`] = {
+              name: `测试人物 ${String(i).padStart(2, "0")}`,
+              faction: factions[(i - 1) % factions.length],
+              relationship: states[(i - 1) % states.length],
+              trust: `${20 + ((i * 7) % 70)} / 100`,
+              status: "已遇见",
+              side_quest: `${roles[(i - 1) % roles.length]}线索待跟进`,
+            };
+          }
+          return demo;
+        }
+        return stat;
+      }
+      function render() {
+        const stat = withDemoNpcs(readStat());
+        const profile = stat.user_profile || {};
+        const time = stat.world_time || {};
+        const survival = stat.survival || {};
+        const inv = stat.inventory || {},
+          main = stat.mainline || {},
+          factions = stat.factions || {},
+          npcs = stat.npcs || {},
+          quests = stat.quests || {},
+          monster = stat.monster_knowledge || {};
+        document.getElementById("brandIcon").innerHTML = icon("shield");
+        document.getElementById("identityTitle").textContent =
+          readUserName(stat);
+        document.getElementById("metaLine").innerHTML = [
+          ["身份", profile.origin_identity, "id"],
+          ["位置", profile.current_location, "pin"],
+          ["目标", profile.current_goal, "target"],
+        ]
+          .map(
+            ([k, v, i]) =>
+              `<span class="chip">${icon(i)}<strong>${k}</strong><span>${safe(v)}</span></span>`,
+          )
+          .join("");
+        document.getElementById("signalGrid").innerHTML = [
+          signal(
+            "时期",
+            time.period,
+            "calendar",
+            `第 ${safe(time.rough_day, "未知")} 天`,
+            "tone-cyan",
+          ),
+          signal(
+            "天气",
+            time.weather,
+            "weather",
+            safe(time.day_period, "昼夜未记录"),
+            "tone-amber",
+          ),
+          signal(
+            "感染风险",
+            survival.infection_risk,
+            "pulse",
+            safe(survival.health, "健康未记录"),
+          ),
+        ].join("");
+        document.querySelector(
+          "#signalGrid .signal:nth-child(3) .signal-value",
+        ).className =
+          `signal-value ${riskTone(survival.infection_risk)}`.trim();
+        document.getElementById("environmentPanel").innerHTML = [
+          env("昼夜", time.day_period, "weather"),
+          env("体温", survival.body_temperature, "pulse"),
+          env("负重", survival.load, "pack"),
+        ].join("");
+        document.getElementById("tabs").innerHTML = tabs
+          .map(
+            (t, i) =>
+              `<button class="tab" type="button" role="tab" aria-selected="${i === 0}" data-tab="${t}">${icon(tabIcons[t])}<span>${t}</span></button>`,
+          )
+          .join("");
+        const activeNpcs = Object.values(npcs).filter(
+          (n) => n && n.status !== "未遇见",
+        );
+        const factionList = Object.values(factions);
+        const detailSurvival = Object.entries(survival).filter(
+          ([k]) =>
+            !["health", "infection_risk", "body_temperature", "load"].includes(
+              k,
+            ),
+        );
+        const panels = {
+          总览: `<div class="grid fill-grid"><div class="card">${title("世界", "radar")}${row("重大事件", arr(time.major_events).join("；"))}</div><div class="card tone-cyan">${title("任务", "target")}${list(arr(quests.active), "暂无进行中任务")}</div><div class="card tone-amber">${title("怪物情报", "alert")}${row("已知类型", arr(monster.known_types).join("、"))}${row("母巢活动", monster.hive_activity)}</div></div>`,
+          状态: `<div class="grid split-grid fill-grid"><div class="card">${title("生存状态", "pulse")}${detailSurvival.map(([k, v]) => row(k, v)).join("") || empty("暂无额外状态记录")}</div><div class="card tone-cyan">${title("身份技能", "id")}${list(profile.skills, "暂无技能记录")}</div></div>`,
+          背包: `<div class="grid fill-grid"><div class="card">${title("武器弹药", "pack")}${list(inv.weapons_ammo)}</div><div class="card tone-cyan">${title("普通物品", "box")}${list(inv.normal_items)}</div><div class="card tone-amber">${title("任务关键物品", "layers")}${list(inv.key_items)}</div></div>`,
+          人物: `<div class="grid">${activeNpcs.map((n) => `<div class="card">${title(safe(n.name), "users")}${row("势力", n.faction)}${row("关系", n.relationship)}${row("信任", n.trust)}${row("支线", n.side_quest)}</div>`).join("") || empty("暂无已遇见人物")}</div>`,
+          势力: `<div class="grid">${factionList.map((f) => `<div class="card tone-cyan">${title(safe(f.name), "network")}${row("立场", f.stance)}${row("信任", f.trust)}${row("备注", arr(f.notes).join("；"))}</div>`).join("") || empty("暂无势力记录")}</div>`,
+          主线: `<div class="grid fill-grid"><div class="card">${title("真相层级", "layers")}${row("阶段", main.stage)}${row("已确认", arr(main.discovered_layers).join("、"))}</div><div class="card tone-amber">${title("关键物", "box")}${
+            Object.entries(main.key_items || {})
+              .map(([k, v]) => row(k, v))
+              .join("") || empty("暂无关键物记录")
+          }</div><div class="card tone-cyan">${title("线索", "note")}${list(main.discovered_clues)}</div></div>`,
+        };
+        document.getElementById("panels").innerHTML = tabs
+          .map(
+            (t, i) =>
+              `<section class="panel ${i === 0 ? "active" : ""}" role="tabpanel" data-panel="${t}">${panels[t]}</section>`,
+          )
+          .join("");
+        if (stat.__fallback)
+          setNotice("未读取到最新变量，当前显示安全占位数据。", "danger");
+        if (riskTone(survival.infection_risk) === "risk-high")
+          setNotice("感染风险处于高危状态，请优先处理生存状态。", "danger");
+        document.querySelectorAll(".tab").forEach((btn) =>
+          btn.addEventListener("click", () => {
+            document
+              .querySelectorAll(".tab")
+              .forEach((b) =>
+                b.setAttribute("aria-selected", String(b === btn)),
+              );
+            document
+              .querySelectorAll(".panel")
+              .forEach((p) =>
+                p.classList.toggle(
+                  "active",
+                  p.dataset.panel === btn.dataset.tab,
+                ),
+              );
+          }),
+        );
+      }
+      render();
+    </script>
+  </body>
 </html>

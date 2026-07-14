@@ -61,10 +61,10 @@
     - 导入位置：扩展 → 正则
     - 用途：对 AI 隐藏前端占位符
 
-## 前端源码草案
+## 前端源码
 
 - `statusbar/index.html`
-  - 状态栏源码草案
+  - 状态栏源码
   - 与开场选择器分离
 
 - `opening_selector/index.html`

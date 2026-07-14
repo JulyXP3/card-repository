@@ -25,9 +25,9 @@ node infection_card/build_assets.mjs
 11. `11-regex-05-opening-selector-local-disabled.json`: 扩展→正则导入，本地测试备用，默认 disabled。
 12. `12-regex-06-hide-placeholders-from-ai.json`: 扩展→正则导入，对 AI 隐藏前端占位符。
 
-状态栏草案: `infection_card/statusbar/index.html`
+状态栏: `infection_card/statusbar/index.html`
 
-开场选择器草案: `infection_card/opening_selector/index.html`
+开场选择器: `infection_card/opening_selector/index.html`
 
 状态栏视觉方向来自 ui-ux-pro-max: 深色优先、密集仪表盘、低动效、可读性和触控目标优先。
 
