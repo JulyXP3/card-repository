@@ -277,7 +277,7 @@ for (const field of [
   );
 }
 assert(
-  openingSelector.includes("今晚无线电又响了"),
+  openingSelector.includes("昨天晚上无线电响了"),
   "opening selector missing opening body text",
 );
 assert(
@@ -290,7 +290,7 @@ const localOpeningRegex = readJson(
 );
 assert(
   localOpeningRegex.replaceString.includes(
-    "opening_selector/index.html?v=1.0-121",
+    "opening_selector/index.html?v=1.0-122",
   ),
   "local opening regex missing cache-busting URL",
 );
