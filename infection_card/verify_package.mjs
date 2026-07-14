@@ -290,7 +290,7 @@ const localOpeningRegex = readJson(
 );
 assert(
   localOpeningRegex.replaceString.includes(
-    "opening_selector/index.html?v=0.1.0-121",
+    "opening_selector/index.html?v=1.0-121",
   ),
   "local opening regex missing cache-busting URL",
 );
