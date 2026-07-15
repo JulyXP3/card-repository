@@ -67,7 +67,7 @@
           "id": "infection-regex-statusbar-remote-v010",
           "scriptName": "02-状态栏远程加载",
           "findRegex": "/<StatusPlaceHolderImpl\\s*\\/>/g",
-          "replaceString": "```html\n<body style=\"margin:0;background:transparent!important\"><script>document.documentElement.style.background='transparent';document.body.style.background='transparent';if(window.frameElement){window.frameElement.style.background='transparent';window.frameElement.setAttribute('allowtransparency','true');}$('body').load('https://julyxp3.github.io/card-repository/infection_card/statusbar/index.html?v=1.0-123');</script></body>\n```",
+          "replaceString": "```html\n<body style=\"margin:0;background:transparent!important\"><script>document.documentElement.style.background='transparent';document.body.style.background='transparent';if(window.frameElement){window.frameElement.style.background='transparent';window.frameElement.setAttribute('allowtransparency','true');}$('body').load('https://julyxp3.github.io/card-repository/infection_card/statusbar/index.html');</script></body>\n```",
           "trimStrings": [],
           "placement": [
             2
@@ -84,7 +84,7 @@
           "id": "infection-regex-opening-selector-remote-v010",
           "scriptName": "03-开场选择器远程加载",
           "findRegex": "/<OpeningSelectorImpl\\s*\\/>/g",
-          "replaceString": "```html\n<body style=\"margin:0;background:transparent!important\"><script>document.documentElement.style.background='transparent';document.body.style.background='transparent';if(window.frameElement){window.frameElement.style.background='transparent';window.frameElement.setAttribute('allowtransparency','true');}$('body').load('https://julyxp3.github.io/card-repository/infection_card/opening_selector/index.html?v=1.0-123');</script></body>\n```",
+          "replaceString": "```html\n<body style=\"margin:0;background:transparent!important\"><script>document.documentElement.style.background='transparent';document.body.style.background='transparent';if(window.frameElement){window.frameElement.style.background='transparent';window.frameElement.setAttribute('allowtransparency','true');}$('body').load('https://julyxp3.github.io/card-repository/infection_card/opening_selector/index.html');</script></body>\n```",
           "trimStrings": [],
           "placement": [
             2
@@ -101,7 +101,7 @@
           "id": "infection-regex-statusbar-local-v010",
           "scriptName": "04-状态栏本地测试勿开",
           "findRegex": "/<StatusPlaceHolderImpl\\s*\\/>/g",
-          "replaceString": "```html\n<body style=\"margin:0;background:transparent!important\"><script>document.documentElement.style.background='transparent';document.body.style.background='transparent';if(window.frameElement){window.frameElement.style.background='transparent';window.frameElement.setAttribute('allowtransparency','true');}$('body').load('http://localhost:5500/infection_card/statusbar/index.html?v=1.0-123');</script></body>\n```",
+          "replaceString": "```html\n<body style=\"margin:0;background:transparent!important\"><script>document.documentElement.style.background='transparent';document.body.style.background='transparent';if(window.frameElement){window.frameElement.style.background='transparent';window.frameElement.setAttribute('allowtransparency','true');}$('body').load('http://localhost:5500/infection_card/statusbar/index.html');</script></body>\n```",
           "trimStrings": [],
           "placement": [
             2
@@ -118,7 +118,7 @@
           "id": "infection-regex-opening-selector-local-v010",
           "scriptName": "05-开场选择器本地测试勿开",
           "findRegex": "/<OpeningSelectorImpl\\s*\\/>/g",
-          "replaceString": "```html\n<body style=\"margin:0;background:transparent!important\"><script>document.documentElement.style.background='transparent';document.body.style.background='transparent';if(window.frameElement){window.frameElement.style.background='transparent';window.frameElement.setAttribute('allowtransparency','true');}$('body').load('http://localhost:5500/infection_card/opening_selector/index.html?v=1.0-123');</script></body>\n```",
+          "replaceString": "```html\n<body style=\"margin:0;background:transparent!important\"><script>document.documentElement.style.background='transparent';document.body.style.background='transparent';if(window.frameElement){window.frameElement.style.background='transparent';window.frameElement.setAttribute('allowtransparency','true');}$('body').load('http://localhost:5500/infection_card/opening_selector/index.html');</script></body>\n```",
           "trimStrings": [],
           "placement": [
             2

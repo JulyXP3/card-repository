@@ -1660,15 +1660,14 @@ const frontendBaseUrl = (process.env.FRONTEND_BASE_URL || "").replace(
   /\/$/,
   "",
 );
-const frontendVersionQuery = `?v=${version.replace(/^v/, "")}-123`;
 const statusbarRemoteUrl = frontendBaseUrl
-  ? `${frontendBaseUrl}/statusbar/index.html${frontendVersionQuery}`
+  ? `${frontendBaseUrl}/statusbar/index.html`
   : "https://example.invalid/infection-survival/statusbar/index.html";
 const openingRemoteUrl = frontendBaseUrl
-  ? `${frontendBaseUrl}/opening_selector/index.html${frontendVersionQuery}`
+  ? `${frontendBaseUrl}/opening_selector/index.html`
   : "https://example.invalid/infection-survival/opening_selector/index.html";
-const statusbarLocalUrl = `http://localhost:5500/infection_card/statusbar/index.html${frontendVersionQuery}`;
-const openingLocalUrl = `http://localhost:5500/infection_card/opening_selector/index.html${frontendVersionQuery}`;
+const statusbarLocalUrl = "http://localhost:5500/infection_card/statusbar/index.html";
+const openingLocalUrl = "http://localhost:5500/infection_card/opening_selector/index.html";
 
 writeJson(
   "07-regex-01-hide-current-variables.json",

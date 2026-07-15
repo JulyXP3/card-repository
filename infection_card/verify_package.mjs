@@ -297,10 +297,9 @@ const localOpeningRegex = readJson(
   join(dist, "11-regex-05-opening-selector-local-disabled.json"),
 );
 assert(
-  localOpeningRegex.replaceString.includes(
-    "opening_selector/index.html?v=1.0-123",
-  ),
-  "local opening regex missing cache-busting URL",
+  localOpeningRegex.replaceString.includes("opening_selector/index.html") &&
+    !localOpeningRegex.replaceString.includes("?v="),
+  "local opening regex should not include version query",
 );
 
 const card = readJson(join(dist, "infection-card-v1.0.json"));
