@@ -405,7 +405,7 @@
           <div class="meta-card"><strong>独特技能</strong>${item.skills}</div>
         </div>
         <div class="opening-text">${escapeHtml(item.text)}</div>`;
-        statusText.textContent = `将发送：开始, ${item.name}`;
+        statusText.textContent = `将发送：开始, ${item.name}, 推进剧情`;
       }
 
       function renderCustom() {
@@ -485,7 +485,7 @@
       startButton.addEventListener("click", () => {
         const message = selected.custom
           ? customMessage()
-          : `开始, ${selected.name}`;
+          : `开始, ${selected.name}, 推进剧情`;
         sendMessage(message, selected.name);
       });
 

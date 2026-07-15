@@ -226,12 +226,16 @@ assert(
   "opening selector still sends immediately on identity click",
 );
 assert(
-  openingSelector.includes("开始, ${selected.name}"),
+  openingSelector.includes("开始, ${selected.name}, 推进剧情"),
   "opening selector sends wrong preset opening phrase",
 );
 assert(
   openingSelector.includes("开始, 请根据以下提供的信息开局"),
   "opening selector missing custom opening phrase",
+);
+assert(
+  !openingSelector.includes("开始, 请根据以下提供的信息开局, 推进剧情"),
+  "opening selector should not change custom opening phrase",
 );
 for (const region of [
   "<option>努尔山脉</option>",
