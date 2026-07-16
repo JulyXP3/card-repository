@@ -6,247 +6,351 @@
     <title>感染开场选择</title>
     <style>
       :root {
-        color-scheme: normal;
-        --bg: #0f172a;
-        --surface: #111827;
-        --surface-2: #1e293b;
-        --border: #475569;
-        --text: #f8fafc;
-        --subtle: #cbd5e1;
-        --dim: #94a3b8;
+        color-scheme: dark;
+        --bg: #05080f;
+        --surface: #0a0f1a;
+        --surface-2: #111827;
+        --border: rgba(34, 197, 94, 0.15);
+        --border-active: #22c55e;
+        --text: #e2e8f0;       /* 略微降低亮度，减少暗色背景下的光晕刺眼感 */
+        --subtle: #94a3b8;     /* 提升次要文字对比度 */
+        --dim: #475569;
         --accent: #22c55e;
+        --accent-glow: rgba(34, 197, 94, 0.3);
         --warn: #f59e0b;
-        --radius: 8px;
-        font-family: "Fira Sans", "Segoe UI", system-ui, sans-serif;
+        --danger: #ef4444;
+        --radius: 2px;
+        --radius-sm: 1px;
+        /* 核心修改：采用高可读性现代字体栈，放弃纯等宽字体 */
+        font-family: "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
       }
-      * {
-        box-sizing: border-box;
-      }
-      html,
-      body {
+
+      * { box-sizing: border-box; }
+
+      html, body {
         margin: 0;
         background: transparent !important;
         color: var(--text);
-        font-size: 14px;
-        line-height: 1.5;
+        font-size: 14px;      /* 基础字号从13px提升至14px */
+        line-height: 1.6;
         min-height: 0;
+        -webkit-font-smoothing: antialiased; /* 恢复抗锯齿，消除像素颗粒感 */
+        -moz-osx-font-smoothing: grayscale;
       }
+
       body {
         display: flex;
         justify-content: center;
         align-items: flex-start;
-        padding: 0;
+        padding: 24px 12px;
+        background-image: 
+          linear-gradient(rgba(34, 197, 94, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(34, 197, 94, 0.03) 1px, transparent 1px) !important;
+        background-size: 20px 20px !important;
       }
+
+      .opening-shell::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+          0deg, transparent, transparent 2px,
+          rgba(0, 0, 0, 0.08) 2px, rgba(0, 0, 0, 0.08) 4px /* 扫描线透明度降低，避免干扰文字 */
+        );
+        pointer-events: none;
+        z-index: 10;
+      }
+
       .opening-shell {
+        position: relative;
         width: min(100%, 1040px);
         margin: 0;
-        border: 1px solid rgba(148, 163, 184, 0.32);
+        border: 1px solid var(--border);
         border-radius: var(--radius);
-        background: linear-gradient(
-          180deg,
-          rgba(30, 41, 59, 0.96),
-          rgba(15, 23, 42, 0.99)
-        );
+        background: rgba(10, 15, 26, 0.96);
         overflow: hidden;
+        box-shadow: 0 0 20px rgba(34, 197, 94, 0.06), inset 0 0 60px rgba(0, 0, 0, 0.4);
+        animation: terminalBoot 0.5s ease-out forwards;
       }
+
+      @keyframes terminalBoot {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .opening-shell::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 11;
+        background: 
+          linear-gradient(var(--accent), var(--accent)) top left / 12px 1px no-repeat,
+          linear-gradient(var(--accent), var(--accent)) top left / 1px 12px no-repeat,
+          linear-gradient(var(--accent), var(--accent)) top right / 12px 1px no-repeat,
+          linear-gradient(var(--accent), var(--accent)) top right / 1px 12px no-repeat,
+          linear-gradient(var(--accent), var(--accent)) bottom left / 12px 1px no-repeat,
+          linear-gradient(var(--accent), var(--accent)) bottom left / 1px 12px no-repeat,
+          linear-gradient(var(--accent), var(--accent)) bottom right / 12px 1px no-repeat,
+          linear-gradient(var(--accent), var(--accent)) bottom right / 1px 12px no-repeat;
+        opacity: 0.5;
+      }
+
       .header {
-        padding: 14px;
-        border-bottom: 1px solid rgba(148, 163, 184, 0.22);
-        background: rgba(15, 23, 42, 0.76);
+        padding: 20px 24px;
+        border-bottom: 1px dashed var(--border);
+        background: rgba(34, 197, 94, 0.03);
       }
+
       h1 {
         margin: 0;
-        font-size: 18px;
-        letter-spacing: 0;
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: 0.08em;  /* 字间距收窄，提升标题可读性 */
+        color: var(--accent);
+        text-shadow: 0 0 10px var(--accent-glow);
       }
+      h1::before { content: "[ "; opacity: 0.4; font-weight: 400; }
+      h1::after { content: " ]"; opacity: 0.4; font-weight: 400; }
+
       .sub {
-        margin: 6px 0 0;
+        margin: 8px 0 0;
         color: var(--subtle);
+        font-size: 13px;
+        letter-spacing: 0.02em;
       }
+
       .identity-row {
         display: grid;
         grid-template-columns: repeat(7, minmax(0, 1fr));
-        gap: 6px;
-        padding: 10px 12px;
-        border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+        gap: 8px;
+        padding: 16px 24px;
+        border-bottom: 1px dashed var(--border);
       }
+
       .identity-btn {
         min-height: 44px;
-        padding: 8px 6px;
-        border: 1px solid rgba(148, 163, 184, 0.25);
-        border-radius: var(--radius);
-        background: rgba(17, 24, 39, 0.84);
-        color: var(--text);
+        padding: 10px 8px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: rgba(10, 15, 26, 0.7);
+        color: var(--subtle);
         cursor: pointer;
         font: inherit;
         font-size: 13px;
+        font-weight: 500;
         text-align: center;
-        transition:
-          border-color 0.18s ease,
-          background 0.18s ease,
-          transform 0.18s ease;
+        transition: all 0.2s ease; /* 恢复平滑过渡，按钮交互更自然 */
       }
-      .identity-btn:hover,
-      .identity-btn:focus-visible,
-      .identity-btn.active {
-        border-color: rgba(34, 197, 94, 0.8);
-        background: rgba(34, 197, 94, 0.14);
+
+      .identity-btn:hover, .identity-btn:focus-visible {
+        border-color: var(--accent);
+        background: rgba(34, 197, 94, 0.08);
+        color: var(--text);
         outline: none;
       }
-      .identity-btn:active {
-        transform: scale(0.99);
+
+      .identity-btn.active {
+        border-color: var(--accent);
+        background: rgba(34, 197, 94, 0.18);
+        color: var(--accent);
+        font-weight: 600;
+        box-shadow: 0 0 10px var(--accent-glow);
       }
+
+      .identity-btn:active { transform: scale(0.98); }
+
       .panel {
         min-height: 430px;
-        padding: 14px;
-        background: rgba(15, 23, 42, 0.58);
+        padding: 24px;
+        background: rgba(5, 8, 15, 0.5);
       }
+
       .panel h2 {
-        margin: 0 0 6px;
+        margin: 0 0 18px;
         font-size: 18px;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: 0.04em;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border);
+        display: inline-block;
       }
+      .panel h2::before { content: "> "; opacity: 0.6; font-weight: 400; }
+
       .meta {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 8px;
-        margin: 10px 0 12px;
+        gap: 12px;
+        margin: 0 0 22px;
       }
+
       .meta-card {
-        padding: 9px;
-        border: 1px solid rgba(148, 163, 184, 0.22);
-        border-radius: var(--radius);
-        background: rgba(17, 24, 39, 0.68);
+        padding: 14px 16px;
+        border: 1px solid var(--border);
+        border-left: 2px solid var(--accent);
+        border-radius: var(--radius-sm);
+        background: rgba(34, 197, 94, 0.02);
         min-width: 0;
       }
+
       .meta-card strong {
         display: block;
-        color: var(--dim);
-        font-size: 12px;
-        margin-bottom: 4px;
+        color: var(--accent);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 6px;
+        opacity: 0.8;
+        font-weight: 600;
       }
+
+      /* 核心可读性优化：正文区域 */
       .opening-text {
         white-space: pre-wrap;
-        color: var(--subtle);
-        border: 1px solid rgba(148, 163, 184, 0.18);
-        border-radius: var(--radius);
-        padding: 12px;
-        background: rgba(2, 6, 23, 0.28);
+        color: var(--text);        /* 正文使用主文字色，不再用次要色 */
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 22px 26px;
+        background: rgba(0, 0, 0, 0.25);
+        font-size: 15px;           /* 正文字号提升至15px */
+        line-height: 1.9;          /* 行高加大，长文阅读不累 */
+        max-height: 340px;
+        overflow-y: auto;
       }
+
+      .opening-text::before {
+        content: "LOG_START //";
+        display: block;
+        font-size: 11px;
+        color: var(--dim);
+        margin-bottom: 14px;
+        letter-spacing: 0.08em;
+        font-family: "Consolas", "Monaco", monospace; /* 仅装饰标签保留等宽字体 */
+      }
+
       .custom-grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
-        margin-top: 10px;
+        gap: 16px;
+        margin-top: 14px;
       }
+
       label {
         display: grid;
-        gap: 5px;
+        gap: 6px;
         color: var(--subtle);
-        font-weight: 700;
+        font-weight: 600;
+        font-size: 13px;
+        letter-spacing: 0.02em;
       }
-      input,
-      select,
-      textarea {
+
+      input, select, textarea {
         width: 100%;
-        border: 1px solid rgba(148, 163, 184, 0.28);
-        border-radius: var(--radius);
-        background: rgba(15, 23, 42, 0.9);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: rgba(0, 0, 0, 0.35);
         color: var(--text);
         font: inherit;
-        padding: 8px;
+        padding: 11px 14px;
+        font-size: 14px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
       }
-      textarea {
-        min-height: 70px;
-        resize: vertical;
+
+      input:focus, select:focus, textarea:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12);
       }
-      input::placeholder,
-      textarea::placeholder {
-        color: #7c8ca5;
-      }
-      .wide {
-        grid-column: 1 / -1;
-      }
+
+      textarea { min-height: 80px; resize: vertical; }
+      input::placeholder, textarea::placeholder { color: var(--dim); }
+      .wide { grid-column: 1 / -1; }
+
       .footer {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        gap: 10px;
-        padding: 10px 12px 12px;
+        gap: 16px;
+        padding: 18px 24px 22px;
         color: var(--dim);
-        border-top: 1px solid rgba(148, 163, 184, 0.16);
+        border-top: 1px dashed var(--border);
+        background: rgba(34, 197, 94, 0.02);
       }
+
       .start-btn {
-        min-width: 128px;
-        min-height: 38px;
-        border: 0;
-        border-radius: var(--radius);
-        background: var(--accent);
-        color: #052e16;
+        min-width: 150px;
+        min-height: 44px;
+        border: 1px solid var(--accent);
+        border-radius: var(--radius-sm);
+        background: transparent;
+        color: var(--accent);
         cursor: pointer;
         font: inherit;
-        font-weight: 800;
+        font-weight: 700;
+        font-size: 15px;
+        letter-spacing: 0.08em;
+        transition: all 0.2s ease;
       }
-      .start-btn:disabled {
-        opacity: 0.55;
-        cursor: default;
+
+      .start-btn:hover:not(:disabled) {
+        background: rgba(34, 197, 94, 0.12);
+        text-shadow: 0 0 8px var(--accent-glow);
+        box-shadow: 0 0 14px var(--accent-glow);
       }
-      .status {
-        color: var(--subtle);
-      }
-      .opening-shell.chosen .panel {
-        display: none;
-      }
-      .opening-shell.chosen .identity-row {
-        display: none;
-      }
+
+      .start-btn:active:not(:disabled) { transform: scale(0.98); }
+      .start-btn:disabled { opacity: 0.35; cursor: default; border-color: var(--dim); color: var(--dim); }
+
+      .status { color: var(--subtle); font-size: 13px; }
+      .status::before { content: "SYS_STATUS: "; color: var(--dim); font-size: 11px; letter-spacing: 0.06em; }
+
+      .opening-shell.chosen .panel,
+      .opening-shell.chosen .identity-row { display: none; }
+
       .chosen-panel {
         display: none;
-        padding: 14px;
-        border-top: 1px solid rgba(148, 163, 184, 0.16);
-        background: rgba(34, 197, 94, 0.1);
+        padding: 40px 24px;
+        border-top: 1px dashed var(--border);
+        background: rgba(34, 197, 94, 0.04);
+        text-align: center;
       }
-      .opening-shell.chosen .chosen-panel {
-        display: block;
-      }
+      .opening-shell.chosen .chosen-panel { display: block; }
+
       .chosen-title {
         margin: 0;
-        font-weight: 750;
-        color: #dcfce7;
+        font-weight: 700;
+        font-size: 22px;
+        color: var(--accent);
+        letter-spacing: 0.06em;
+        text-shadow: 0 0 12px var(--accent-glow);
       }
-      .chosen-note {
-        margin: 4px 0 0;
-        color: var(--subtle);
-      }
+
+      .chosen-note { margin: 12px 0 0; color: var(--subtle); font-size: 14px; }
+
+      .opening-text::-webkit-scrollbar { width: 5px; }
+      .opening-text::-webkit-scrollbar-track { background: transparent; }
+      .opening-text::-webkit-scrollbar-thumb { background: rgba(34, 197, 94, 0.25); border-radius: 3px; }
+      .opening-text::-webkit-scrollbar-thumb:hover { background: rgba(34, 197, 94, 0.4); }
+
       @media (max-width: 720px) {
-        .identity-row {
-          grid-template-columns: repeat(4, minmax(0, 1fr));
-        }
-        .meta,
-        .custom-grid {
-          grid-template-columns: 1fr;
-        }
-        .wide {
-          grid-column: auto;
-        }
+        .identity-row { grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 12px 16px; }
+        .meta, .custom-grid { grid-template-columns: 1fr; }
+        .wide { grid-column: auto; }
+        .header, .panel, .footer { padding-left: 16px; padding-right: 16px; }
       }
+
       @media (max-width: 420px) {
-        .identity-row {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-        .footer {
-          display: block;
-        }
-        .start-btn {
-          width: 100%;
-          margin-top: 8px;
-        }
-        .status {
-          margin-top: 6px;
-        }
+        .identity-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+        .footer { display: block; text-align: center; }
+        .start-btn { width: 100%; margin-top: 12px; }
+        .status { margin-top: 8px; display: block; }
       }
+
       @media (prefers-reduced-motion: reduce) {
-        * {
-          transition: none !important;
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
         }
       }
     </style>
@@ -257,17 +361,11 @@
         <h1>选择你从哪里回来</h1>
         <p class="sub">先选身份查看开场正文，确认后点击底部开始按钮。</p>
       </section>
-      <section
-        class="identity-row"
-        id="identityRow"
-        aria-label="身份列表"
-      ></section>
+      <section class="identity-row" id="identityRow" aria-label="身份列表"></section>
       <section class="panel" id="panel"></section>
       <section class="chosen-panel" aria-live="polite">
         <p class="chosen-title" id="chosenTitle">已开始</p>
-        <p class="chosen-note">
-          开局文本已处理。这个选择器不会在后续状态栏中继续出现。
-        </p>
+        <p class="chosen-note">开局文本已处理。这个选择器不会在后续状态栏中继续出现。</p>
       </section>
       <section class="footer">
         <span class="status" id="statusText">等待选择</span>
@@ -276,95 +374,12 @@
     </main>
     <script>
       const identities = [
-        {
-          name: "看火人",
-          place: "努尔山脉-旧防火瞭望塔",
-          items:
-            "旧式步枪与少量子弹、手摇无线电、防火斧、努尔山脉巡查图、巧克力、牛肉干、保温杯",
-          skills: "高处观察、林火与风向判断、耐孤独",
-          text: `努尔山脉的旧防火瞭望塔已经很久没有收到正式呼叫了。最后一份纸质巡查表被压在窗边, 铅笔字被潮气洇开。你在这里守了几个月, 最初还按时记录烟柱、风向和林线变化, 但后来的记录变多了：山下的公路没再出现车辆, 林子里的鸟群迅速迁徙, 大型野兽总是暴躁不已。
-
-昨天晚上无线电响了。
-
-频道里的杂音很重, 除了里面有人反复念着"联邦区域"之外其他都很难辨认, 后面又收到了疑似军方的频率, 几段破碎的词句从电流中挤出来：封锁、转运失败、不要走山口。随后只剩一阵像呼吸一样的低噪。
-
-你站到瞭望台外, 风从山脊上呼啸而过。远处林线正在移动, 不是鹿群, 看不清楚是什么。几簇黑影在树间停下, 像是在观察坡度。更远处, 新都方向的天空没有城市光, 只有一层灰红色的反光。
-
-塔里还有旧式步枪、少量子弹、手摇无线电、防火斧和努尔山脉巡查图。水不多, 食物也不多。你决定离开这座塔下山, 去弄清楚山外到底发生了什么。`,
-        },
-        {
-          name: "野外生存博主",
-          place: "努尔山脉-边缘废弃露营基地",
-          items:
-            "运动相机与备用存储卡、多功能刀、轻便滤水器、野外背包、太阳能充电宝、肉干、大容量水壶",
-          skills: "临时庇护搭建、水源与食物辨识、抓拍高手",
-          text: `废弃露营基地的招牌倒在泥里, 上面还残留着灾难前的彩色广告。你曾经在类似地方拍过太多视频：如何过滤溪水, 如何用湿木生火, 如何在没有帐篷时撑过雨夜。那时候评论区总有人说, 真到了末日你一定活得很好。
-
-相机还在工作, 电量不多, 功能一切正常。你原本只是想回看几天前拍到的山路, 确认自己有没有错过人类活动的痕迹。画面里先是雾, 树影, 废弃栈道, 然后是一队武装运输人员。他们走得很快, 肩上有枪, 几个人抬着一只冷藏箱。箱体侧面有被泥抹掉的标识, 仍能看出联邦旧封条的轮廓。
-
-你反复播放那段影像。队伍没有往新都走, 而是绕向更偏的山道。镜头最后几秒, 他们拐进了一个隧道中看不见了。
-
-基地周围很安静。滤水器、野外背包、多功能刀都还在, 但肉干没多少了。你站起身开始收拾东西准备离开, 或许可以把这段影像当成筹码, 去找愿意交换情报的人。`,
-        },
-        {
-          name: "边境哨站合同医生",
-          place: "联邦沦陷区北面-废弃边境哨站",
-          items:
-            "急救包、基础抗生素、便携体温计与检测试纸、边境哨站医疗记录、干脆面、军用水壶",
-          skills: "伤情分诊、感染风险识别、低资源治疗、外科缝合",
-          text: `废弃边境哨站的医务室里有一股消毒水、霉味和血混在一起的味道。你在这里做合同医生, 本来只负责处理擦伤、冻伤、胃病和偶尔的斗殴。后来通讯断了, 换岗的人没来, 哨站外的路被封住, 甚至来送物资的人来的频次也急剧减少。
-
-你前几天给一个受伤的军人包扎时, 他好心提醒你最好赶快离开这里, 这里没有大伙想象的那么安全。夜里, 封锁线方向亮起灯号。不是求救灯, 也不是常规识别。几次短闪后, 远处传来枪声, 然后是更长的寂静。许久之后, 你听见哨站后方的铁丝网被什么东西慢慢拨动。声音很轻, 像有人用指甲试探金属, 你没敢开门。
-
-第二天清晨, 你在那里发现了一堆碎纸, 你将它们拼起来, 只能辨别出一句被划了几道线的话：北面样本转运失败, 接触者需就地隔离。下面的签名被墨水涂黑, 只剩一个识别码一样的东西。
-
-现在手里有急救包、基础抗生素、便携体温计、检测试纸和那几页医疗记录。你能判断伤情, 能包扎, 还有一手精湛的医术。可最难判断的是方向：向封锁线走, 可能遇到军方, 也可能遇到他们想拦住的东西；向南走, 迟早要进入新都或11区的秩序里。
-
-你挠了挠头不再犹豫, 赶紧收拾东西起身向11区出发。`,
-        },
-        {
-          name: "极地科考越冬队员",
-          place: "联邦沦陷区北面-极寒隔离观测站",
-          items:
-            "保温服、低温样本箱、卫星定位终端、科考站维修工具、能量棒、牛肉罐头、保温杯",
-          skills: "低温生存、设备维护、科考知识",
-          text: `极寒隔离观测站的供暖系统又停了。你戴着手套拆开发电机外壳, 听见屋外的狂风在金属墙外刮过, 简直像有人用刀背刮门。越冬队早就散了, 有人乘撤离机离开, 有人留在雪线另一头失联。你被吩咐留下来维护数据链, 等一个可能再也不会来的接收确认。
-
-凌晨, 一阵疑似无人机的声音将你吵醒, 同时卫星定位终端收到一段信息。发送源显示为联邦核心区旧实验网络, 时间混乱, 内容残缺, 但有一串编号反复出现：黑光-III 样本链。你从未见过这样的类似命名规则。那不是普通气象样本, 也不像地质材料。
-
-你走到外面, 发现屋外有一个低温样本箱, 你打开外层保险扣, 看见箱内并非你熟悉的科考样本, 而是一枚带有联邦旧封条的内匣。封条边缘像被人重新压过, 标签已经模糊不清。
-
-观测站外的雪地上出现了脚印。不是人的, 也不像大型野兽。它们停在排风口附近, 绕了几圈, 又朝南方消失。你有保温服、低温样本箱、卫星定位终端和维修工具。这里很不安全, 你决定向南走。`,
-        },
-        {
-          name: "深山巡护员",
-          place: "努尔山脉-深处巡护站",
-          items:
-            "巡护砍刀、绳索与登山扣、捕兽夹、山区巡护日志、登山包、葡萄干、水壶、芝麻馕",
-          skills: "追踪与反追踪、山地穿行、陷阱布置、草药专家",
-          text: `努尔山脉深处的巡护站比地图上更孤单。木门被风吹得轻轻发响, 墙上的旧照片还停在灾难前的植被调查季。你熟悉这里的每条兽道、每处滑坡、每片山谷。你在这片山脉追踪过无数的盗猎者和迷路游客, 最近却出现了一些不寻常的踪迹。
-
-连续几天, 你在旧林道附近发现同一种足迹。它不属于熊, 也不像普通人。拖痕很轻, 停顿点却很清楚, 像那东西知道什么时候该压低声音。更奇怪的是, 足迹旁边还有人为刻下的路线标记。不是官方巡护标识, 反而像是迷路的人留下的痕迹。
-
-巡护日志最后一页被你写得很满：夜间有远距离追击声, 山谷水源疑似被污染, 东侧坡道出现不明拖拽痕。你把砍刀、绳索、登山扣、捕兽夹等物品收进包里。
-
-你可以顺着足迹往深处查, 弄清楚山里到底多了什么, 也可以沿旧林道下山。无论哪条路, 都可能把你带向新都边缘。山外的世界已然转变, 但山里这些变化也不太寻常。`,
-        },
-        {
-          name: "海岛灯塔看守",
-          place: "伊甸港-外海旧灯塔岛",
-          items: "信号灯维护工具、航海图、手持信号枪、牛肉罐头、水壶",
-          skills: "海况与信号判断、设备维修、孤岛生存",
-          text: `伊甸港外海的旧灯塔每晚仍会亮几次, 已经很久没有船按航线返港了, 但这已经成了你的工作习惯。海雾很浓, 岸上的港口灯不知何时开始不再亮起了。偶尔有漂浮物从海面上经过, 木箱、救生衣、桅杆, 有时还有一些尸体。
-
-今晚, 远处有船只打来灯号。
-
-它没有靠岸, 也没有报身份。灯号断断续续, 只重复一个方向和一组旧军方编码。你回灯后, 对方沉默了很久, 随后一只密封箱被小艇推到礁石附近。等你赶到岸边时, 小艇已经离开, 海面只剩发动机声被雾吞掉。
-
-箱子上有军方旧封条, 收件标识被刮掉, 边角还残留冷藏警示。你没有立刻打开。灯塔仓库里只剩信号灯维护工具、航海图、手持信号枪、少量牛肉罐头和淡水。你费了一番功夫才把那个箱子捞上来, 这只箱子显然是被故意送过来的, 为什么, 你不知道。
-
-海况正在变坏, 这几天海里时不时能看到一些奇怪的动物游过, 你决定尽快离开, 前往伊甸港或者新都。`,
-        },
+        { name: "看火人", place: "努尔山脉-旧防火瞭望塔", items: "旧式步枪与少量子弹、手摇无线电、防火斧、努尔山脉巡查图、巧克力、牛肉干、保温杯", skills: "高处观察、林火与风向判断、耐孤独", text: `努尔山脉的旧防火瞭望塔已经很久没有收到正式呼叫了。最后一份纸质巡查表被压在窗边, 铅笔字被潮气洇开。你在这里守了几个月, 最初还按时记录烟柱、风向和林线变化, 但后来的记录变多了：山下的公路没再出现车辆, 林子里的鸟群迅速迁徙, 大型野兽总是暴躁不已。\n\n昨天晚上无线电响了。\n\n频道里的杂音很重, 除了里面有人反复念着"联邦区域"之外其他都很难辨认, 后面又收到了疑似军方的频率, 几段破碎的词句从电流中挤出来：封锁、转运失败、不要走山口。随后只剩一阵像呼吸一样的低噪。\n\n你站到瞭望台外, 风从山脊上呼啸而过。远处林线正在移动, 不是鹿群, 看不清楚是什么。几簇黑影在树间停下, 像是在观察坡度。更远处, 新都方向的天空没有城市光, 只有一层灰红色的反光。\n\n塔里还有旧式步枪、少量子弹、手摇无线电、防火斧和努尔山脉巡查图。水不多, 食物也不多。你决定离开这座塔下山, 去弄清楚山外到底发生了什么。` },
+        { name: "野外生存博主", place: "努尔山脉-边缘废弃露营基地", items: "运动相机与备用存储卡、多功能刀、轻便滤水器、野外背包、太阳能充电宝、肉干、大容量水壶", skills: "临时庇护搭建、水源与食物辨识、抓拍高手", text: `废弃露营基地的招牌倒在泥里, 上面还残留着灾难前的彩色广告。你曾经在类似地方拍过太多视频：如何过滤溪水, 如何用湿木生火, 如何在没有帐篷时撑过雨夜。那时候评论区总有人说, 真到了末日你一定活得很好。\n\n相机还在工作, 电量不多, 功能一切正常。你原本只是想回看几天前拍到的山路, 确认自己有没有错过人类活动的痕迹。画面里先是雾, 树影, 废弃栈道, 然后是一队武装运输人员。他们走得很快, 肩上有枪, 几个人抬着一只冷藏箱。箱体侧面有被泥抹掉的标识, 仍能看出联邦旧封条的轮廓。\n\n你反复播放那段影像。队伍没有往新都走, 而是绕向更偏的山道。镜头最后几秒, 他们拐进了一个隧道中看不见了。\n\n基地周围很安静。滤水器、野外背包、多功能刀都还在, 但肉干没多少了。你站起身开始收拾东西准备离开, 或许可以把这段影像当成筹码, 去找愿意交换情报的人。` },
+        { name: "边境哨站合同医生", place: "联邦沦陷区北面-废弃边境哨站", items: "急救包、基础抗生素、便携体温计与检测试纸、边境哨站医疗记录、干脆面、军用水壶", skills: "伤情分诊、感染风险识别、低资源治疗、外科缝合", text: `废弃边境哨站的医务室里有一股消毒水、霉味和血混在一起的味道。你在这里做合同医生, 本来只负责处理擦伤、冻伤、胃病和偶尔的斗殴。后来通讯断了, 换岗的人没来, 哨站外的路被封住, 甚至来送物资的人来的频次也急剧减少。\n\n你前几天给一个受伤的军人包扎时, 他好心提醒你最好赶快离开这里, 这里没有大伙想象的那么安全。夜里, 封锁线方向亮起灯号。不是求救灯, 也不是常规识别。几次短闪后, 远处传来枪声, 然后是更长的寂静。许久之后, 你听见哨站后方的铁丝网被什么东西慢慢拨动。声音很轻, 像有人用指甲试探金属, 你没敢开门。\n\n第二天清晨, 你在那里发现了一堆碎纸, 你将它们拼起来, 只能辨别出一句被划了几道线的话：北面样本转运失败, 接触者需就地隔离。下面的签名被墨水涂黑, 只剩一个识别码一样的东西。\n\n现在手里有急救包、基础抗生素、便携体温计、检测试纸和那几页医疗记录。你能判断伤情, 能包扎, 还有一手精湛的医术。可最难判断的是方向：向封锁线走, 可能遇到军方, 也可能遇到他们想拦住的东西；向南走, 迟早要进入新都或11区的秩序里。\n\n你挠了挠头不再犹豫, 赶紧收拾东西起身向11区出发。` },
+        { name: "极地科考越冬队员", place: "联邦沦陷区北面-极寒隔离观测站", items: "保温服、低温样本箱、卫星定位终端、科考站维修工具、能量棒、牛肉罐头、保温杯", skills: "低温生存、设备维护、科考知识", text: `极寒隔离观测站的供暖系统又停了。你戴着手套拆开发电机外壳, 听见屋外的狂风在金属墙外刮过, 简直像有人用刀背刮门。越冬队早就散了, 有人乘撤离机离开, 有人留在雪线另一头失联。你被吩咐留下来维护数据链, 等一个可能再也不会来的接收确认。\n\n凌晨, 一阵疑似无人机的声音将你吵醒, 同时卫星定位终端收到一段信息。发送源显示为联邦核心区旧实验网络, 时间混乱, 内容残缺, 但有一串编号反复出现：黑光-III 样本链。你从未见过这样的类似命名规则。那不是普通气象样本, 也不像地质材料。\n\n你走到外面, 发现屋外有一个低温样本箱, 你打开外层保险扣, 看见箱内并非你熟悉的科考样本, 而是一枚带有联邦旧封条的内匣。封条边缘像被人重新压过, 标签已经模糊不清。\n\n观测站外的雪地上出现了脚印。不是人的, 也不像大型野兽。它们停在排风口附近, 绕了几圈, 又朝南方消失。你有保温服、低温样本箱、卫星定位终端和维修工具。这里很不安全, 你决定向南走。` },
+        { name: "深山巡护员", place: "努尔山脉-深处巡护站", items: "巡护砍刀、绳索与登山扣、捕兽夹、山区巡护日志、登山包、葡萄干、水壶、芝麻馕", skills: "追踪与反追踪、山地穿行、陷阱布置、草药专家", text: `努尔山脉深处的巡护站比地图上更孤单。木门被风吹得轻轻发响, 墙上的旧照片还停在灾难前的植被调查季。你熟悉这里的每条兽道、每处滑坡、每片山谷。你在这片山脉追踪过无数的盗猎者和迷路游客, 最近却出现了一些不寻常的踪迹。\n\n连续几天, 你在旧林道附近发现同一种足迹。它不属于熊, 也不像普通人。拖痕很轻, 停顿点却很清楚, 像那东西知道什么时候该压低声音。更奇怪的是, 足迹旁边还有人为刻下的路线标记。不是官方巡护标识, 反而像是迷路的人留下的痕迹。\n\n巡护日志最后一页被你写得很满：夜间有远距离追击声, 山谷水源疑似被污染, 东侧坡道出现不明拖拽痕。你把砍刀、绳索、登山扣、捕兽夹等物品收进包里。\n\n你可以顺着足迹往深处查, 弄清楚山里到底多了什么, 也可以沿旧林道下山。无论哪条路, 都可能把你带向新都边缘。山外的世界已然转变, 但山里这些变化也不太寻常。` },
+        { name: "海岛灯塔看守", place: "伊甸港-外海旧灯塔岛", items: "信号灯维护工具、航海图、手持信号枪、牛肉罐头、水壶", skills: "海况与信号判断、设备维修、孤岛生存", text: `伊甸港外海的旧灯塔每晚仍会亮几次, 已经很久没有船按航线返港了, 但这已经成了你的工作习惯。海雾很浓, 岸上的港口灯不知何时开始不再亮起了。偶尔有漂浮物从海面上经过, 木箱、救生衣、桅杆, 有时还有一些尸体。\n\n今晚, 远处有船只打来灯号。\n\n它没有靠岸, 也没有报身份。灯号断断续续, 只重复一个方向和一组旧军方编码。你回灯后, 对方沉默了很久, 随后一只密封箱被小艇推到礁石附近。等你赶到岸边时, 小艇已经离开, 海面只剩发动机声被雾吞掉。\n\n箱子上有军方旧封条, 收件标识被刮掉, 边角还残留冷藏警示。你没有立刻打开。灯塔仓库里只剩信号灯维护工具、航海图、手持信号枪、少量牛肉罐头和淡水。你费了一番功夫才把那个箱子捞上来, 这只箱子显然是被故意送过来的, 为什么, 你不知道。\n\n海况正在变坏, 这几天海里时不时能看到一些奇怪的动物游过, 你决定尽快离开, 前往伊甸港或者新都。` },
         { name: "自定义身份", custom: true },
       ];
 
@@ -377,78 +392,38 @@
       let selected = identities[0];
 
       function escapeHtml(value) {
-        return String(value).replace(
-          /[&<>"]/g,
-          (char) =>
-            ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[char],
-        );
+        return String(value).replace(/[&<>"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[char]);
       }
 
       function renderTabs() {
-        row.innerHTML = identities
-          .map(
-            (item) =>
-              `<button class="identity-btn ${item === selected ? "active" : ""}" type="button" data-name="${item.name}">${item.name}</button>`,
-          )
-          .join("");
+        row.innerHTML = identities.map((item) => `<button class="identity-btn ${item === selected ? "active" : ""}" type="button" data-name="${item.name}">${item.name}</button>`).join("");
       }
 
       function renderPreset(item) {
-        panel.innerHTML = `<h2>${item.name}</h2>
-        <div class="meta">
-          <div class="meta-card"><strong>开场地点</strong>${item.place}</div>
-          <div class="meta-card"><strong>随身物品</strong>${item.items}</div>
-          <div class="meta-card"><strong>独特技能</strong>${item.skills}</div>
-        </div>
-        <div class="opening-text">${escapeHtml(item.text)}</div>`;
+        panel.innerHTML = `<h2>${item.name}</h2><div class="meta"><div class="meta-card"><strong>开场地点</strong>${item.place}</div><div class="meta-card"><strong>随身物品</strong>${item.items}</div><div class="meta-card"><strong>独特技能</strong>${item.skills}</div></div><div class="opening-text">${escapeHtml(item.text)}</div>`;
         statusText.textContent = `将切换至：${item.name}的开场白`;
       }
 
       function renderCustom() {
-        panel.innerHTML = `<h2>自定义身份</h2>
-        <div class="custom-grid">
-          <label>身份/职业<input id="customIdentity" placeholder="例如：废弃电台维修员"></label>
-          <label>开场地点<select id="customPlace"><option>努尔山脉</option><option>新都</option><option>11区</option><option>封锁线</option><option>伊甸港</option></select></label>
-          <label class="wide">随身物品<textarea id="customItems" placeholder="例如：维修工具、旧电台、半盒电池、短刀"></textarea></label>
-          <label>独特技能<textarea id="customSkills" placeholder="例如：修理无线电、辨识旧军方频段、临时布线"></textarea></label>
-          <label>经历介绍<textarea id="customHistory" placeholder="灾难前后经历、为什么独自在外、为什么要回到文明边缘"></textarea></label>
-          <label class="wide">样貌穿搭<textarea id="customLook" placeholder="外貌、衣着、装备状态、明显伤痕或个人标识"></textarea></label>
-        </div>`;
+        panel.innerHTML = `<h2>自定义身份</h2><div class="custom-grid"><label>身份/职业<input id="customIdentity" placeholder="例如：废弃电台维修员"></label><label>开场地点<select id="customPlace"><option>努尔山脉</option><option>新都</option><option>11区</option><option>封锁线</option><option>伊甸港</option></select></label><label class="wide">随身物品<textarea id="customItems" placeholder="例如：维修工具、旧电台、半盒电池、短刀"></textarea></label><label>独特技能<textarea id="customSkills" placeholder="例如：修理无线电、辨识旧军方频段、临时布线"></textarea></label><label>经历介绍<textarea id="customHistory" placeholder="灾难前后经历、为什么独自在外、为什么要回到文明边缘"></textarea></label><label class="wide">样貌穿搭<textarea id="customLook" placeholder="外貌、衣着、装备状态、明显伤痕或个人标识"></textarea></label></div>`;
         statusText.textContent = "将发送：开始, 请根据以下提供的信息开局";
       }
 
-      function render() {
-        renderTabs();
-        if (selected.custom) renderCustom();
-        else renderPreset(selected);
-      }
-
-      function valueOf(id) {
-        const element = document.getElementById(id);
-        return element ? element.value.trim() : "";
-      }
-
-      function customMessage() {
-        return `开始, 请根据以下提供的信息开局\n身份/职业: ${valueOf("customIdentity")}\n开场地点: ${valueOf("customPlace")}\n随身物品: ${valueOf("customItems")}\n独特技能: ${valueOf("customSkills")}\n经历介绍: ${valueOf("customHistory")}\n样貌穿搭: ${valueOf("customLook")}`;
-      }
+      function render() { renderTabs(); if (selected.custom) renderCustom(); else renderPreset(selected); }
+      function valueOf(id) { const el = document.getElementById(id); return el ? el.value.trim() : ""; }
+      function customMessage() { return `开始, 请根据以下提供的信息开局\n身份/职业: ${valueOf("customIdentity")}\n开场地点: ${valueOf("customPlace")}\n随身物品: ${valueOf("customItems")}\n独特技能: ${valueOf("customSkills")}\n经历介绍: ${valueOf("customHistory")}\n样貌穿搭: ${valueOf("customLook")}`; }
 
       function switchToGreeting(swipeId, label) {
-        row.querySelectorAll("button").forEach((button) => {
-          button.disabled = true;
-        });
+        row.querySelectorAll("button").forEach(b => b.disabled = true);
         startButton.disabled = true;
         openingShell.classList.add("chosen");
         chosenTitle.textContent = `已选择：${label}`;
         statusText.textContent = `已切换到：${label}`;
-        if (typeof setChatMessages === "function") {
-          setChatMessages([{ message_id: 0, swipe_id: swipeId }]);
-        }
+        if (typeof setChatMessages === "function") setChatMessages([{ message_id: 0, swipe_id: swipeId }]);
       }
 
       async function sendMessage(message, label) {
-        row.querySelectorAll("button").forEach((button) => {
-          button.disabled = true;
-        });
+        row.querySelectorAll("button").forEach(b => b.disabled = true);
         startButton.disabled = true;
         openingShell.classList.add("chosen");
         console.log(`输出: ${label}`);
@@ -460,56 +435,33 @@
             statusText.textContent = `已发送：${label}`;
             return;
           }
-          const textarea = document.querySelector(
-            '#send_textarea, textarea[name="send_textarea"]',
-          );
-          if (textarea) {
-            textarea.value = message;
-            textarea.dispatchEvent(new Event("input", { bubbles: true }));
-          }
-          setTimeout(() => {
-            const sendBtn = document.querySelector("#send_but");
-            if (sendBtn) sendBtn.click();
-          }, 100);
+          const textarea = document.querySelector('#send_textarea, textarea[name="send_textarea"]');
+          if (textarea) { textarea.value = message; textarea.dispatchEvent(new Event("input", { bubbles: true })); }
+          setTimeout(() => { const sendBtn = document.querySelector("#send_but"); if (sendBtn) sendBtn.click(); }, 100);
           statusText.textContent = `已发送：${label}`;
         } catch (err) {
           statusText.textContent = "发送失败，请手动复制当前开局信息到输入框";
           openingShell.classList.remove("chosen");
-          row.querySelectorAll("button").forEach((button) => {
-            button.disabled = false;
-          });
+          row.querySelectorAll("button").forEach(b => b.disabled = false);
           startButton.disabled = false;
         }
       }
 
-      row.addEventListener("click", (event) => {
-        const button = event.target.closest(".identity-btn");
-        if (!button) return;
-        selected =
-          identities.find((item) => item.name === button.dataset.name) ||
-          identities[0];
+      row.addEventListener("click", (e) => {
+        const btn = e.target.closest(".identity-btn");
+        if (!btn) return;
+        selected = identities.find(i => i.name === btn.dataset.name) || identities[0];
         render();
       });
 
-      const identityToSwipe = {
-        看火人: 1,
-        野外生存博主: 2,
-        边境哨站合同医生: 3,
-        极地科考越冬队员: 4,
-        深山巡护员: 5,
-        海岛灯塔看守: 6,
-      };
+      const identityToSwipe = { 看火人: 1, 野外生存博主: 2, 边境哨站合同医生: 3, 极地科考越冬队员: 4, 深山巡护员: 5, 海岛灯塔看守: 6 };
 
       startButton.addEventListener("click", () => {
-        if (selected.custom) {
-          sendMessage(customMessage(), "自定义身份");
-        } else {
+        if (selected.custom) sendMessage(customMessage(), "自定义身份");
+        else {
           const swipe = identityToSwipe[selected.name];
-          if (swipe !== undefined) {
-            switchToGreeting(swipe, selected.name);
-          } else {
-            sendMessage(`开始, ${selected.name}, 推进剧情`, selected.name);
-          }
+          if (swipe !== undefined) switchToGreeting(swipe, selected.name);
+          else sendMessage(`开始, ${selected.name}, 推进剧情`, selected.name);
         }
       });
 
@@ -517,3 +469,5 @@
     </script>
   </body>
 </html>
+
+
