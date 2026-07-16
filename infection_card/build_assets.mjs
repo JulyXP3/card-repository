@@ -1650,16 +1650,13 @@ function remoteLoader(url) {
   return `\`\`\`html\n<body style="margin:0;background:transparent!important"><script>document.documentElement.style.background='transparent';document.body.style.background='transparent';if(window.frameElement){window.frameElement.style.background='transparent';window.frameElement.setAttribute('allowtransparency','true');}$('body').load('${url}');</script></body>\n\`\`\``;
 }
 
-const frontendBaseUrl = (process.env.FRONTEND_BASE_URL || "").replace(
+const defaultFrontendBaseUrl = "https://julyxp3.github.io/card-repository/infection_card";
+const frontendBaseUrl = (process.env.FRONTEND_BASE_URL || defaultFrontendBaseUrl).replace(
   /\/$/,
   "",
 );
-const statusbarRemoteUrl = frontendBaseUrl
-  ? `${frontendBaseUrl}/statusbar/index.html`
-  : "https://example.invalid/infection-survival/statusbar/index.html";
-const openingRemoteUrl = frontendBaseUrl
-  ? `${frontendBaseUrl}/opening_selector/index.html`
-  : "https://example.invalid/infection-survival/opening_selector/index.html";
+const statusbarRemoteUrl = `${frontendBaseUrl}/statusbar/index.html`;
+const openingRemoteUrl = `${frontendBaseUrl}/opening_selector/index.html`;
 const statusbarLocalUrl = "http://localhost:5500/infection_card/statusbar/index.html";
 const openingLocalUrl = "http://localhost:5500/infection_card/opening_selector/index.html";
 
@@ -1681,7 +1678,7 @@ writeJson(
     "infection-regex-statusbar-remote-v010",
     "/<StatusPlaceHolderImpl\\s*\\/>/g",
     remoteLoader(statusbarRemoteUrl),
-    { markdownOnly: true, promptOnly: false, disabled: !frontendBaseUrl },
+    { markdownOnly: true, promptOnly: false },
   ),
 );
 
@@ -1692,7 +1689,7 @@ writeJson(
     "infection-regex-opening-selector-remote-v010",
     "/<OpeningSelectorImpl\\s*\\/>/g",
     remoteLoader(openingRemoteUrl),
-    { markdownOnly: true, promptOnly: false, disabled: !frontendBaseUrl },
+    { markdownOnly: true, promptOnly: false },
   ),
 );
 

@@ -287,6 +287,22 @@ assert(
 const localOpeningRegex = readJson(
   join(dist, "11-regex-05-opening-selector-local-disabled.json"),
 );
+const remoteStatusbarRegex = readJson(join(dist, "08-regex-02-statusbar-remote.json"));
+const remoteOpeningRegex = readJson(join(dist, "09-regex-03-opening-selector-remote.json"));
+assert(!remoteStatusbarRegex.disabled, "remote statusbar regex should be enabled");
+assert(!remoteOpeningRegex.disabled, "remote opening selector regex should be enabled");
+assert(
+  remoteStatusbarRegex.replaceString.includes(
+    "https://julyxp3.github.io/card-repository/infection_card/statusbar/index.html",
+  ),
+  "remote statusbar regex should use GitHub Pages URL",
+);
+assert(
+  remoteOpeningRegex.replaceString.includes(
+    "https://julyxp3.github.io/card-repository/infection_card/opening_selector/index.html",
+  ),
+  "remote opening selector regex should use GitHub Pages URL",
+);
 assert(
   localOpeningRegex.replaceString.includes("opening_selector/index.html") &&
     !localOpeningRegex.replaceString.includes("?v="),

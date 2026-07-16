@@ -31,8 +31,7 @@
 - `[InitVar]感染变量初始化勿开` 必须是 disabled。
 - `读取变量` 条目必须无 `[mvu_plot]` 或 `[mvu_update]` 前缀。
 - 正则列表顺序必须从 `01` 到 `07`。
-- 正式发布时 `08` 和 `09` 应为 enabled，且 URL 可访问。
-- 未设置 `FRONTEND_BASE_URL` 生成时，`08` 和 `09` 为 disabled 是正常状态。
+- 正式发布时 `08` 和 `09` 应为 enabled，并指向 `https://julyxp3.github.io/card-repository/infection_card`。
 - 本地测试时只启用 `10` 和 `11`，不要同时启用远程和本地加载正则。
 - 第一条开场消息应只显示身份选择器，不再显示作者说明。
 

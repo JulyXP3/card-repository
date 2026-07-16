@@ -44,12 +44,12 @@
 9. `dist/08-regex-02-statusbar-remote.json`
    - 导入位置：扩展 → 正则
    - 用途：远程加载状态栏前端
-   - 默认：设置 `FRONTEND_BASE_URL` 生成时 enabled；未设置时 disabled
+   - 默认：enabled，加载 `https://julyxp3.github.io/card-repository/infection_card/statusbar/index.html`
 
 10. `dist/09-regex-03-opening-selector-remote.json`
    - 导入位置：扩展 → 正则
    - 用途：远程加载开场选择器前端
-   - 默认：设置 `FRONTEND_BASE_URL` 生成时 enabled；未设置时 disabled
+   - 默认：enabled，加载 `https://julyxp3.github.io/card-repository/infection_card/opening_selector/index.html`
 
 11. `dist/10-regex-04-statusbar-local-disabled.json`
     - 导入位置：扩展 → 正则

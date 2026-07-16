@@ -37,7 +37,8 @@ node infection_card/build_assets.mjs
 
 - `statusbar/index.html` 是酒馆助手 iframe 前端源码。
 - 发布前需要把 `statusbar/` 和 `opening_selector/` 部署到可访问的静态 URL。
-- 设置 `FRONTEND_BASE_URL` 后重新生成，远程正则会自动启用并写入该 URL。
+- 默认远程地址为 `https://julyxp3.github.io/card-repository/infection_card`，远程正则默认启用。
+- 如需改用其他静态地址，设置 `FRONTEND_BASE_URL` 后重新生成。
 
 开场选择器说明:
 
@@ -47,9 +48,9 @@ node infection_card/build_assets.mjs
 
 前端部署说明:
 
-- 远程构建示例：`$env:FRONTEND_BASE_URL="https://example.com/infection_card"; node infection_card/build_assets.mjs`
-- 远程 URL 生成后，`08` 和 `09` 正则 enabled。
-- 未设置 `FRONTEND_BASE_URL` 时，`08` 和 `09` 会 disabled，避免导入无效地址。
+- 远程默认地址：`https://julyxp3.github.io/card-repository/infection_card`。
+- 自定义远程构建示例：`$env:FRONTEND_BASE_URL="https://example.com/infection_card"; node infection_card/build_assets.mjs`
+- `08` 和 `09` 远程正则默认 enabled。
 - 本地测试可启用 `10` 和 `11`，并用静态服务提供 `http://localhost:5500/infection_card/...`。
 
 使用注意:
