@@ -279,7 +279,8 @@
         {
           name: "看火人",
           place: "努尔山脉-旧防火瞭望塔",
-          items: "旧式步枪与少量子弹、手摇无线电、防火斧、努尔山脉巡查图、巧克力、牛肉干、保温杯",
+          items:
+            "旧式步枪与少量子弹、手摇无线电、防火斧、努尔山脉巡查图、巧克力、牛肉干、保温杯",
           skills: "高处观察、林火与风向判断、耐孤独",
           text: `努尔山脉的旧防火瞭望塔已经很久没有收到正式呼叫了。最后一份纸质巡查表被压在窗边, 铅笔字被潮气洇开。你在这里守了几个月, 最初还按时记录烟柱、风向和林线变化, 但后来的记录变多了：山下的公路没再出现车辆, 林子里的鸟群迅速迁徙, 大型野兽总是暴躁不已。
 
@@ -294,7 +295,8 @@
         {
           name: "野外生存博主",
           place: "努尔山脉-边缘废弃露营基地",
-          items: "运动相机与备用存储卡、多功能刀、轻便滤水器、野外背包、太阳能充电宝、肉干、大容量水壶",
+          items:
+            "运动相机与备用存储卡、多功能刀、轻便滤水器、野外背包、太阳能充电宝、肉干、大容量水壶",
           skills: "临时庇护搭建、水源与食物辨识、抓拍高手",
           text: `废弃露营基地的招牌倒在泥里, 上面还残留着灾难前的彩色广告。你曾经在类似地方拍过太多视频：如何过滤溪水, 如何用湿木生火, 如何在没有帐篷时撑过雨夜。那时候评论区总有人说, 真到了末日你一定活得很好。
 
@@ -307,7 +309,8 @@
         {
           name: "边境哨站合同医生",
           place: "联邦沦陷区北面-废弃边境哨站",
-          items: "急救包、基础抗生素、便携体温计与检测试纸、边境哨站医疗记录、干脆面、军用水壶",
+          items:
+            "急救包、基础抗生素、便携体温计与检测试纸、边境哨站医疗记录、干脆面、军用水壶",
           skills: "伤情分诊、感染风险识别、低资源治疗、外科缝合",
           text: `废弃边境哨站的医务室里有一股消毒水、霉味和血混在一起的味道。你在这里做合同医生, 本来只负责处理擦伤、冻伤、胃病和偶尔的斗殴。后来通讯断了, 换岗的人没来, 哨站外的路被封住, 甚至来送物资的人来的频次也急剧减少。
 
@@ -317,12 +320,13 @@
 
 现在手里有急救包、基础抗生素、便携体温计、检测试纸和那几页医疗记录。你能判断伤情, 能包扎, 还有一手精湛的医术。可最难判断的是方向：向封锁线走, 可能遇到军方, 也可能遇到他们想拦住的东西；向南走, 迟早要进入新都或11区的秩序里。
 
-你挠了挠头不再犹豫, 感觉收拾东西起身向11区出发。`,
+你挠了挠头不再犹豫, 赶紧收拾东西起身向11区出发。`,
         },
         {
           name: "极地科考越冬队员",
           place: "联邦沦陷区北面-极寒隔离观测站",
-          items: "保温服、低温样本箱、卫星定位终端、科考站维修工具、能量棒、牛肉罐头、保温杯",
+          items:
+            "保温服、低温样本箱、卫星定位终端、科考站维修工具、能量棒、牛肉罐头、保温杯",
           skills: "低温生存、设备维护、科考知识",
           text: `极寒隔离观测站的供暖系统又停了。你戴着手套拆开发电机外壳, 听见屋外的狂风在金属墙外刮过, 简直像有人用刀背刮门。越冬队早就散了, 有人乘撤离机离开, 有人留在雪线另一头失联。你被吩咐留下来维护数据链, 等一个可能再也不会来的接收确认。
 
@@ -335,7 +339,8 @@
         {
           name: "深山巡护员",
           place: "努尔山脉-深处巡护站",
-          items: "巡护砍刀、绳索与登山扣、捕兽夹、山区巡护日志、登山包、葡萄干、水壶、芝麻馕",
+          items:
+            "巡护砍刀、绳索与登山扣、捕兽夹、山区巡护日志、登山包、葡萄干、水壶、芝麻馕",
           skills: "追踪与反追踪、山地穿行、陷阱布置、草药专家",
           text: `努尔山脉深处的巡护站比地图上更孤单。木门被风吹得轻轻发响, 墙上的旧照片还停在灾难前的植被调查季。你熟悉这里的每条兽道、每处滑坡、每片山谷。你在这片山脉追踪过无数的盗猎者和迷路游客, 最近却出现了一些不寻常的踪迹。
 
@@ -371,15 +376,6 @@
       const startButton = document.getElementById("startButton");
       let selected = identities[0];
 
-      try {
-        document.documentElement.style.background = "transparent";
-        document.body.style.background = "transparent";
-        if (window.frameElement) {
-          window.frameElement.style.background = "transparent";
-          window.frameElement.setAttribute("allowtransparency", "true");
-        }
-      } catch (_) {}
-
       function escapeHtml(value) {
         return String(value).replace(
           /[&<>"]/g,
@@ -405,7 +401,7 @@
           <div class="meta-card"><strong>独特技能</strong>${item.skills}</div>
         </div>
         <div class="opening-text">${escapeHtml(item.text)}</div>`;
-        statusText.textContent = `将发送：开始, ${item.name}, 推进剧情`;
+        statusText.textContent = `将切换至：${item.name}的开场白`;
       }
 
       function renderCustom() {
@@ -436,30 +432,43 @@
         return `开始, 请根据以下提供的信息开局\n身份/职业: ${valueOf("customIdentity")}\n开场地点: ${valueOf("customPlace")}\n随身物品: ${valueOf("customItems")}\n独特技能: ${valueOf("customSkills")}\n经历介绍: ${valueOf("customHistory")}\n样貌穿搭: ${valueOf("customLook")}`;
       }
 
+      function switchToGreeting(swipeId, label) {
+        row.querySelectorAll("button").forEach((button) => {
+          button.disabled = true;
+        });
+        startButton.disabled = true;
+        openingShell.classList.add("chosen");
+        chosenTitle.textContent = `已选择：${label}`;
+        statusText.textContent = `已切换到：${label}`;
+        if (typeof setChatMessages === "function") {
+          setChatMessages([{ message_id: 0, swipe_id: swipeId }]);
+        }
+      }
+
       async function sendMessage(message, label) {
         row.querySelectorAll("button").forEach((button) => {
           button.disabled = true;
         });
         startButton.disabled = true;
         openingShell.classList.add("chosen");
+        console.log(`输出: ${label}`);
         chosenTitle.textContent = `已开始：${label}`;
         try {
-          const p = window.parent || window;
-          if (typeof p.triggerSlash === "function") {
-            await p.triggerSlash("/setinput " + message);
-          } else {
-            const textarea =
-              p.document &&
-              p.document.querySelector(
-                '#send_textarea, textarea[name="send_textarea"]',
-              );
-            if (textarea) {
-              textarea.value = message;
-              textarea.dispatchEvent(new Event("input", { bubbles: true }));
-            }
+          if (typeof createChatMessages === "function" && typeof triggerSlash === "function") {
+            await createChatMessages([{ role: "user", message }]);
+            await triggerSlash("/trigger");
+            statusText.textContent = `已发送：${label}`;
+            return;
+          }
+          const textarea = document.querySelector(
+            '#send_textarea, textarea[name="send_textarea"]',
+          );
+          if (textarea) {
+            textarea.value = message;
+            textarea.dispatchEvent(new Event("input", { bubbles: true }));
           }
           setTimeout(() => {
-            const sendBtn = p.document && p.document.querySelector("#send_but");
+            const sendBtn = document.querySelector("#send_but");
             if (sendBtn) sendBtn.click();
           }, 100);
           statusText.textContent = `已发送：${label}`;
@@ -482,11 +491,26 @@
         render();
       });
 
+      const identityToSwipe = {
+        看火人: 1,
+        野外生存博主: 2,
+        边境哨站合同医生: 3,
+        极地科考越冬队员: 4,
+        深山巡护员: 5,
+        海岛灯塔看守: 6,
+      };
+
       startButton.addEventListener("click", () => {
-        const message = selected.custom
-          ? customMessage()
-          : `开始, ${selected.name}, 推进剧情`;
-        sendMessage(message, selected.name);
+        if (selected.custom) {
+          sendMessage(customMessage(), "自定义身份");
+        } else {
+          const swipe = identityToSwipe[selected.name];
+          if (swipe !== undefined) {
+            switchToGreeting(swipe, selected.name);
+          } else {
+            sendMessage(`开始, ${selected.name}, 推进剧情`, selected.name);
+          }
+        }
       });
 
       render();

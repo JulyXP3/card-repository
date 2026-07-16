@@ -1,4 +1,4 @@
-# 感染部件清单 v1.0
+# 感染部件清单 v1.1
 
 ## 世界书
 
@@ -17,8 +17,8 @@
 
 4. `dist/04-worldbook-quests-openings.json`
    - 导入位置：SillyTavern 世界书页面
-   - 内容：10 条人物支线、远方归来通用入口、6 个身份开场、区域事件池
-   - 注意：身份开场使用“身份名 + 开始”双键触发，选择器会发送“开始, 身份名, 推进剧情”；自定义身份使用“请根据以下提供的信息开局 + 开始”触发
+   - 内容：10 条人物支线、自定义身份开场规则、区域事件池
+   - 注意：六个预设身份开场已经移入完整角色卡的 alternate_greetings；自定义身份使用“请根据以下提供的信息开局 + 开始”触发
 
 ## 脚本
 
@@ -31,35 +31,43 @@
    - 用途：注册 stat_data schema
    - 注意：schema 改动后重载脚本并重开对话
 
+7. `dist/08-mvu-greeting-init.json`
+   - 导入位置：酒馆助手 → 脚本库
+   - 用途：预设身份开场后，自动从当前开场白读取变量初始化内容
+
 ## 正则
 
-7. `dist/07-regex-01-hide-current-variables.json`
+8. `dist/07-regex-01-hide-current-variables.json`
    - 导入位置：扩展 → 正则
    - 用途：隐藏读取变量块
 
-8. `dist/08-regex-02-statusbar-remote.json`
+9. `dist/08-regex-02-statusbar-remote.json`
    - 导入位置：扩展 → 正则
    - 用途：远程加载状态栏前端
    - 默认：设置 `FRONTEND_BASE_URL` 生成时 enabled；未设置时 disabled
 
-9. `dist/09-regex-03-opening-selector-remote.json`
+10. `dist/09-regex-03-opening-selector-remote.json`
    - 导入位置：扩展 → 正则
    - 用途：远程加载开场选择器前端
    - 默认：设置 `FRONTEND_BASE_URL` 生成时 enabled；未设置时 disabled
 
-10. `dist/10-regex-04-statusbar-local-disabled.json`
+11. `dist/10-regex-04-statusbar-local-disabled.json`
     - 导入位置：扩展 → 正则
     - 用途：本地加载状态栏前端测试备用
     - 默认：disabled
 
-11. `dist/11-regex-05-opening-selector-local-disabled.json`
+12. `dist/11-regex-05-opening-selector-local-disabled.json`
     - 导入位置：扩展 → 正则
     - 用途：本地加载开场选择器前端测试备用
     - 默认：disabled
 
-12. `dist/12-regex-06-hide-placeholders-from-ai.json`
+13. `dist/12-regex-06-hide-placeholders-from-ai.json`
     - 导入位置：扩展 → 正则
     - 用途：对 AI 隐藏前端占位符
+
+14. `dist/13-regex-07-hide-update-variable.json`
+    - 导入位置：扩展 → 正则
+    - 用途：隐藏预设身份开场里的变量初始化块
 
 ## 前端源码
 
@@ -81,6 +89,6 @@
 
 ## 完整角色卡
 
-- `dist/infection-card-v1.0.json`
+- `dist/infection-card-v1.1.json`
   - 完整 V3 角色卡 JSON
-  - 内嵌世界书、酒馆助手脚本、正则、README 开场页和起手页
+  - 内嵌世界书、酒馆助手脚本、正则、身份选择器和六个预设身份开场

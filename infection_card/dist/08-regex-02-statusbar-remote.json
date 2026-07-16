@@ -2,12 +2,12 @@
   "id": "infection-regex-statusbar-remote-v010",
   "scriptName": "02-状态栏远程加载",
   "findRegex": "/<StatusPlaceHolderImpl\\s*\\/>/g",
-  "replaceString": "```html\n<body style=\"margin:0;background:transparent!important\"><script>document.documentElement.style.background='transparent';document.body.style.background='transparent';if(window.frameElement){window.frameElement.style.background='transparent';window.frameElement.setAttribute('allowtransparency','true');}$('body').load('https://julyxp3.github.io/card-repository/infection_card/statusbar/index.html');</script></body>\n```",
+  "replaceString": "```html\n<body style=\"margin:0;background:transparent!important\"><script>document.documentElement.style.background='transparent';document.body.style.background='transparent';if(window.frameElement){window.frameElement.style.background='transparent';window.frameElement.setAttribute('allowtransparency','true');}$('body').load('https://example.invalid/infection-survival/statusbar/index.html');</script></body>\n```",
   "trimStrings": [],
   "placement": [
     2
   ],
-  "disabled": false,
+  "disabled": true,
   "markdownOnly": true,
   "promptOnly": false,
   "runOnEdit": true,

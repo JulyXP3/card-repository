@@ -367,41 +367,6 @@
     "64": {
       "uid": 64,
       "key": [
-        "开始"
-      ],
-      "keysecondary": [],
-      "comment": "开场-远方归来通用入口",
-      "content": "远方归来通用入口\n当玩家输入【开始】但没有指定身份时，先用剧情内口吻提示可选身份: 看火人、野外生存博主、边境哨站合同医生、极地科考越冬队员、深山巡护员、海岛灯塔看守，或提供自定义身份资料。\n若玩家输入【开始, 身份名】或【开始, 身份名, 推进剧情】，读取对应身份开场条目并以该身份开始。\n若玩家输入【开始, 请根据以下提供的信息开局】，读取自定义身份资料并按自定义身份开场规则开局。\n开场必须独自一人，不得直接赠送后期主线真相。",
-      "constant": false,
-      "vectorized": false,
-      "selective": false,
-      "selectiveLogic": 0,
-      "addMemo": true,
-      "order": 428,
-      "position": 0,
-      "disable": false,
-      "enabled": true,
-      "prevent_recursion": true,
-      "delay_until_recursion": false,
-      "probability": 100,
-      "depth": 4,
-      "group": "",
-      "group_override": false,
-      "group_weight": 100,
-      "scan_depth": null,
-      "case_sensitive": false,
-      "match_whole_words": false,
-      "use_group_scoring": false,
-      "automation_id": "",
-      "role": 0,
-      "sticky": 0,
-      "cooldown": 0,
-      "delay": 0,
-      "display_index": 64
-    },
-    "65": {
-      "uid": 65,
-      "key": [
         "请根据以下提供的信息开局"
       ],
       "keysecondary": [
@@ -434,232 +399,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 65
+      "display_index": 64
     },
-    "66": {
-      "uid": 66,
-      "key": [
-        "看火人"
-      ],
-      "keysecondary": [
-        "开始"
-      ],
-      "comment": "开场-看火人开场",
-      "content": "看火人开场\n开场地点: 努尔山脉-旧防火瞭望塔\n初始物品: 旧式步枪与少量子弹、手摇无线电、防火斧、努尔山脉巡查图、巧克力、牛肉干、保温杯\n独特技能: 高处观察、林火与风向判断、耐孤独\n开场正文:\n努尔山脉的旧防火瞭望塔已经很久没有收到正式呼叫了。最后一份纸质巡查表被压在窗边, 铅笔字被潮气洇开。你在这里守了几个月, 最初还按时记录烟柱、风向和林线变化, 但后来的记录变多了：山下的公路没再出现车辆, 林子里的鸟群迅速迁徙, 大型野兽总是暴躁不已。\n\n昨天晚上无线电响了。\n\n频道里的杂音很重, 除了里面有人反复念着\"联邦区域\"之外其他都很难辨认, 后面又收到了疑似军方的频率, 几段破碎的词句从电流中挤出来：封锁、转运失败、不要走山口。随后只剩一阵像呼吸一样的低噪。\n\n你站到瞭望台外, 风从山脊上呼啸而过。远处林线正在移动, 不是鹿群, 看不清楚是什么。几簇黑影在树间停下, 像是在观察坡度。更远处, 新都方向的天空没有城市光, 只有一层灰红色的反光。\n\n塔里还有旧式步枪、少量子弹、手摇无线电、防火斧和努尔山脉巡查图。水不多, 食物也不多。你决定离开这座塔下山, 去弄清楚山外到底发生了什么。\n\n变量初始化要求: origin_identity=看火人; opening_location=努尔山脉-旧防火瞭望塔; current_location=努尔山脉-旧防火瞭望塔; skills=高处观察、林火与风向判断、耐孤独; 初始背包=旧式步枪与少量子弹、手摇无线电、防火斧、努尔山脉巡查图、巧克力、牛肉干、保温杯。完成开场后写入 user_profile.origin_identity、opening_location、current_location、skills 和初始背包。不要输出变量 patch 模板，只在剧情中自然开始。",
-      "constant": false,
-      "vectorized": false,
-      "selective": true,
-      "selectiveLogic": 0,
-      "addMemo": true,
-      "order": 430,
-      "position": 0,
-      "disable": false,
-      "enabled": true,
-      "prevent_recursion": true,
-      "delay_until_recursion": false,
-      "probability": 100,
-      "depth": 4,
-      "group": "",
-      "group_override": false,
-      "group_weight": 100,
-      "scan_depth": null,
-      "case_sensitive": false,
-      "match_whole_words": false,
-      "use_group_scoring": false,
-      "automation_id": "",
-      "role": 0,
-      "sticky": 0,
-      "cooldown": 0,
-      "delay": 0,
-      "display_index": 66
-    },
-    "67": {
-      "uid": 67,
-      "key": [
-        "野外生存博主"
-      ],
-      "keysecondary": [
-        "开始"
-      ],
-      "comment": "开场-野外生存博主开场",
-      "content": "野外生存博主开场\n开场地点: 努尔山脉-边缘废弃露营基地\n初始物品: 运动相机与备用存储卡、多功能刀、轻便滤水器、野外背包、太阳能充电宝、肉干、大容量水壶\n独特技能: 临时庇护搭建、水源与食物辨识、抓拍高手\n开场正文:\n废弃露营基地的招牌倒在泥里, 上面还残留着灾难前的彩色广告。你曾经在类似地方拍过太多视频：如何过滤溪水, 如何用湿木生火, 如何在没有帐篷时撑过雨夜。那时候评论区总有人说, 真到了末日你一定活得很好。\n\n相机还在工作, 电量不多, 功能一切正常。你原本只是想回看几天前拍到的山路, 确认自己有没有错过人类活动的痕迹。画面里先是雾, 树影, 废弃栈道, 然后是一队武装运输人员。他们走得很快, 肩上有枪, 几个人抬着一只冷藏箱。箱体侧面有被泥抹掉的标识, 仍能看出联邦旧封条的轮廓。\n\n你反复播放那段影像。队伍没有往新都走, 而是绕向更偏的山道。镜头最后几秒, 他们拐进了一个隧道中看不见了。\n\n基地周围很安静。滤水器、野外背包、多功能刀都还在, 但肉干没多少了。你站起身开始收拾东西准备离开, 或许可以把这段影像当成筹码, 去找愿意交换情报的人。\n\n变量初始化要求: origin_identity=野外生存博主; opening_location=努尔山脉-边缘废弃露营基地; current_location=努尔山脉-边缘废弃露营基地; skills=临时庇护搭建、水源与食物辨识、抓拍高手; 初始背包=运动相机与备用存储卡、多功能刀、轻便滤水器、野外背包、太阳能充电宝、肉干、大容量水壶。完成开场后写入 user_profile.origin_identity、opening_location、current_location、skills 和初始背包。不要输出变量 patch 模板，只在剧情中自然开始。",
-      "constant": false,
-      "vectorized": false,
-      "selective": true,
-      "selectiveLogic": 0,
-      "addMemo": true,
-      "order": 430,
-      "position": 0,
-      "disable": false,
-      "enabled": true,
-      "prevent_recursion": true,
-      "delay_until_recursion": false,
-      "probability": 100,
-      "depth": 4,
-      "group": "",
-      "group_override": false,
-      "group_weight": 100,
-      "scan_depth": null,
-      "case_sensitive": false,
-      "match_whole_words": false,
-      "use_group_scoring": false,
-      "automation_id": "",
-      "role": 0,
-      "sticky": 0,
-      "cooldown": 0,
-      "delay": 0,
-      "display_index": 67
-    },
-    "68": {
-      "uid": 68,
-      "key": [
-        "边境哨站合同医生"
-      ],
-      "keysecondary": [
-        "开始"
-      ],
-      "comment": "开场-边境哨站合同医生开场",
-      "content": "边境哨站合同医生开场\n开场地点: 联邦沦陷区北面-废弃边境哨站\n初始物品: 急救包、基础抗生素、便携体温计与检测试纸、边境哨站医疗记录、干脆面、军用水壶\n独特技能: 伤情分诊、感染风险识别、低资源治疗、外科缝合\n开场正文:\n废弃边境哨站的医务室里有一股消毒水、霉味和血混在一起的味道。你在这里做合同医生, 本来只负责处理擦伤、冻伤、胃病和偶尔的斗殴。后来通讯断了, 换岗的人没来, 哨站外的路被封住, 甚至来送物资的人来的频次也急剧减少。\n\n你前几天给一个受伤的军人包扎时, 他好心提醒你最好赶快离开这里, 这里没有大伙想象的那么安全。夜里, 封锁线方向亮起灯号。不是求救灯, 也不是常规识别。几次短闪后, 远处传来枪声, 然后是更长的寂静。许久之后, 你听见哨站后方的铁丝网被什么东西慢慢拨动。声音很轻, 像有人用指甲试探金属, 你没敢开门。\n\n第二天清晨, 你在那里发现了一堆碎纸, 你将它们拼起来, 只能辨别出一句被划了几道线的话：北面样本转运失败, 接触者需就地隔离。下面的签名被墨水涂黑, 只剩一个识别码一样的东西。\n\n现在手里有急救包、基础抗生素、便携体温计、检测试纸和那几页医疗记录。你能判断伤情, 能包扎, 还有一手精湛的医术。可最难判断的是方向：向封锁线走, 可能遇到军方, 也可能遇到他们想拦住的东西；向南走, 迟早要进入新都或11区的秩序里。\n\n你挠了挠头不再犹豫, 感觉收拾东西起身向11区出发。\n\n变量初始化要求: origin_identity=边境哨站合同医生; opening_location=联邦沦陷区北面-废弃边境哨站; current_location=联邦沦陷区北面-废弃边境哨站; skills=伤情分诊、感染风险识别、低资源治疗、外科缝合; 初始背包=急救包、基础抗生素、便携体温计与检测试纸、边境哨站医疗记录、干脆面、军用水壶。完成开场后写入 user_profile.origin_identity、opening_location、current_location、skills 和初始背包。不要输出变量 patch 模板，只在剧情中自然开始。",
-      "constant": false,
-      "vectorized": false,
-      "selective": true,
-      "selectiveLogic": 0,
-      "addMemo": true,
-      "order": 430,
-      "position": 0,
-      "disable": false,
-      "enabled": true,
-      "prevent_recursion": true,
-      "delay_until_recursion": false,
-      "probability": 100,
-      "depth": 4,
-      "group": "",
-      "group_override": false,
-      "group_weight": 100,
-      "scan_depth": null,
-      "case_sensitive": false,
-      "match_whole_words": false,
-      "use_group_scoring": false,
-      "automation_id": "",
-      "role": 0,
-      "sticky": 0,
-      "cooldown": 0,
-      "delay": 0,
-      "display_index": 68
-    },
-    "69": {
-      "uid": 69,
-      "key": [
-        "极地科考越冬队员"
-      ],
-      "keysecondary": [
-        "开始"
-      ],
-      "comment": "开场-极地科考越冬队员开场",
-      "content": "极地科考越冬队员开场\n开场地点: 联邦沦陷区北面-极寒隔离观测站\n初始物品: 保温服、低温样本箱、卫星定位终端、科考站维修工具、能量棒、牛肉罐头、保温杯\n独特技能: 低温生存、设备维护、科考知识\n开场正文:\n极寒隔离观测站的供暖系统又停了。你戴着手套拆开发电机外壳, 听见屋外的狂风在金属墙外刮过, 简直像有人用刀背刮门。越冬队早就散了, 有人乘撤离机离开, 有人留在雪线另一头失联。你被吩咐留下来维护数据链, 等一个可能再也不会来的接收确认。\n\n凌晨, 一阵疑似无人机的声音将你吵醒, 同时卫星定位终端收到一段信息。发送源显示为联邦核心区旧实验网络, 时间混乱, 内容残缺, 但有一串编号反复出现：黑光-III 样本链。你从未见过这样的类似命名规则。那不是普通气象样本, 也不像地质材料。\n\n你走到外面, 发现屋外有一个低温样本箱, 你打开外层保险扣, 看见箱内并非你熟悉的科考样本, 而是一枚带有联邦旧封条的内匣。封条边缘像被人重新压过, 标签已经模糊不清。\n\n观测站外的雪地上出现了脚印。不是人的, 也不像大型野兽。它们停在排风口附近, 绕了几圈, 又朝南方消失。你有保温服、低温样本箱、卫星定位终端和维修工具。这里很不安全, 你决定向南走。\n\n变量初始化要求: origin_identity=极地科考越冬队员; opening_location=联邦沦陷区北面-极寒隔离观测站; current_location=联邦沦陷区北面-极寒隔离观测站; skills=低温生存、设备维护、科考知识; 初始背包=保温服、低温样本箱、卫星定位终端、科考站维修工具、能量棒、牛肉罐头、保温杯。完成开场后写入 user_profile.origin_identity、opening_location、current_location、skills 和初始背包。不要输出变量 patch 模板，只在剧情中自然开始。",
-      "constant": false,
-      "vectorized": false,
-      "selective": true,
-      "selectiveLogic": 0,
-      "addMemo": true,
-      "order": 430,
-      "position": 0,
-      "disable": false,
-      "enabled": true,
-      "prevent_recursion": true,
-      "delay_until_recursion": false,
-      "probability": 100,
-      "depth": 4,
-      "group": "",
-      "group_override": false,
-      "group_weight": 100,
-      "scan_depth": null,
-      "case_sensitive": false,
-      "match_whole_words": false,
-      "use_group_scoring": false,
-      "automation_id": "",
-      "role": 0,
-      "sticky": 0,
-      "cooldown": 0,
-      "delay": 0,
-      "display_index": 69
-    },
-    "70": {
-      "uid": 70,
-      "key": [
-        "深山巡护员"
-      ],
-      "keysecondary": [
-        "开始"
-      ],
-      "comment": "开场-深山巡护员开场",
-      "content": "深山巡护员开场\n开场地点: 努尔山脉-深处巡护站\n初始物品: 巡护砍刀、绳索与登山扣、捕兽夹、山区巡护日志、登山包、葡萄干、水壶、芝麻馕\n独特技能: 追踪与反追踪、山地穿行、陷阱布置、草药专家\n开场正文:\n努尔山脉深处的巡护站比地图上更孤单。木门被风吹得轻轻发响, 墙上的旧照片还停在灾难前的植被调查季。你熟悉这里的每条兽道、每处滑坡、每片山谷。你在这片山脉追踪过无数的盗猎者和迷路游客, 最近却出现了一些不寻常的踪迹。\n\n连续几天, 你在旧林道附近发现同一种足迹。它不属于熊, 也不像普通人。拖痕很轻, 停顿点却很清楚, 像那东西知道什么时候该压低声音。更奇怪的是, 足迹旁边还有人为刻下的路线标记。不是官方巡护标识, 反而像是迷路的人留下的痕迹。\n\n巡护日志最后一页被你写得很满：夜间有远距离追击声, 山谷水源疑似被污染, 东侧坡道出现不明拖拽痕。你把砍刀、绳索、登山扣、捕兽夹等物品收进包里。\n\n你可以顺着足迹往深处查, 弄清楚山里到底多了什么, 也可以沿旧林道下山。无论哪条路, 都可能把你带向新都边缘。山外的世界已然转变, 但山里这些变化也不太寻常。\n\n变量初始化要求: origin_identity=深山巡护员; opening_location=努尔山脉-深处巡护站; current_location=努尔山脉-深处巡护站; skills=追踪与反追踪、山地穿行、陷阱布置、草药专家; 初始背包=巡护砍刀、绳索与登山扣、捕兽夹、山区巡护日志、登山包、葡萄干、水壶、芝麻馕。完成开场后写入 user_profile.origin_identity、opening_location、current_location、skills 和初始背包。不要输出变量 patch 模板，只在剧情中自然开始。",
-      "constant": false,
-      "vectorized": false,
-      "selective": true,
-      "selectiveLogic": 0,
-      "addMemo": true,
-      "order": 430,
-      "position": 0,
-      "disable": false,
-      "enabled": true,
-      "prevent_recursion": true,
-      "delay_until_recursion": false,
-      "probability": 100,
-      "depth": 4,
-      "group": "",
-      "group_override": false,
-      "group_weight": 100,
-      "scan_depth": null,
-      "case_sensitive": false,
-      "match_whole_words": false,
-      "use_group_scoring": false,
-      "automation_id": "",
-      "role": 0,
-      "sticky": 0,
-      "cooldown": 0,
-      "delay": 0,
-      "display_index": 70
-    },
-    "71": {
-      "uid": 71,
-      "key": [
-        "海岛灯塔看守"
-      ],
-      "keysecondary": [
-        "开始"
-      ],
-      "comment": "开场-海岛灯塔看守开场",
-      "content": "海岛灯塔看守开场\n开场地点: 伊甸港-外海旧灯塔岛\n初始物品: 信号灯维护工具、航海图、手持信号枪、牛肉罐头、水壶\n独特技能: 海况与信号判断、设备维修、孤岛生存\n开场正文:\n伊甸港外海的旧灯塔每晚仍会亮几次, 已经很久没有船按航线返港了, 但这已经成了你的工作习惯。海雾很浓, 岸上的港口灯不知何时开始不再亮起了。偶尔有漂浮物从海面上经过, 木箱、救生衣、桅杆, 有时还有一些尸体。\n\n今晚, 远处有船只打来灯号。\n\n它没有靠岸, 也没有报身份。灯号断断续续, 只重复一个方向和一组旧军方编码。你回灯后, 对方沉默了很久, 随后一只密封箱被小艇推到礁石附近。等你赶到岸边时, 小艇已经离开, 海面只剩发动机声被雾吞掉。\n\n箱子上有军方旧封条, 收件标识被刮掉, 边角还残留冷藏警示。你没有立刻打开。灯塔仓库里只剩信号灯维护工具、航海图、手持信号枪、少量牛肉罐头和淡水。你费了一番功夫才把那个箱子捞上来, 这只箱子显然是被故意送过来的, 为什么, 你不知道。\n\n海况正在变坏, 这几天海里时不时能看到一些奇怪的动物游过, 你决定尽快离开, 前往伊甸港或者新都。\n\n变量初始化要求: origin_identity=海岛灯塔看守; opening_location=伊甸港-外海旧灯塔岛; current_location=伊甸港-外海旧灯塔岛; skills=海况与信号判断、设备维修、孤岛生存; 初始背包=信号灯维护工具、航海图、手持信号枪、牛肉罐头、水壶。完成开场后写入 user_profile.origin_identity、opening_location、current_location、skills 和初始背包。不要输出变量 patch 模板，只在剧情中自然开始。",
-      "constant": false,
-      "vectorized": false,
-      "selective": true,
-      "selectiveLogic": 0,
-      "addMemo": true,
-      "order": 430,
-      "position": 0,
-      "disable": false,
-      "enabled": true,
-      "prevent_recursion": true,
-      "delay_until_recursion": false,
-      "probability": 100,
-      "depth": 4,
-      "group": "",
-      "group_override": false,
-      "group_weight": 100,
-      "scan_depth": null,
-      "case_sensitive": false,
-      "match_whole_words": false,
-      "use_group_scoring": false,
-      "automation_id": "",
-      "role": 0,
-      "sticky": 0,
-      "cooldown": 0,
-      "delay": 0,
-      "display_index": 71
-    },
-    "72": {
-      "uid": 72,
+    "65": {
+      "uid": 65,
       "key": [],
       "keysecondary": [],
       "comment": "[EJS]区域事件判定池",
@@ -689,10 +432,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 72
+      "display_index": 65
     },
-    "73": {
-      "uid": 73,
+    "66": {
+      "uid": 66,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-努尔山脉-山雾迷路",
@@ -722,10 +465,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 73
+      "display_index": 66
     },
-    "74": {
-      "uid": 74,
+    "67": {
+      "uid": 67,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-努尔山脉-污染溪流",
@@ -755,10 +498,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 74
+      "display_index": 67
     },
-    "75": {
-      "uid": 75,
+    "68": {
+      "uid": 68,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-努尔山脉-废弃猎屋",
@@ -788,10 +531,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 75
+      "display_index": 68
     },
-    "76": {
-      "uid": 76,
+    "69": {
+      "uid": 69,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-努尔山脉-夜视种经过",
@@ -821,10 +564,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 76
+      "display_index": 69
     },
-    "77": {
-      "uid": 77,
+    "70": {
+      "uid": 70,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-新都-配给争执",
@@ -854,10 +597,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 77
+      "display_index": 70
     },
-    "78": {
-      "uid": 78,
+    "71": {
+      "uid": 71,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-新都-新人审查",
@@ -887,10 +630,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 78
+      "display_index": 71
     },
-    "79": {
-      "uid": 79,
+    "72": {
+      "uid": 72,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-新都-墙外求救",
@@ -920,10 +663,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 79
+      "display_index": 72
     },
-    "80": {
-      "uid": 80,
+    "73": {
+      "uid": 73,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-新都-黑市交换",
@@ -953,10 +696,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 80
+      "display_index": 73
     },
-    "81": {
-      "uid": 81,
+    "74": {
+      "uid": 74,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-11区-楼道声响",
@@ -986,10 +729,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 81
+      "display_index": 74
     },
-    "82": {
-      "uid": 82,
+    "75": {
+      "uid": 75,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-11区-幸存者陷阱",
@@ -1019,10 +762,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 82
+      "display_index": 75
     },
-    "83": {
-      "uid": 83,
+    "76": {
+      "uid": 76,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-11区-旧诊所残药",
@@ -1052,10 +795,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 83
+      "display_index": 76
     },
-    "84": {
-      "uid": 84,
+    "77": {
+      "uid": 77,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-11区-废车堵路",
@@ -1085,10 +828,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 84
+      "display_index": 77
     },
-    "85": {
-      "uid": 85,
+    "78": {
+      "uid": 78,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-11区-急诊插队",
@@ -1118,10 +861,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 85
+      "display_index": 78
     },
-    "86": {
-      "uid": 86,
+    "79": {
+      "uid": 79,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-11区-药柜清点",
@@ -1151,10 +894,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 86
+      "display_index": 79
     },
-    "87": {
-      "uid": 87,
+    "80": {
+      "uid": 80,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-11区-暴露者隔离",
@@ -1184,10 +927,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 87
+      "display_index": 80
     },
-    "88": {
-      "uid": 88,
+    "81": {
+      "uid": 81,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-11区-手术缺材料",
@@ -1217,10 +960,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 88
+      "display_index": 81
     },
-    "89": {
-      "uid": 89,
+    "82": {
+      "uid": 82,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-11区郊外-样本报警",
@@ -1250,10 +993,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 89
+      "display_index": 82
     },
-    "90": {
-      "uid": 90,
+    "83": {
+      "uid": 83,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-11区郊外-实验区断电",
@@ -1283,10 +1026,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 90
+      "display_index": 83
     },
-    "91": {
-      "uid": 91,
+    "84": {
+      "uid": 84,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-11区郊外-匿名病例档案",
@@ -1316,10 +1059,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 91
+      "display_index": 84
     },
-    "92": {
-      "uid": 92,
+    "85": {
+      "uid": 85,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-11区郊外-血样请求",
@@ -1349,10 +1092,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 92
+      "display_index": 85
     },
-    "93": {
-      "uid": 93,
+    "86": {
+      "uid": 86,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-封锁线-通行盘查",
@@ -1382,10 +1125,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 93
+      "display_index": 86
     },
-    "94": {
-      "uid": 94,
+    "87": {
+      "uid": 87,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-封锁线-旧撤离名单",
@@ -1415,10 +1158,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 94
+      "display_index": 87
     },
-    "95": {
-      "uid": 95,
+    "88": {
+      "uid": 88,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-封锁线-枪声信号",
@@ -1448,10 +1191,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 95
+      "display_index": 88
     },
-    "96": {
-      "uid": 96,
+    "89": {
+      "uid": 89,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-封锁线-无人哨卡",
@@ -1481,10 +1224,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 96
+      "display_index": 89
     },
-    "97": {
-      "uid": 97,
+    "90": {
+      "uid": 90,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-联邦沦陷区-母巢气味",
@@ -1514,10 +1257,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 97
+      "display_index": 90
     },
-    "98": {
-      "uid": 98,
+    "91": {
+      "uid": 91,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-联邦沦陷区-毒气残留",
@@ -1547,10 +1290,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 98
+      "display_index": 91
     },
-    "99": {
-      "uid": 99,
+    "92": {
+      "uid": 92,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-联邦沦陷区-融合型痕迹",
@@ -1580,10 +1323,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 99
+      "display_index": 92
     },
-    "100": {
-      "uid": 100,
+    "93": {
+      "uid": 93,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-联邦沦陷区-失效冷库",
@@ -1613,10 +1356,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 100
+      "display_index": 93
     },
-    "101": {
-      "uid": 101,
+    "94": {
+      "uid": 94,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-伊甸港-漂流箱",
@@ -1646,10 +1389,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 101
+      "display_index": 94
     },
-    "102": {
-      "uid": 102,
+    "95": {
+      "uid": 95,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-伊甸港-雾中灯号",
@@ -1679,10 +1422,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 102
+      "display_index": 95
     },
-    "103": {
-      "uid": 103,
+    "96": {
+      "uid": 96,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-伊甸港-潮水封路",
@@ -1712,10 +1455,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 103
+      "display_index": 96
     },
-    "104": {
-      "uid": 104,
+    "97": {
+      "uid": 97,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-伊甸港-港口静默",
@@ -1745,10 +1488,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 104
+      "display_index": 97
     },
-    "105": {
-      "uid": 105,
+    "98": {
+      "uid": 98,
       "key": [],
       "keysecondary": [],
       "comment": "[EJS]天气昼夜怪物压力池",
@@ -1778,10 +1521,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 105
+      "display_index": 98
     },
-    "106": {
-      "uid": 106,
+    "99": {
+      "uid": 99,
       "key": [],
       "keysecondary": [],
       "comment": "环境压力-夜晚-声响逼近",
@@ -1811,10 +1554,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 106
+      "display_index": 99
     },
-    "107": {
-      "uid": 107,
+    "100": {
+      "uid": 100,
       "key": [],
       "keysecondary": [],
       "comment": "环境压力-夜晚-守夜疲劳",
@@ -1844,10 +1587,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 107
+      "display_index": 100
     },
-    "108": {
-      "uid": 108,
+    "101": {
+      "uid": 101,
       "key": [],
       "keysecondary": [],
       "comment": "环境压力-黎明-低温返潮",
@@ -1877,10 +1620,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 108
+      "display_index": 101
     },
-    "109": {
-      "uid": 109,
+    "102": {
+      "uid": 102,
       "key": [],
       "keysecondary": [],
       "comment": "环境压力-暴雨-视线中断",
@@ -1910,10 +1653,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 109
+      "display_index": 102
     },
-    "110": {
-      "uid": 110,
+    "103": {
+      "uid": 103,
       "key": [],
       "keysecondary": [],
       "comment": "环境压力-暴雨-痕迹冲刷",
@@ -1943,10 +1686,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 110
+      "display_index": 103
     },
-    "111": {
-      "uid": 111,
+    "104": {
+      "uid": 104,
       "key": [],
       "keysecondary": [],
       "comment": "环境压力-山雾-方向丢失",
@@ -1976,10 +1719,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 111
+      "display_index": 104
     },
-    "112": {
-      "uid": 112,
+    "105": {
+      "uid": 105,
       "key": [],
       "keysecondary": [],
       "comment": "环境压力-寒潮-体温下降",
@@ -2009,10 +1752,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 112
+      "display_index": 105
     },
-    "113": {
-      "uid": 113,
+    "106": {
+      "uid": 106,
       "key": [],
       "keysecondary": [],
       "comment": "环境压力-闷热-腐败加速",
@@ -2042,10 +1785,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 113
+      "display_index": 106
     },
-    "114": {
-      "uid": 114,
+    "107": {
+      "uid": 107,
       "key": [],
       "keysecondary": [],
       "comment": "怪物压力-沦陷期-低阶感染者群",
@@ -2075,10 +1818,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 114
+      "display_index": 107
     },
-    "115": {
-      "uid": 115,
+    "108": {
+      "uid": 108,
       "key": [],
       "keysecondary": [],
       "comment": "怪物压力-末日期初期-潜伏伏击",
@@ -2108,10 +1851,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 115
+      "display_index": 108
     },
-    "116": {
-      "uid": 116,
+    "109": {
+      "uid": 109,
       "key": [],
       "keysecondary": [],
       "comment": "怪物压力-末日期中期-寻声迁移",
@@ -2141,10 +1884,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 116
+      "display_index": 109
     },
-    "117": {
-      "uid": 117,
+    "110": {
+      "uid": 110,
       "key": [],
       "keysecondary": [],
       "comment": "怪物压力-末日期末期-毒气封路",
@@ -2174,10 +1917,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 117
+      "display_index": 110
     },
-    "118": {
-      "uid": 118,
+    "111": {
+      "uid": 111,
       "key": [],
       "keysecondary": [],
       "comment": "怪物压力-巢化期-母巢边缘",
@@ -2207,10 +1950,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 118
+      "display_index": 111
     },
-    "119": {
-      "uid": 119,
+    "112": {
+      "uid": 112,
       "key": [],
       "keysecondary": [],
       "comment": "怪物压力-重建期-残巢回流",
@@ -2240,7 +1983,7 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 119
+      "display_index": 112
     }
   }
 }

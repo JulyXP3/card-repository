@@ -1,6 +1,6 @@
 # 感染卡部件
 
-当前版本: v1.0
+当前版本: v1.1
 
 生成命令:
 
@@ -15,15 +15,17 @@ node infection_card/build_assets.mjs
 1. `01-worldbook-core.json`: 世界书页面导入。包含 InitVar、变量更新规则、读取变量、地图、时间、怪物和主线总控。
 2. `02-worldbook-factions-items.json`: 世界书页面导入。包含地区介绍、势力和关键物品。
 3. `03-worldbook-npcs.json`: 世界书页面导入。当前是人物档案骨架，正式四声部详稿后续替换。
-4. `04-worldbook-quests-openings.json`: 世界书页面导入。包含人物支线、区域事件和六身份开场。
+4. `04-worldbook-quests-openings.json`: 世界书页面导入。包含人物支线、区域事件和自定义身份开场规则。
 5. `05-mvu-loader-script.json`: 酒馆助手脚本库导入并启用。
 6. `06-mvu-schema-script.json`: 酒馆助手脚本库导入并启用；改 schema 后重载脚本并重开对话。
-7. `07-regex-01-hide-current-variables.json`: 扩展→正则导入，隐藏读取变量块。
-8. `08-regex-02-statusbar-remote.json`: 扩展→正则导入，远程加载状态栏。
-9. `09-regex-03-opening-selector-remote.json`: 扩展→正则导入，远程加载开场选择器。
-10. `10-regex-04-statusbar-local-disabled.json`: 扩展→正则导入，本地测试备用，默认 disabled。
-11. `11-regex-05-opening-selector-local-disabled.json`: 扩展→正则导入，本地测试备用，默认 disabled。
-12. `12-regex-06-hide-placeholders-from-ai.json`: 扩展→正则导入，对 AI 隐藏前端占位符。
+7. `08-mvu-greeting-init.json`: 酒馆助手脚本库导入并启用；预设身份开场后自动初始化变量。
+8. `07-regex-01-hide-current-variables.json`: 扩展→正则导入，隐藏读取变量块。
+9. `08-regex-02-statusbar-remote.json`: 扩展→正则导入，远程加载状态栏。
+10. `09-regex-03-opening-selector-remote.json`: 扩展→正则导入，远程加载开场选择器。
+11. `10-regex-04-statusbar-local-disabled.json`: 扩展→正则导入，本地测试备用，默认 disabled。
+12. `11-regex-05-opening-selector-local-disabled.json`: 扩展→正则导入，本地测试备用，默认 disabled。
+13. `12-regex-06-hide-placeholders-from-ai.json`: 扩展→正则导入，对 AI 隐藏前端占位符。
+14. `13-regex-07-hide-update-variable.json`: 扩展→正则导入，隐藏预设身份开场里的变量初始化块。
 
 状态栏: `infection_card/statusbar/index.html`
 
@@ -40,7 +42,7 @@ node infection_card/build_assets.mjs
 开场选择器说明:
 
 - 选择器提供六个预设身份和一个自定义身份。预设身份点击“开始”后发送 `开始, 身份名, 推进剧情`；自定义身份点击“开始”后发送 `开始, 请根据以下提供的信息开局` 和表单内容。
-- 优先使用 `triggerSlash('/setinput ...')` 写入输入框，再点击发送按钮。
+- 优先使用 `createChatMessages([{ role: 'user', message }])` 创建一条用户消息，再 `triggerSlash('/trigger')` 触发生成。
 - 如果自动发送 API 不可用，会降级直接写入输入框。
 
 前端部署说明:

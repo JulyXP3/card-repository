@@ -1,0 +1,22 @@
+{
+  "type": "script",
+  "enabled": true,
+  "name": "感染-开场变量初始化",
+  "id": "infection-greeting-init-v110",
+  "content": "// 感染 开场变量初始化 v1.1\n// 从 alternate_greeting 的 <UpdateVariable><JSONPatch> 块初始化 stat_data\n(async () => {\n  await waitGlobalInitialized('TavernHelper');\n  await waitGlobalInitialized('Mvu');\n\n  function initFromGreeting() {\n    try {\n      const ctx = SillyTavern.getContext();\n      if (!ctx || !Array.isArray(ctx.chat) || !ctx.chat[0]) return;\n      const mes = ctx.chat[0];\n      if (!mes || typeof mes.mes !== 'string') return;\n      const stat = TavernHelper.variables.stat_data;\n      if (stat && stat.user_profile && stat.user_profile.origin_identity && stat.user_profile.origin_identity !== '') return;\n      const m = mes.mes.match(/<UpdateVariable>[\\\\s\\\\S]*?<JSONPatch>([\\\\s\\\\S]*?)<\\\\/JSONPatch>[\\\\s\\\\S]*?<\\\\/UpdateVariable>/i);\n      if (!m) return;\n      const patches = JSON.parse(m[1].trim());\n      if (!Array.isArray(patches)) return;\n      const data = stat || {};\n      for (const p of patches) {\n        if (p.op === 'replace' || p.op === 'add') {\n          const parts = p.path.replace(/^\\\\//, '').split('/');\n          let cur = data;\n          for (let i = 0; i < parts.length - 1; i++) {\n            if (typeof cur[parts[i]] !== 'object' || cur[parts[i]] === null) cur[parts[i]] = {};\n            cur = cur[parts[i]];\n          }\n          cur[parts[parts.length - 1]] = p.value;\n        }\n      }\n      if (!stat) TavernHelper.variables.stat_data = data;\n      if (typeof Mvu.notifyUpdate === 'function') Mvu.notifyUpdate();\n    } catch (e) { /* silent */ }\n  }\n\n  function onChatLoaded() {\n    setTimeout(initFromGreeting, 500);\n  }\n\n  try { eventOn('chat_id_changed', onChatLoaded); } catch (e) {}\n  try { eventOn('message_rendered', onChatLoaded); } catch (e) {}\n  try { if (Mvu && typeof Mvu.eventOn === 'function') Mvu.eventOn('mag_variable_initiailized', initFromGreeting); } catch (e) {}\n  setTimeout(onChatLoaded, 1500);\n})();",
+  "info": "加载后自动从当前开场白中读取 <UpdateVariable><JSONPatch> 并初始化 stat_data。",
+  "button": {
+    "enabled": true,
+    "buttons": [
+      {
+        "name": "从开场白重新初始化变量",
+        "visible": true
+      }
+    ]
+  },
+  "data": {},
+  "export_with": {
+    "data": true,
+    "button": true
+  }
+}

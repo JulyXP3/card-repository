@@ -79,33 +79,17 @@ for (const name of [
   assert(comments.includes(name), `missing worldbook entry: ${name}`);
 }
 
-const openingTrigger = "开始";
-const openingEntry = entries.find(
-  (entry) => entry.comment === "开场-远方归来通用入口",
-);
-assert(openingEntry, "missing immersive opening entry");
-assert(
-  openingEntry.key.includes(openingTrigger),
-  "immersive opening entry missing trigger key",
-);
-for (const entry of entries.filter((item) =>
+const openingEntries = entries.filter((item) =>
   item.comment.startsWith("开场-"),
-)) {
-  assert(
-    !entry.key.includes("开始游戏") && !entry.key.includes("我从远方回来"),
-    `${entry.comment} still uses old opening key`,
-  );
-  assert(
-    !entry.keysecondary.includes("开始游戏") &&
-      !entry.keysecondary.includes("我从远方回来"),
-    `${entry.comment} still uses old opening secondary key`,
-  );
-  assert(
-    !entry.content.includes("开始游戏") &&
-      !entry.content.includes("我从远方回来"),
-    `${entry.comment} still mentions old opening phrase`,
-  );
-}
+);
+assert(
+  openingEntries.length === 1,
+  `expected 1 opening entry (custom identity only), got ${openingEntries.length}`,
+);
+assert(
+  openingEntries[0].comment === "开场-自定义身份开场规则",
+  "only remaining opening entry should be custom identity rule",
+);
 assert(
   comments.includes("开场-自定义身份开场规则"),
   "missing custom identity opening rule",
@@ -226,16 +210,27 @@ assert(
   "opening selector still sends immediately on identity click",
 );
 assert(
-  openingSelector.includes("开始, ${selected.name}, 推进剧情"),
-  "opening selector sends wrong preset opening phrase",
+  openingSelector.includes("switchToGreeting"),
+  "opening selector missing greeting switching function",
+);
+assert(
+  openingSelector.includes("identityToSwipe"),
+  "opening selector missing swipe index mapping",
+);
+assert(
+  openingSelector.includes("野外生存博主: 2") &&
+    openingSelector.includes("海岛灯塔看守: 6"),
+  "opening selector swipe mapping must match identity alternate greetings",
+);
+assert(
+  openingSelector.includes('createChatMessages([{ role: "user", message }]') &&
+    openingSelector.includes('triggerSlash("/trigger")') &&
+    !openingSelector.includes('triggerSlash("/send")'),
+  "custom identity must create one user message, then trigger generation",
 );
 assert(
   openingSelector.includes("开始, 请根据以下提供的信息开局"),
   "opening selector missing custom opening phrase",
-);
-assert(
-  !openingSelector.includes("开始, 请根据以下提供的信息开局, 推进剧情"),
-  "opening selector should not change custom opening phrase",
 );
 for (const region of [
   "<option>努尔山脉</option>",
@@ -285,12 +280,8 @@ for (const field of [
   );
 }
 assert(
-  openingSelector.includes("昨天晚上无线电响了"),
-  "opening selector missing opening body text",
-);
-assert(
-  openingSelector.includes("塔里还有旧式步枪"),
-  "opening selector missing full opening body text",
+  openingSelector.includes("将切换至："),
+  "opening selector missing greeting switch status message",
 );
 
 const localOpeningRegex = readJson(
@@ -302,14 +293,20 @@ assert(
   "local opening regex should not include version query",
 );
 
-const card = readJson(join(dist, "infection-card-v1.0.json"));
+const card = readJson(join(dist, "infection-card-v1.1.json"));
+assert(card.data.character_version === "1.1.0", "card character_version should be 1.1.0");
+assert(
+  card.first_mes === "<OpeningSelectorImpl/>" &&
+    card.data.first_mes === "<OpeningSelectorImpl/>",
+  "first_mes should be the opening selector only",
+);
 assert(
   !card.data.alternate_greetings.join("\n").includes("远方的信号重新落进死寂的空气里"),
   "starter still uses old distant-signal wording",
 );
 assert(
-  card.data.alternate_greetings.join("\n").includes("六条路都通向同一个问题"),
-  "starter missing identity-agnostic opening bridge",
+  card.data.alternate_greetings.length === 6,
+  `expected 6 alternate greetings (identities only), got ${card.data.alternate_greetings.length}`,
 );
 assert(
   card.name === "感染" && card.data.name === "感染",
@@ -323,5 +320,14 @@ assert(
   card.data.extensions.regex_scripts.length === 7,
   "embedded regex count mismatch",
 );
+assert(
+  card.data.extensions.tavern_helper.scripts.length === 3,
+  "embedded helper scripts count mismatch (expected 3: loader + schema + greeting-init)",
+);
 
-console.log(`verify ok: ${entries.length} worldbook entries, 7 regex scripts`);
+const greetingInit = card.data.extensions.tavern_helper.scripts.find(
+  (s) => s.id === "infection-greeting-init-v110",
+);
+assert(greetingInit, "missing greeting init helper script");
+
+console.log(`verify ok: ${entries.length} worldbook entries, 7 regex scripts, 3 helper scripts`);

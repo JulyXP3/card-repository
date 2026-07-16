@@ -1,4 +1,4 @@
-# 感染导入与冒烟测试 v1.0
+# 感染导入与冒烟测试 v1.1
 
 ## 1. 导入顺序
 
@@ -11,6 +11,7 @@
 2. 酒馆助手脚本库导入并启用：
    - `dist/05-mvu-loader-script.json`
    - `dist/06-mvu-schema-script.json`
+   - `dist/08-mvu-greeting-init.json`
 
 3. 扩展 → 正则，按编号导入：
    - `dist/07-regex-01-hide-current-variables.json`
@@ -19,6 +20,7 @@
    - `dist/10-regex-04-statusbar-local-disabled.json`
    - `dist/11-regex-05-opening-selector-local-disabled.json`
    - `dist/12-regex-06-hide-placeholders-from-ai.json`
+   - `dist/13-regex-07-hide-update-variable.json`
 
 4. 新开聊天。
 
@@ -28,11 +30,11 @@
 
 - `[InitVar]感染变量初始化勿开` 必须是 disabled。
 - `读取变量` 条目必须无 `[mvu_plot]` 或 `[mvu_update]` 前缀。
-- 正则列表顺序必须从 `01` 到 `06`。
+- 正则列表顺序必须从 `01` 到 `07`。
 - 正式发布时 `08` 和 `09` 应为 enabled，且 URL 可访问。
 - 未设置 `FRONTEND_BASE_URL` 生成时，`08` 和 `09` 为 disabled 是正常状态。
 - 本地测试时只启用 `10` 和 `11`，不要同时启用远程和本地加载正则。
-- 起手页应包含 `<OpeningSelectorImpl/>` 和 `<StatusPlaceHolderImpl/>`。
+- 第一条开场消息应只显示身份选择器，不再显示作者说明。
 
 ## 3. 开场选择器测试
 
@@ -43,6 +45,7 @@
 - 点击身份按钮只切换预览面板；点击底部“开始”后，选择器折叠成“已开始：身份名”。
 - 预设身份点击“开始”后自动发送 `开始, 身份名, 推进剧情`；如果自动发送失败，应写入输入框。
 - 只触发对应身份开场，不触发其他五个身份开场。
+- 自定义身份点击“开始”后只生成一条用户消息，不应额外出现空白用户楼层。
 - 后续楼层不再出现开场选择器。
 
 推荐测试身份：

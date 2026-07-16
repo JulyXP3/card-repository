@@ -14,7 +14,22 @@ for (const file of readdirSync(outDir)) {
 }
 
 let uid = 1;
-const version = "v1.0";
+const version = "v1.1";
+
+function makeInitPatch(identity, location, itemsStr, skillsStr) {
+  const skills = skillsStr.split('、').map(s => s.trim()).filter(Boolean);
+  const items = itemsStr.split('、').map(s => s.trim()).filter(Boolean);
+  const patches = [
+    { op: "replace", path: "/user_profile/origin_identity", value: identity },
+    { op: "replace", path: "/user_profile/opening_location", value: location },
+    { op: "replace", path: "/user_profile/current_location", value: location },
+    { op: "replace", path: "/user_profile/skills", value: skills },
+    { op: "replace", path: "/inventory/normal_items", value: items },
+    { op: "replace", path: "/world_time/phase_gate", value: "身份开场" },
+    { op: "replace", path: "/world_time/rough_day", value: 1 },
+  ];
+  return `<UpdateVariable>\n<Analysis>Identity: ${identity}. Initial state for opening scene.</Analysis>\n<JSONPatch>\n${JSON.stringify(patches, null, 2)}\n</JSONPatch>\n</UpdateVariable>`;
+}
 
 function stripVersionNoise(content) {
   return content.replaceAll(` ${version}`, "");
@@ -90,18 +105,7 @@ function formatComment(comment) {
     ].includes(name)
   )
     return `人物-${name}`;
-  if (
-    [
-      "远方归来通用入口",
-      "自定义身份开场规则",
-      "看火人开场",
-      "野外生存博主开场",
-      "边境哨站合同医生开场",
-      "极地科考越冬队员开场",
-      "深山巡护员开场",
-      "海岛灯塔看守开场",
-    ].includes(name)
-  )
+  if (name === "自定义身份开场规则")
     return `开场-${name}`;
   return `支线-${name}`;
 }
@@ -172,7 +176,7 @@ function writeJson(name, data) {
 
 const initVar = `感染 InitVar ${version}
 meta:
-  character_version: "0.1.0"
+  character_version: "1.1.0"
   update_format: "RFC6902_JSONPatch"
 user_profile:
   name: "{{user}}"
@@ -1145,7 +1149,7 @@ const openings = [
 
 现在手里有急救包、基础抗生素、便携体温计、检测试纸和那几页医疗记录。你能判断伤情, 能包扎, 还有一手精湛的医术。可最难判断的是方向：向封锁线走, 可能遇到军方, 也可能遇到他们想拦住的东西；向南走, 迟早要进入新都或11区的秩序里。
 
-你挠了挠头不再犹豫, 感觉收拾东西起身向11区出发。`,
+你挠了挠头不再犹豫, 赶紧收拾东西起身向11区出发。`,
   ],
   [
     "极地科考越冬队员开场",
@@ -1241,11 +1245,6 @@ const questOpeningEntries = [
     ),
   ),
   entry(
-    "[mvu_plot]远方归来通用入口",
-    `远方归来通用入口 ${version}\n当玩家输入【开始】但没有指定身份时，先用剧情内口吻提示可选身份: 看火人、野外生存博主、边境哨站合同医生、极地科考越冬队员、深山巡护员、海岛灯塔看守，或提供自定义身份资料。\n若玩家输入【开始, 身份名】或【开始, 身份名, 推进剧情】，读取对应身份开场条目并以该身份开始。\n若玩家输入【开始, 请根据以下提供的信息开局】，读取自定义身份资料并按自定义身份开场规则开局。\n开场必须独自一人，不得直接赠送后期主线真相。`,
-    { keys: ["开始"], order: 428 },
-  ),
-  entry(
     "[mvu_plot]自定义身份开场规则",
     `自定义身份开场规则 ${version}\n当玩家在【开始, 请根据以下提供的信息开局】后提供身份/职业、开场地点、随身物品、独特技能、经历介绍、样貌穿搭时，按这些信息现场生成开场。\n开场地点必须落在安全开局区或其边缘: 努尔山脉、新都、11区、封锁线、伊甸港。玩家写得更细时，将其解释为这些地区中的具体地点。不得把自定义身份直接开在11区郊外、韦斯特研究所、联邦沦陷区北面、联邦沦陷区、母巢或中央实验室，避免过早接触核心剧情。\n开局限制: {{user}} 必须独自一人；不得直接赠送后期主线真相；不得直接拥有黑光-III 低温样本匣、拓展 J 临床记录盘、联邦防疫军封锁指令芯片、食蚁兽预测模型核心或奇怪的刀，除非剧情后续通过证据获得。\n变量初始化要求: 根据玩家输入写入 user_profile.origin_identity、opening_location、current_location、skills 和初始背包；随身物品按普通物品/武器弹药/关键物品合理分类；经历介绍和样貌穿搭可写入 user_profile.notes。不要输出变量 patch 模板，只在剧情中自然开始。`,
     {
@@ -1254,18 +1253,6 @@ const questOpeningEntries = [
       selective: true,
       order: 429,
     },
-  ),
-  ...openings.map(([name, identity, loc, items, skills, text]) =>
-    entry(
-      `[mvu_plot]${name}`,
-      `${name} ${version}\n开场地点: ${loc}\n初始物品: ${items}\n独特技能: ${skills}\n开场正文:\n${text}\n\n变量初始化要求: origin_identity=${identity}; opening_location=${loc}; current_location=${loc}; skills=${skills}; 初始背包=${items}。完成开场后写入 user_profile.origin_identity、opening_location、current_location、skills 和初始背包。不要输出变量 patch 模板，只在剧情中自然开始。`,
-      {
-        keys: [identity],
-        secondaryKeys: ["开始"],
-        selective: true,
-        order: 430,
-      },
-    ),
   ),
 ];
 
@@ -1568,7 +1555,7 @@ function scriptJson(name, id, content, info) {
   };
 }
 
-const loaderScript = `// 感染 MVU 加载器 v1.0\nimport 'https://testingcf.jsdelivr.net/gh/MagicalAstrogy/MagVarUpdate/artifact/bundle.js';\n`;
+const loaderScript = `// 感染 MVU 加载器 v1.1\nimport 'https://testingcf.jsdelivr.net/gh/MagicalAstrogy/MagVarUpdate/artifact/bundle.js';\n`;
 
 const schemaScript = `// 感染 Schema v1.0\n// v1.0: 初版变量结构\nimport { registerMvuSchema } from 'https://testingcf.jsdelivr.net/gh/StageDog/tavern_resource/dist/util/mvu_zod.js';\n\nconst str = (d = '') => z.string().default(d).catch(d);\nconst num = (d = 0) => z.coerce.number().default(d).catch(d);\nconst arr = () => z.array(z.any()).default([]).catch([]);\nconst item = z.object({ id: str(), name: str(), quantity: z.union([z.string(), z.number()]).default(1).catch(1), subtype: str(), status: str(), note: str() }).default({}).catch({});\nconst relation = z.object({ name: str(), faction: str(), relationship: str('陌生'), trust: str('观察'), status: str('未遇见'), side_quest: str('未触发'), notes: arr() }).default({}).catch({});\nconst faction = z.object({ name: str(), stance: str('未知'), trust: str('陌生'), internal_balance: str(''), notes: arr() }).default({}).catch({});\n\nexport const Schema = z.object({\n  meta: z.object({ character_version: str('0.1.0'), update_format: str('RFC6902_JSONPatch') }).default({}).catch({}),\n  user_profile: z.object({ name: str('{{user}}'), origin_identity: str(), opening_location: str(), current_location: str(), current_goal: str(), skills: arr(), notes: arr() }).default({}).catch({}),\n  world_time: z.object({ period: str('沦陷期'), phase_gate: str('身份开场'), rough_day: num(0), major_events: arr() }).default({}).catch({}),\n  survival: z.object({ health: str('正常'), infection_risk: str('无'), fatigue: str('清醒'), hunger_thirst: str('充足'), mental_pressure: str('稳定'), body_temperature: str('正常'), load: str('轻装') }).default({}).catch({}),\n  inventory: z.object({ weapons_ammo: z.array(item).default([]).catch([]), normal_items: z.array(item).default([]).catch([]), key_items: z.array(item).default([]).catch([]) }).default({}).catch({}),\n  mainline: z.object({ stage: str('未接触'), discovered_layers: arr(), discovered_clues: arr(), key_items: z.object({ blacklight_sample_case: str('未发现'), project_j_record_disk: str('未发现'), federal_lockdown_chip: str('未发现'), anteater_model_core: str('未发现'), strange_knife: str('未发现') }).default({}).catch({}), unlocked_locations: arr(), decisions: arr() }).default({}).catch({}),\n  factions: z.object({ xindu_camp: faction, laiyi_brotherhood: faction, west_institute: faction, student_union: faction, federal_epidemic_army: faction, riverside_hospital: faction }).default({}).catch({}),\n  npcs: z.object({ anna_chen: relation, sophia_kim: relation, adler: relation, west: relation, xu_yin: relation, pastor: relation, ishii_yusuke: relation, sarah: relation, carl_j_reyes: relation, lucas_carre: relation, one_eye: relation }).default({}).catch({}),\n  quests: z.object({ active: arr(), completed: arr(), failed: arr(), dormant: arr() }).default({}).catch({}),\n  monster_knowledge: z.object({ known_types: z.array(z.string()).default(['普通感染者', '奔跑种', '食腐种', '夜视种']).catch(['普通感染者', '奔跑种', '食腐种', '夜视种']), encountered_types: arr(), confirmed_weaknesses: arr(), hive_activity: str('未发现') }).default({}).catch({}),\n}).default({}).catch({});\n\n$(() => { registerMvuSchema(Schema); });\n`;
 
@@ -1618,12 +1605,19 @@ const registeredSchemaScript = weatherSchemaScript.includes(
       /;\n$/,
       ";\n\n$(() => registerMvuSchema(Schema));\n",
     );
+const releaseSchemaScript = registeredSchemaScript
+  .replace("// 感染 Schema v1.0", "// 感染 Schema v1.1")
+  .replace(
+    "// v1.0: 初版变量结构",
+    "// v1.0: 初版变量结构\n// v1.1: 开场选择器与身份开场变量初始化",
+  )
+  .replace("character_version: str('0.1.0')", "character_version: str('1.1.0')");
 writeJson(
   "06-mvu-schema-script.json",
   scriptJson(
     "感染-变量结构",
     "infection-schema-v010",
-    registeredSchemaScript,
+    releaseSchemaScript,
     "酒馆助手脚本库导入；schema 改动后需重载脚本并重开对话。",
   ),
 );
@@ -1746,6 +1740,23 @@ writeJson(
   ),
 );
 
+const greetingInitContent = `// 感染 开场变量初始化 v1.1\n// 从 alternate_greeting 的 <UpdateVariable><JSONPatch> 块初始化 stat_data\n(async () => {\n  await waitGlobalInitialized('TavernHelper');\n  await waitGlobalInitialized('Mvu');\n\n  function initFromGreeting() {\n    try {\n      const ctx = SillyTavern.getContext();\n      if (!ctx || !Array.isArray(ctx.chat) || !ctx.chat[0]) return;\n      const mes = ctx.chat[0];\n      if (!mes || typeof mes.mes !== 'string') return;\n      const stat = TavernHelper.variables.stat_data;\n      if (stat && stat.user_profile && stat.user_profile.origin_identity && stat.user_profile.origin_identity !== '') return;\n      const m = mes.mes.match(/<UpdateVariable>[\\\\s\\\\S]*?<JSONPatch>([\\\\s\\\\S]*?)<\\\\/JSONPatch>[\\\\s\\\\S]*?<\\\\/UpdateVariable>/i);\n      if (!m) return;\n      const patches = JSON.parse(m[1].trim());\n      if (!Array.isArray(patches)) return;\n      const data = stat || {};\n      for (const p of patches) {\n        if (p.op === 'replace' || p.op === 'add') {\n          const parts = p.path.replace(/^\\\\//, '').split('/');\n          let cur = data;\n          for (let i = 0; i < parts.length - 1; i++) {\n            if (typeof cur[parts[i]] !== 'object' || cur[parts[i]] === null) cur[parts[i]] = {};\n            cur = cur[parts[i]];\n          }\n          cur[parts[parts.length - 1]] = p.value;\n        }\n      }\n      if (!stat) TavernHelper.variables.stat_data = data;\n      if (typeof Mvu.notifyUpdate === 'function') Mvu.notifyUpdate();\n    } catch (e) { /* silent */ }\n  }\n\n  function onChatLoaded() {\n    setTimeout(initFromGreeting, 500);\n  }\n\n  try { eventOn('chat_id_changed', onChatLoaded); } catch (e) {}\n  try { eventOn('message_rendered', onChatLoaded); } catch (e) {}\n  try { if (Mvu && typeof Mvu.eventOn === 'function') Mvu.eventOn('mag_variable_initiailized', initFromGreeting); } catch (e) {}\n  setTimeout(onChatLoaded, 1500);\n})();`;
+
+writeJson(
+  "08-mvu-greeting-init.json",
+  {
+    type: "script",
+    enabled: true,
+    name: "感染-开场变量初始化",
+    id: "infection-greeting-init-v110",
+    content: greetingInitContent,
+    info: "加载后自动从当前开场白中读取 <UpdateVariable><JSONPatch> 并初始化 stat_data。",
+    button: { enabled: true, buttons: [{ name: "从开场白重新初始化变量", visible: true }] },
+    data: {},
+    export_with: { data: true, button: true },
+  },
+);
+
 function section(md, heading) {
   const marker = `## ${heading}`;
   const start = md.indexOf(marker);
@@ -1820,10 +1831,12 @@ const tags = field(cardText, "tags")
   .split(",")
   .map((x) => x.trim())
   .filter(Boolean);
-const characterVersion = field(cardText, "character_version") || "0.1.0";
+const characterVersion = field(cardText, "character_version") || "1.1.0";
 const firstMes = section(cardText, "README 开场页");
-const starter = section(cardText, "起手页");
-const alternateGreetings = [starter].filter(Boolean);
+const identityGreetings = openings.map(([name, identity, loc, items, skills, text]) =>
+  `${text}\n\n${makeInitPatch(identity, loc, items, skills)}\n\n<StatusPlaceHolderImpl/>`
+);
+const alternateGreetings = identityGreetings.filter(Boolean);
 const worldbookFiles = [
   "01-worldbook-core.json",
   "02-worldbook-factions-items.json",
@@ -1838,6 +1851,7 @@ const characterBookEntries = worldbookFiles.flatMap((file) =>
 const helperScripts = [
   "05-mvu-loader-script.json",
   "06-mvu-schema-script.json",
+  "08-mvu-greeting-init.json",
 ].map((file) => JSON.parse(readFileSync(join(outDir, file), "utf8")));
 const regexScripts = [
   "07-regex-01-hide-current-variables.json",
@@ -1892,14 +1906,14 @@ const card = {
     },
     character_book: {
       name: "感染-内嵌世界书",
-      description: "感染完整内嵌世界书 v1.0",
+      description: "感染完整内嵌世界书 v1.1",
       extensions: {},
       entries: characterBookEntries,
     },
   },
 };
 
-writeJson("infection-card-v1.0.json", card);
+writeJson("infection-card-v1.1.json", card);
 
 console.log(
   `Generated ${uid - 1} worldbook entries and 2 script JSON files in ${outDir}`,
