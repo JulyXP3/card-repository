@@ -16,15 +16,16 @@ for (const file of readdirSync(outDir)) {
 let uid = 1;
 const version = "v1.1";
 
-function makeInitPatch(identity, location, itemsStr, skillsStr) {
+function makeInitPatch(identity, location, inventory, skillsStr) {
   const skills = skillsStr.split('、').map(s => s.trim()).filter(Boolean);
-  const items = itemsStr.split('、').map(s => s.trim()).filter(Boolean);
   const patches = [
     { op: "replace", path: "/user_profile/origin_identity", value: identity },
     { op: "replace", path: "/user_profile/opening_location", value: location },
     { op: "replace", path: "/user_profile/current_location", value: location },
     { op: "replace", path: "/user_profile/skills", value: skills },
-    { op: "replace", path: "/inventory/normal_items", value: items },
+    { op: "replace", path: "/inventory/weapons_ammo", value: inventory.weapons_ammo || [] },
+    { op: "replace", path: "/inventory/normal_items", value: inventory.normal_items || [] },
+    { op: "replace", path: "/inventory/key_items", value: inventory.key_items || [] },
     { op: "replace", path: "/world_time/phase_gate", value: "身份开场" },
     { op: "replace", path: "/world_time/rough_day", value: 1 },
   ];
@@ -267,6 +268,7 @@ const updateRules = `变量更新规则 ${version}
   /inventory/weapons_ammo: 武器弹药
   /inventory/normal_items: 普通物品
   /inventory/key_items: 任务关键物品和线索
+  背包分类: 枪械、子弹、弹匣、砍刀、斧头、信号枪、捕兽夹等可战斗/威慑物写 /inventory/weapons_ammo；地图、影像、记录、样本箱、密封箱、芯片、钥匙、任务证据写 /inventory/key_items；食物、药品、工具、衣物、容器写 /inventory/normal_items。禁止自造第四个背包路径，禁止把武器或关键线索塞进普通物品。
   /mainline: 真相阶段、已发现层级、线索、关键物、决定
   /factions: 已知势力立场与信任；初始包含六大势力，剧情中出现并持续影响局势的新势力可新增为 factions 下的新 key
   /npcs: 人物关系、信任、状态、支线状态
@@ -339,6 +341,8 @@ const updateFormat = `变量输出格式:
     [
       { "op": "replace", "path": "/user_profile/current_location", "value": "新地点" },
       { "op": "add", "path": "/inventory/normal_items/-", "value": "急救包" },
+      { "op": "add", "path": "/inventory/weapons_ammo/-", "value": "9mm手枪与一只空弹匣" },
+      { "op": "add", "path": "/inventory/key_items/-", "value": "旧封锁线通行证" },
       { "op": "remove", "path": "/quests/active/0" }
     ]
     </JSONPatch>
@@ -1109,7 +1113,11 @@ const openings = [
     "看火人开场",
     "看火人",
     "努尔山脉-旧防火瞭望塔",
-    "旧式步枪与少量子弹、手摇无线电、防火斧、努尔山脉巡查图、巧克力、牛肉干、保温杯",
+    {
+      weapons_ammo: ["旧式步枪与少量子弹", "防火斧"],
+      normal_items: ["手摇无线电", "巧克力", "牛肉干", "保温杯"],
+      key_items: ["努尔山脉巡查图"],
+    },
     "高处观察、林火与风向判断、耐孤独",
     `努尔山脉的旧防火瞭望塔已经很久没有收到正式呼叫了。最后一份纸质巡查表被压在窗边, 铅笔字被潮气洇开。你在这里守了几个月, 最初还按时记录烟柱、风向和林线变化, 但后来的记录变多了：山下的公路没再出现车辆, 林子里的鸟群迅速迁徙, 大型野兽总是暴躁不已。
 
@@ -1125,7 +1133,11 @@ const openings = [
     "野外生存博主开场",
     "野外生存博主",
     "努尔山脉-边缘废弃露营基地",
-    "运动相机与备用存储卡、多功能刀、轻便滤水器、野外背包、太阳能充电宝、肉干、大容量水壶",
+    {
+      weapons_ammo: ["多功能刀"],
+      normal_items: ["轻便滤水器", "野外背包", "太阳能充电宝", "肉干", "大容量水壶"],
+      key_items: ["运动相机与备用存储卡"],
+    },
     "临时庇护搭建、水源与食物辨识、抓拍高手",
     `废弃露营基地的招牌倒在泥里, 上面还残留着灾难前的彩色广告。你曾经在类似地方拍过太多视频：如何过滤溪水, 如何用湿木生火, 如何在没有帐篷时撑过雨夜。那时候评论区总有人说, 真到了末日你一定活得很好。
 
@@ -1139,7 +1151,10 @@ const openings = [
     "边境哨站合同医生开场",
     "边境哨站合同医生",
     "联邦沦陷区北面-废弃边境哨站",
-    "急救包、基础抗生素、便携体温计与检测试纸、边境哨站医疗记录、干脆面、军用水壶",
+    {
+      normal_items: ["急救包", "基础抗生素", "便携体温计与检测试纸", "干脆面", "军用水壶"],
+      key_items: ["边境哨站医疗记录"],
+    },
     "伤情分诊、感染风险识别、低资源治疗、外科缝合",
     `废弃边境哨站的医务室里有一股消毒水、霉味和血混在一起的味道。你在这里做合同医生, 本来只负责处理擦伤、冻伤、胃病和偶尔的斗殴。后来通讯断了, 换岗的人没来, 哨站外的路被封住, 甚至来送物资的人来的频次也急剧减少。
 
@@ -1155,7 +1170,10 @@ const openings = [
     "极地科考越冬队员开场",
     "极地科考越冬队员",
     "联邦沦陷区北面-极寒隔离观测站",
-    "保温服、低温样本箱、卫星定位终端、科考站维修工具、能量棒、牛肉罐头、保温杯",
+    {
+      normal_items: ["保温服", "卫星定位终端", "科考站维修工具", "能量棒", "牛肉罐头", "保温杯"],
+      key_items: ["低温样本箱"],
+    },
     "低温生存、设备维护、科考知识",
     `极寒隔离观测站的供暖系统又停了。你戴着手套拆开发电机外壳, 听见屋外的狂风在金属墙外刮过, 简直像有人用刀背刮门。越冬队早就散了, 有人乘撤离机离开, 有人留在雪线另一头失联。你被吩咐留下来维护数据链, 等一个可能再也不会来的接收确认。
 
@@ -1169,7 +1187,11 @@ const openings = [
     "深山巡护员开场",
     "深山巡护员",
     "努尔山脉-深处巡护站",
-    "巡护砍刀、绳索与登山扣、捕兽夹、山区巡护日志、登山包、葡萄干、水壶、芝麻馕",
+    {
+      weapons_ammo: ["巡护砍刀", "捕兽夹"],
+      normal_items: ["绳索与登山扣", "登山包", "葡萄干", "水壶", "芝麻馕"],
+      key_items: ["山区巡护日志"],
+    },
     "追踪与反追踪、山地穿行、陷阱布置、草药专家",
     `努尔山脉深处的巡护站比地图上更孤单。木门被风吹得轻轻发响, 墙上的旧照片还停在灾难前的植被调查季。你熟悉这里的每条兽道、每处滑坡、每片山谷。你在这片山脉追踪过无数的盗猎者和迷路游客, 最近却出现了一些不寻常的踪迹。
 
@@ -1183,7 +1205,11 @@ const openings = [
     "海岛灯塔看守开场",
     "海岛灯塔看守",
     "伊甸港-外海旧灯塔岛",
-    "信号灯维护工具、航海图、手持信号枪、牛肉罐头、水壶",
+    {
+      weapons_ammo: ["手持信号枪"],
+      normal_items: ["信号灯维护工具", "牛肉罐头", "水壶"],
+      key_items: ["航海图", "军方旧封条密封箱"],
+    },
     "海况与信号判断、设备维修、孤岛生存",
     `伊甸港外海的旧灯塔每晚仍会亮几次, 已经很久没有船按航线返港了, 但这已经成了你的工作习惯。海雾很浓, 岸上的港口灯不知何时开始不再亮起了。偶尔有漂浮物从海面上经过, 木箱、救生衣、桅杆, 有时还有一些尸体。
 
@@ -1435,7 +1461,7 @@ const regionalEventEntries = [
         const eventName = `区域事件-${region}-${name}`;
         return entry(
           eventName,
-          `${eventName}\n地区: ${region}\n${text}\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 ${eventName}。完成后不得再次触发。`,
+          `${eventName}\n地区: ${region}\n${text.replaceAll("inventory.items", "inventory.normal_items、inventory.weapons_ammo、inventory.key_items")}\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 ${eventName}。完成后不得再次触发。`,
           { enabled: false, order: 391 + regionIndex * 10 + eventIndex },
         );
       }),

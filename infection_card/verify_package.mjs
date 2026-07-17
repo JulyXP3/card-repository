@@ -12,6 +12,20 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
+function getOpeningInventory(greeting) {
+  const match = greeting.match(
+    /<UpdateVariable>[\s\S]*?<JSONPatch>([\s\S]*?)<\/JSONPatch>[\s\S]*?<\/UpdateVariable>/i,
+  );
+  assert(match, "opening greeting missing init JSONPatch");
+  const patches = JSON.parse(match[1].trim());
+  const inventory = {};
+  for (const patch of patches) {
+    const key = patch.path.match(/^\/inventory\/([^/]+)$/)?.[1];
+    if (key) inventory[key] = patch.value;
+  }
+  return inventory;
+}
+
 const worldbookFiles = [
   "01-worldbook-core.json",
   "02-worldbook-factions-items.json",
@@ -323,6 +337,32 @@ assert(
 assert(
   card.data.alternate_greetings.length === 6,
   `expected 6 alternate greetings (identities only), got ${card.data.alternate_greetings.length}`,
+);
+for (const [index, expected] of [
+  { weapons_ammo: ["旧式步枪与少量子弹", "防火斧"], key_items: ["努尔山脉巡查图"] },
+  { weapons_ammo: ["多功能刀"], key_items: ["运动相机与备用存储卡"] },
+  { key_items: ["边境哨站医疗记录"] },
+  { key_items: ["低温样本箱"] },
+  { weapons_ammo: ["巡护砍刀", "捕兽夹"], key_items: ["山区巡护日志"] },
+  { weapons_ammo: ["手持信号枪"], key_items: ["航海图"] },
+].entries()) {
+  const inventory = getOpeningInventory(card.data.alternate_greetings[index]);
+  for (const [category, items] of Object.entries(expected)) {
+    for (const item of items) {
+      assert(
+        inventory[category]?.includes(item),
+        `opening ${index + 1} should put ${item} in ${category}`,
+      );
+      assert(
+        !inventory.normal_items?.includes(item),
+        `opening ${index + 1} should not put ${item} in normal_items`,
+      );
+    }
+  }
+}
+assert(
+  !entries.some((entry) => entry.content.includes("inventory.items") || entry.content.includes("/inventory/items")),
+  "worldbook should not mention nonexistent inventory item path",
 );
 assert(
   card.name === "感染" && card.data.name === "感染",
