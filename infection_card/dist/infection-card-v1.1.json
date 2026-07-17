@@ -1,26 +1,29 @@
 {
   "name": "感染",
-  "description": "",
-  "personality": "",
-  "scenario": "",
+  "description": "留空。",
+  "personality": "留空。{{user}} 人设由玩家 persona 和开局身份共同决定。",
+  "scenario": "留空。当前场景由 MVU 变量和世界书条目控制。",
   "first_mes": "<OpeningSelectorImpl/>",
-  "mes_example": "",
-  "creatorcomment": "",
+  "mes_example": "留空。避免范例对话被模型照抄。",
+  "creatorcomment": "感染 v1.1。需要 MVU、酒馆助手、世界书部件和状态栏部件配合使用。",
   "avatar": "none",
   "talkativeness": "0.5",
   "fav": false,
-  "tags": [],
+  "tags": [
+    "末日",
+    "MVU"
+  ],
   "spec": "chara_card_v3",
   "spec_version": "3.0",
   "create_date": "2026-07-14",
   "data": {
     "name": "感染",
-    "description": "",
-    "personality": "",
-    "scenario": "",
+    "description": "留空。",
+    "personality": "留空。{{user}} 人设由玩家 persona 和开局身份共同决定。",
+    "scenario": "留空。当前场景由 MVU 变量和世界书条目控制。",
     "first_mes": "<OpeningSelectorImpl/>",
-    "mes_example": "",
-    "creator_notes": "",
+    "mes_example": "留空。避免范例对话被模型照抄。",
+    "creator_notes": "感染 v1.1。需要 MVU、酒馆助手、世界书部件和状态栏部件配合使用。",
     "system_prompt": "",
     "post_history_instructions": "",
     "alternate_greetings": [
@@ -32,7 +35,10 @@
       "伊甸港外海的旧灯塔每晚仍会亮几次, 已经很久没有船按航线返港了, 但这已经成了你的工作习惯。海雾很浓, 岸上的港口灯不知何时开始不再亮起了。偶尔有漂浮物从海面上经过, 木箱、救生衣、桅杆, 有时还有一些尸体。\n\n今晚, 远处有船只打来灯号。\n\n它没有靠岸, 也没有报身份。灯号断断续续, 只重复一个方向和一组旧军方编码。你回灯后, 对方沉默了很久, 随后一只密封箱被小艇推到礁石附近。等你赶到岸边时, 小艇已经离开, 海面只剩发动机声被雾吞掉。\n\n箱子上有军方旧封条, 收件标识被刮掉, 边角还残留冷藏警示。你没有立刻打开。灯塔仓库里只剩信号灯维护工具、航海图、手持信号枪、少量牛肉罐头和淡水。你费了一番功夫才把那个箱子捞上来, 这只箱子显然是被故意送过来的, 为什么, 你不知道。\n\n海况正在变坏, 这几天海里时不时能看到一些奇怪的动物游过, 你决定尽快离开, 前往伊甸港或者新都。\n\n<UpdateVariable>\n<Analysis>Identity: 海岛灯塔看守. Initial state for opening scene.</Analysis>\n<JSONPatch>\n[\n  {\n    \"op\": \"replace\",\n    \"path\": \"/user_profile/origin_identity\",\n    \"value\": \"海岛灯塔看守\"\n  },\n  {\n    \"op\": \"replace\",\n    \"path\": \"/user_profile/opening_location\",\n    \"value\": \"伊甸港-外海旧灯塔岛\"\n  },\n  {\n    \"op\": \"replace\",\n    \"path\": \"/user_profile/current_location\",\n    \"value\": \"伊甸港-外海旧灯塔岛\"\n  },\n  {\n    \"op\": \"replace\",\n    \"path\": \"/user_profile/skills\",\n    \"value\": [\n      \"海况与信号判断\",\n      \"设备维修\",\n      \"孤岛生存\"\n    ]\n  },\n  {\n    \"op\": \"replace\",\n    \"path\": \"/inventory/weapons_ammo\",\n    \"value\": [\n      \"手持信号枪\"\n    ]\n  },\n  {\n    \"op\": \"replace\",\n    \"path\": \"/inventory/normal_items\",\n    \"value\": [\n      \"信号灯维护工具\",\n      \"牛肉罐头\",\n      \"水壶\"\n    ]\n  },\n  {\n    \"op\": \"replace\",\n    \"path\": \"/inventory/key_items\",\n    \"value\": [\n      \"航海图\",\n      \"军方旧封条密封箱\"\n    ]\n  },\n  {\n    \"op\": \"replace\",\n    \"path\": \"/world_time/phase_gate\",\n    \"value\": \"身份开场\"\n  },\n  {\n    \"op\": \"replace\",\n    \"path\": \"/world_time/rough_day\",\n    \"value\": 1\n  }\n]\n</JSONPatch>\n</UpdateVariable>\n\n<StatusPlaceHolderImpl/>"
     ],
     "group_only_greetings": [],
-    "tags": [],
+    "tags": [
+      "末日",
+      "MVU"
+    ],
     "creator": "July / Codex",
     "character_version": "1.1.0",
     "extensions": {
