@@ -270,8 +270,8 @@ const updateRules = `变量更新规则 ${version}
   /survival: 健康、感染风险、疲劳、饥渴、精神压力、体温、负重
   /inventory/weapons_ammo: 武器弹药
   /inventory/normal_items: 普通物品
-  /inventory/key_items: 重要物品、关键物品、线索
-  背包分类: 枪械、刀具、钝器等可战斗/威慑物品写 /inventory/weapons_ammo；地图、影像、记录、样本、芯片、任务证据等物品写 /inventory/key_items；食物、药品、工具、衣物等日常用品写 /inventory/normal_items。禁止使用不存在的 /inventory/items，禁止把武器或关键线索塞进普通物品。
+/inventory/key_items: 任务关键物品和线索
+  背包分类: 枪械、子弹、弹匣、砍刀、斧头、信号枪、捕兽夹等可战斗/威慑物写 /inventory/weapons_ammo；地图、影像、记录、样本箱、密封箱、芯片、钥匙、任务证据写 /inventory/key_items；食物、药品、工具、衣物、容器写 /inventory/normal_items。禁止自造第四个背包路径，禁止把武器或关键线索塞进普通物品。
   /mainline: 真相阶段、已发现层级、线索、关键物、决定
   /factions: 已知势力立场与信任；初始包含六大势力，剧情中出现并持续影响局势的新势力可新增为 factions 下的新 key
   /npcs: 人物关系、信任、状态、支线状态

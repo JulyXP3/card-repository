@@ -361,8 +361,8 @@ for (const [index, expected] of [
   }
 }
 assert(
-  !entries.some((entry) => entry.content.includes("inventory.items")),
-  "worldbook should not mention nonexistent inventory.items path",
+!entries.some((entry) => entry.content.includes("inventory.items") || entry.content.includes("/inventory/items")),
+  "worldbook should not mention nonexistent inventory item path",
 );
 assert(
   card.name === "感染" && card.data.name === "感染",
