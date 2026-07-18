@@ -1,8 +1,8 @@
 {
   "name": "感染-03-人物档案",
   "entries": {
-    "42": {
-      "uid": 42,
+    "43": {
+      "uid": 43,
       "key": [
         "安娜·陈"
       ],
@@ -34,10 +34,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 42
+      "display_index": 43
     },
-    "43": {
-      "uid": 43,
+    "44": {
+      "uid": 44,
       "key": [
         "索菲亚·金"
       ],
@@ -69,10 +69,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 43
+      "display_index": 44
     },
-    "44": {
-      "uid": 44,
+    "45": {
+      "uid": 45,
       "key": [
         "阿德勒"
       ],
@@ -104,10 +104,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 44
+      "display_index": 45
     },
-    "45": {
-      "uid": 45,
+    "46": {
+      "uid": 46,
       "key": [
         "韦斯特"
       ],
@@ -139,10 +139,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 45
+      "display_index": 46
     },
-    "46": {
-      "uid": 46,
+    "47": {
+      "uid": 47,
       "key": [
         "徐银"
       ],
@@ -174,10 +174,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 46
+      "display_index": 47
     },
-    "47": {
-      "uid": 47,
+    "48": {
+      "uid": 48,
       "key": [
         "牧师"
       ],
@@ -209,10 +209,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 47
+      "display_index": 48
     },
-    "48": {
-      "uid": 48,
+    "49": {
+      "uid": 49,
       "key": [
         "石井雄介"
       ],
@@ -244,10 +244,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 48
+      "display_index": 49
     },
-    "49": {
-      "uid": 49,
+    "50": {
+      "uid": 50,
       "key": [
         "莎拉"
       ],
@@ -279,10 +279,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 49
+      "display_index": 50
     },
-    "50": {
-      "uid": 50,
+    "51": {
+      "uid": 51,
       "key": [
         "卡尔·J·雷耶斯",
         "卡尔"
@@ -315,10 +315,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 50
+      "display_index": 51
     },
-    "51": {
-      "uid": 51,
+    "52": {
+      "uid": 52,
       "key": [
         "卢卡斯·卡雷",
         "卢卡斯"
@@ -351,10 +351,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 51
+      "display_index": 52
     },
-    "52": {
-      "uid": 52,
+    "53": {
+      "uid": 53,
       "key": [
         "独眼",
         "徒弟",
@@ -388,7 +388,7 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 52
+      "display_index": 53
     }
   }
 }

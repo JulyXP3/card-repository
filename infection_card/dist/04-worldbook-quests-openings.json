@@ -1,12 +1,12 @@
 {
   "name": "感染-04-支线开场与事件池",
   "entries": {
-    "53": {
-      "uid": 53,
+    "54": {
+      "uid": 54,
       "key": [],
       "keysecondary": [],
       "comment": "[EJS]支线阶段控制器",
-      "content": "@@preprocessing\n<%_\nif (typeof blQuestLoc === 'undefined') var blQuestLoc = getvar('stat_data.user_profile.current_location', { defaults: '' }) || '';\nif (typeof blQuestActive === 'undefined') var blQuestActive = getvar('stat_data.quests.active', { defaults: [] }) || [];\nif (typeof blQuestCompleted === 'undefined') var blQuestCompleted = getvar('stat_data.quests.completed', { defaults: [] }) || [];\nif (typeof blQuestFailed === 'undefined') var blQuestFailed = getvar('stat_data.quests.failed', { defaults: [] }) || [];\nvar blSideMap = {\n  \"安娜·陈\": \"支线-观察期\",\n  \"索菲亚·金\": \"支线-缺口\",\n  \"阿德勒\": \"支线-封锁线以北\",\n  \"韦斯特\": \"支线-失败样本\",\n  \"徐银\": \"支线-不能被写进损耗栏的人\",\n  \"牧师\": \"支线-上帝是否动摇\",\n  \"石井雄介\": \"支线-焦虑\",\n  \"莎拉\": \"支线-抉择\",\n  \"卡尔·J·雷耶斯\": \"支线-账本里的死路\",\n  \"卢卡斯·卡雷\": \"支线-不该进去的地方\"\n};\nvar blQuestCandidates = [];\nfunction blPushQuest(npcName) {\n  var entryName = blSideMap[npcName];\n  if (entryName && !blQuestCandidates.includes(entryName)) blQuestCandidates.push(entryName);\n}\nfor (var i = 0; i < blQuestActive.length; i++) {\n  var q = blQuestActive[i];\n  var qText = typeof q === 'string' ? q : JSON.stringify(q);\n  Object.keys(blSideMap).forEach(function(npcName) { if (qText.includes(npcName) || qText.includes(blSideMap[npcName].replace('支线-', ''))) blPushQuest(npcName); });\n}\nif (blQuestLoc.includes('新都')) { blPushQuest('安娜·陈'); blPushQuest('索菲亚·金'); }\nif (blQuestLoc.includes('封锁线') || blQuestLoc.includes('哨站') || blQuestLoc.includes('防疫军')) blPushQuest('阿德勒');\nif (blQuestLoc.includes('韦斯特') || blQuestLoc.includes('研究所')) blPushQuest('韦斯特');\nif (blQuestLoc.includes('学联') || blQuestLoc.includes('避难点')) { blPushQuest('徐银'); blPushQuest('牧师'); }\nif (blQuestLoc.includes('沿江') || blQuestLoc.includes('医院')) { blPushQuest('石井雄介'); blPushQuest('莎拉'); }\nif (blQuestLoc.includes('兄弟会') || blQuestLoc.includes('莱伊')) { blPushQuest('卡尔·J·雷耶斯'); blPushQuest('卢卡斯·卡雷'); }\nvar blQuestShown = 0;\n_%>\n<%_ for (var i = 0; i < blQuestCandidates.length && blQuestShown < 2; i++) { var qName = blQuestCandidates[i]; if (!blQuestCompleted.includes(qName.replace('支线-', '')) && !blQuestCompleted.includes(qName) && !blQuestFailed.includes(qName.replace('支线-', '')) && !blQuestFailed.includes(qName)) { blQuestShown++; _%>\n<%- await getwi(qName) %>\n<%_ }} _%>",
+      "content": "@@preprocessing\n<%_\nif (typeof blQuestLoc === 'undefined') var blQuestLoc = getvar('stat_data.user_profile.current_location', { defaults: '' }) || '';\nif (typeof blQuestActive === 'undefined') var blQuestActive = getvar('stat_data.quests.active', { defaults: [] }) || [];\nif (typeof blQuestCompleted === 'undefined') var blQuestCompleted = getvar('stat_data.quests.completed', { defaults: [] }) || [];\nif (typeof blQuestFailed === 'undefined') var blQuestFailed = getvar('stat_data.quests.failed', { defaults: [] }) || [];\nvar blSideMap = {\n  \"安娜·陈\": \"人物支线-观察期\",\n  \"索菲亚·金\": \"人物支线-缺口\",\n  \"阿德勒\": \"人物支线-封锁线以北\",\n  \"韦斯特\": \"人物支线-失败样本\",\n  \"徐银\": \"人物支线-不能被写进损耗栏的人\",\n  \"牧师\": \"人物支线-上帝是否动摇\",\n  \"石井雄介\": \"人物支线-焦虑\",\n  \"莎拉\": \"人物支线-抉择\",\n  \"卡尔·J·雷耶斯\": \"人物支线-账本里的死路\",\n  \"卢卡斯·卡雷\": \"人物支线-不该进去的地方\",\n  \"看火人\": \"开局支线-山间猎场的夜视种\",\n  \"野外生存博主\": \"开局支线-被洗劫的物资中转点\",\n  \"边境哨站合同医生\": \"开局支线-哨站铁丝网外的潜伏者\",\n  \"极地科考越冬队员\": \"开局支线-雪地冲刺的路标\",\n  \"深山巡护员\": \"开局支线-旧矿口的拖痕\",\n  \"海岛灯塔看守\": \"开局支线-礁石区溺水者\"\n};\nvar blQuestCandidates = [];\nfunction blPushQuest(npcName) {\n  var entryName = blSideMap[npcName];\n  if (entryName && !blQuestCandidates.includes(entryName)) blQuestCandidates.push(entryName);\n}\nfor (var i = 0; i < blQuestActive.length; i++) {\n  var q = blQuestActive[i];\n  var qText = typeof q === 'string' ? q : JSON.stringify(q);\n  Object.keys(blSideMap).forEach(function(npcName) { if (qText.includes(npcName) || qText.includes(blSideMap[npcName].replace('人物支线-', '').replace('开局支线-', ''))) blPushQuest(npcName); });\n}\nif (blQuestLoc.includes('新都')) { blPushQuest('安娜·陈'); blPushQuest('索菲亚·金'); }\nif (blQuestLoc.includes('封锁线') || blQuestLoc.includes('哨站') || blQuestLoc.includes('防疫军')) blPushQuest('阿德勒');\nif (blQuestLoc.includes('韦斯特') || blQuestLoc.includes('研究所')) blPushQuest('韦斯特');\nif (blQuestLoc.includes('学联') || blQuestLoc.includes('避难点')) { blPushQuest('徐银'); blPushQuest('牧师'); }\nif (blQuestLoc.includes('沿江') || blQuestLoc.includes('医院')) { blPushQuest('石井雄介'); blPushQuest('莎拉'); }\nif (blQuestLoc.includes('兄弟会') || blQuestLoc.includes('莱伊')) { blPushQuest('卡尔·J·雷耶斯'); blPushQuest('卢卡斯·卡雷'); }\nvar blOriginId = getvar('stat_data.user_profile.origin_identity', { defaults: '' }) || '';\nif (blOriginId) blPushQuest(blOriginId);\nvar blQuestShown = 0;\n_%>\n<%_ for (var i = 0; i < blQuestCandidates.length && blQuestShown < 2; i++) { var qName = blQuestCandidates[i]; if (!blQuestCompleted.includes(qName.replace('人物支线-', '').replace('开局支线-', '')) && !blQuestCompleted.includes(qName) && !blQuestFailed.includes(qName.replace('人物支线-', '').replace('开局支线-', '')) && !blQuestFailed.includes(qName)) { blQuestShown++; _%>\n<%- await getwi(qName) %>\n<%_ }} _%>",
       "constant": true,
       "vectorized": false,
       "selective": false,
@@ -32,47 +32,14 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 53
-    },
-    "54": {
-      "uid": 54,
-      "key": [],
-      "keysecondary": [],
-      "comment": "支线-观察期",
-      "content": "观察期\n相关人物: 安娜·陈\n触发: {{user}} 首次进入新都、申请居住权、提交物资或被巡逻队带到安娜面前。\n第一段: 安娜不给信任，只给观察期。任务可以是守门、搬运、清点、夜巡、处理插队冲突、陪同小队回收药品。\n第二段: {{user}} 会撞见新都底层的丛林规则：有人抢弱者口粮，有人私藏药，有人用“保护”换取依附。\n核心选择: 按安娜规则处理、替弱者隐瞒、私下交易、公开冲突、把证据交给索菲亚。\n后果: 守规矩提升安娜信任但可能伤害个体；心软会得到部分底层好感但让管理层警惕；公开冲突会触发新都内部压力。\n变量提示: 更新 factions.xindu_camp.trust、npcs.anna_chen.trust、quests.active/completed，必要时记录 current_goal。\n支线不得写成私人感情戏，必须围绕末日压力、怪物威胁、资源分配、道德困境或势力选择展开。",
-      "constant": false,
-      "vectorized": false,
-      "selective": false,
-      "selectiveLogic": 0,
-      "addMemo": true,
-      "order": 400,
-      "position": 0,
-      "disable": true,
-      "enabled": false,
-      "prevent_recursion": true,
-      "delay_until_recursion": false,
-      "probability": 100,
-      "depth": 4,
-      "group": "",
-      "group_override": false,
-      "group_weight": 100,
-      "scan_depth": null,
-      "case_sensitive": false,
-      "match_whole_words": false,
-      "use_group_scoring": false,
-      "automation_id": "",
-      "role": 0,
-      "sticky": 0,
-      "cooldown": 0,
-      "delay": 0,
       "display_index": 54
     },
     "55": {
       "uid": 55,
       "key": [],
       "keysecondary": [],
-      "comment": "支线-缺口",
-      "content": "缺口\n相关人物: 索菲亚·金\n触发: 新都仓库短缺、分配队伍被抢、索菲亚要求 {{user}} 协助查账或跟踪搬运路线。\n第一段: 线索从小处开始：鞋底面粉、空药瓶、夜间后墙脚印、账本上重复签名。\n第二段: 灰色链条不是单纯坏人。有人偷药给发烧孩子，有人倒卖换武器，有人借漏洞勒索新人。\n核心选择: 查到底、只抓主犯、让索菲亚私下补洞、把事情交给安娜公开处理、与灰色链条交易。\n后果: 查到底会恢复库存但制造报复；温和处理会留下隐患；交易可能换到路线和情报但损害索菲亚信任。\n变量提示: 更新 npcs.sophia_kim.side_quest，factions.xindu_camp.notes，必要时给 inventory.normal_items 增减物资。\n支线不得写成私人感情戏，必须围绕末日压力、怪物威胁、资源分配、道德困境或势力选择展开。",
+      "comment": "人物支线-观察期",
+      "content": "人物支线-观察期\n相关人物: 安娜·陈\n触发: {{user}} 首次进入新都、申请居住权、提交物资或被巡逻队带到安娜面前。\n第一段: 安娜不给信任，只给观察期。任务可以是守门、搬运、清点、夜巡、处理插队冲突、陪同小队回收药品。\n第二段: {{user}} 会撞见新都底层的丛林规则：有人抢弱者口粮，有人私藏药，有人用“保护”换取依附。\n核心选择: 按安娜规则处理、替弱者隐瞒、私下交易、公开冲突、把证据交给索菲亚。\n后果: 守规矩提升安娜信任但可能伤害个体；心软会得到部分底层好感但让管理层警惕；公开冲突会触发新都内部压力。\n变量提示: 更新 factions.xindu_camp.trust、npcs.anna_chen.trust、quests.active/completed，必要时记录 current_goal。\n支线不得写成私人感情戏，必须围绕末日压力、怪物威胁、资源分配、道德困境或势力选择展开。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -104,8 +71,8 @@
       "uid": 56,
       "key": [],
       "keysecondary": [],
-      "comment": "支线-封锁线以北",
-      "content": "封锁线以北\n相关人物: 阿德勒\n触发: {{user}} 需要穿越封锁线、找到旧撤离点、携带军方记录碎片，或被阿德勒扣留盘问。\n第一段: 阿德勒先给低风险任务：确认路标、护送病患、回收失联巡逻队识别牌、检查旧撤离点是否还有活人。\n第二段: 任务中出现第三撤离点证据：烧毁车辆、锁死门、未发送的撤离名单、加密芯片接口。\n核心选择: 帮阿德勒掩盖、逼他交出芯片、绕过他把证据交给新都或韦斯特、用证据换通行许可。\n后果: 信任路线可拿到封锁指令芯片；对立路线会让防疫军变成障碍；公开路线可能让封锁线秩序崩坏。\n变量提示: 更新 npcs.adler.trust、factions.federal_epidemic_army.stance、mainline.key_items.federal_lockdown_chip。\n支线不得写成私人感情戏，必须围绕末日压力、怪物威胁、资源分配、道德困境或势力选择展开。",
+      "comment": "人物支线-缺口",
+      "content": "人物支线-缺口\n相关人物: 索菲亚·金\n触发: 新都仓库短缺、分配队伍被抢、索菲亚要求 {{user}} 协助查账或跟踪搬运路线。\n第一段: 线索从小处开始：鞋底面粉、空药瓶、夜间后墙脚印、账本上重复签名。\n第二段: 灰色链条不是单纯坏人。有人偷药给发烧孩子，有人倒卖换武器，有人借漏洞勒索新人。\n核心选择: 查到底、只抓主犯、让索菲亚私下补洞、把事情交给安娜公开处理、与灰色链条交易。\n后果: 查到底会恢复库存但制造报复；温和处理会留下隐患；交易可能换到路线和情报但损害索菲亚信任。\n变量提示: 更新 npcs.sophia_kim.side_quest，factions.xindu_camp.notes，必要时给 inventory.normal_items 增减物资。\n支线不得写成私人感情戏，必须围绕末日压力、怪物威胁、资源分配、道德困境或势力选择展开。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -137,8 +104,8 @@
       "uid": 57,
       "key": [],
       "keysecondary": [],
-      "comment": "支线-失败样本",
-      "content": "失败样本\n相关人物: 韦斯特\n触发: {{user}} 带回感染样本、进入韦斯特研究所、需要治疗感染风险，或取得拓展 J 相关记录。\n第一段: 韦斯特要求样本、血液、病例或冷链材料。他不承诺治愈，只承诺减少盲目。\n第二段: 研究所内部出现伦理裂缝：志愿者是否真自愿，失败样本是否还算病人，疫苗进展是否该公开。\n核心选择: 帮他采样、拒绝高风险实验、偷取记录盘、把资料交给沿江医院、逼他公开拓展 J 旧账。\n后果: 合作能推进疫苗线和主线；拒绝会保住人但失去研究速度；偷资料会让韦斯特信任下降却提前解锁真相。\n变量提示: 更新 npcs.west.side_quest、mainline.key_items.project_j_record_disk、survival.infection_risk。\n支线不得写成私人感情戏，必须围绕末日压力、怪物威胁、资源分配、道德困境或势力选择展开。",
+      "comment": "人物支线-封锁线以北",
+      "content": "人物支线-封锁线以北\n相关人物: 阿德勒\n触发: {{user}} 需要穿越封锁线、找到旧撤离点、携带军方记录碎片，或被阿德勒扣留盘问。\n第一段: 阿德勒先给低风险任务：确认路标、护送病患、回收失联巡逻队识别牌、检查旧撤离点是否还有活人。\n第二段: 任务中出现第三撤离点证据：烧毁车辆、锁死门、未发送的撤离名单、加密芯片接口。\n核心选择: 帮阿德勒掩盖、逼他交出芯片、绕过他把证据交给新都或韦斯特、用证据换通行许可。\n后果: 信任路线可拿到封锁指令芯片；对立路线会让防疫军变成障碍；公开路线可能让封锁线秩序崩坏。\n变量提示: 更新 npcs.adler.trust、factions.federal_epidemic_army.stance、mainline.key_items.federal_lockdown_chip。\n支线不得写成私人感情戏，必须围绕末日压力、怪物威胁、资源分配、道德困境或势力选择展开。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -170,8 +137,8 @@
       "uid": 58,
       "key": [],
       "keysecondary": [],
-      "comment": "支线-不能被写进损耗栏的人",
-      "content": "不能被写进损耗栏的人\n相关人物: 徐银\n触发: 学联避难点暴露、学生队伍求援、老人孩子需要转移，或新都拒绝接收一批高风险人员。\n第一段: 徐银给出名单、路线和现实限制：车少、药少、能走的人少，夜里怪物会靠近。\n第二段: 转移途中出现不可兼得选择：老人拖慢队伍，孩子发烧，学生想回去找同伴，巡逻队要求放弃一部分人。\n核心选择: 按名单优先、改路线冒险多救人、牺牲物资换速度、向新都施压接收、找牧师稳定人心。\n后果: 救更多人会消耗药品和体力；保路线会留下道德伤口；徐银会记住 {{user}} 是否把人当数字。\n变量提示: 更新 npcs.xu_yin.trust、factions.student_union.trust、quests.completed/failed，必要时写 world_time.major_events。\n支线不得写成私人感情戏，必须围绕末日压力、怪物威胁、资源分配、道德困境或势力选择展开。",
+      "comment": "人物支线-失败样本",
+      "content": "人物支线-失败样本\n相关人物: 韦斯特\n触发: {{user}} 带回感染样本、进入韦斯特研究所、需要治疗感染风险，或取得拓展 J 相关记录。\n第一段: 韦斯特要求样本、血液、病例或冷链材料。他不承诺治愈，只承诺减少盲目。\n第二段: 研究所内部出现伦理裂缝：志愿者是否真自愿，失败样本是否还算病人，疫苗进展是否该公开。\n核心选择: 帮他采样、拒绝高风险实验、偷取记录盘、把资料交给沿江医院、逼他公开拓展 J 旧账。\n后果: 合作能推进疫苗线和主线；拒绝会保住人但失去研究速度；偷资料会让韦斯特信任下降却提前解锁真相。\n变量提示: 更新 npcs.west.side_quest、mainline.key_items.project_j_record_disk、survival.infection_risk。\n支线不得写成私人感情戏，必须围绕末日压力、怪物威胁、资源分配、道德困境或势力选择展开。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -203,8 +170,8 @@
       "uid": 59,
       "key": [],
       "keysecondary": [],
-      "comment": "支线-上帝是否动摇",
-      "content": "上帝是否动摇\n相关人物: 牧师\n触发: 学联孩子死亡、临终陪伴、避难点恐慌、牧师请求 {{user}} 寻药或护送孩子。\n第一段: 牧师不是给答案的人，而是让人撑过今晚的人。他会请 {{user}} 做一件很实际的事：找退烧药、带回遗物、护送孩子、阻止失控祷告集会。\n第二段: 信仰与现实冲突。有人要求奇迹，有人要求放弃病童，有人想用宗教话术掩盖错误决定。\n核心选择: 帮牧师保住人心、揭穿虚假安慰、优先实际资源、在徐银和牧师之间调停。\n后果: 稳定人心会让学联更能行动；戳破信念可能短期崩溃但减少盲从；牧师会因 {{user}} 的选择改变说话方式。\n变量提示: 更新 npcs.pastor.side_quest、factions.student_union.notes、survival.mental_pressure。\n支线不得写成私人感情戏，必须围绕末日压力、怪物威胁、资源分配、道德困境或势力选择展开。",
+      "comment": "人物支线-不能被写进损耗栏的人",
+      "content": "人物支线-不能被写进损耗栏的人\n相关人物: 徐银\n触发: 学联避难点暴露、学生队伍求援、老人孩子需要转移，或新都拒绝接收一批高风险人员。\n第一段: 徐银给出名单、路线和现实限制：车少、药少、能走的人少，夜里怪物会靠近。\n第二段: 转移途中出现不可兼得选择：老人拖慢队伍，孩子发烧，学生想回去找同伴，巡逻队要求放弃一部分人。\n核心选择: 按名单优先、改路线冒险多救人、牺牲物资换速度、向新都施压接收、找牧师稳定人心。\n后果: 救更多人会消耗药品和体力；保路线会留下道德伤口；徐银会记住 {{user}} 是否把人当数字。\n变量提示: 更新 npcs.xu_yin.trust、factions.student_union.trust、quests.completed/failed，必要时写 world_time.major_events。\n支线不得写成私人感情戏，必须围绕末日压力、怪物威胁、资源分配、道德困境或势力选择展开。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -236,8 +203,8 @@
       "uid": 60,
       "key": [],
       "keysecondary": [],
-      "comment": "支线-焦虑",
-      "content": "焦虑\n相关人物: 石井雄介\n触发: {{user}} 受伤、感染风险上升、沿江医院缺药，或石井要求搜刮医疗物资。\n第一段: 入场券不是钱，可能是药、纱布、燃料、劳力、守夜、清创室帮工。石井会先判断 {{user}} 值不值得占床。\n第二段: 医疗资源冲突升级：一名暴露者需要隔离，一名孩子需要退烧药，一名搜刮者要求优先治疗。\n核心选择: 交物资换治疗、帮石井执行冷酷分诊、偷药救人、找韦斯特换检测方案、把沿江规则公开挑战。\n后果: 遵守沿江规则能换稳定医疗入口；偷药会救个体但损害营地；挑战规则可能逼石井承认例外。\n变量提示: 更新 npcs.ishii_yusuke.trust、factions.riverside_hospital.trust、survival.health/infection_risk。\n支线不得写成私人感情戏，必须围绕末日压力、怪物威胁、资源分配、道德困境或势力选择展开。",
+      "comment": "人物支线-上帝是否动摇",
+      "content": "人物支线-上帝是否动摇\n相关人物: 牧师\n触发: 学联孩子死亡、临终陪伴、避难点恐慌、牧师请求 {{user}} 寻药或护送孩子。\n第一段: 牧师不是给答案的人，而是让人撑过今晚的人。他会请 {{user}} 做一件很实际的事：找退烧药、带回遗物、护送孩子、阻止失控祷告集会。\n第二段: 信仰与现实冲突。有人要求奇迹，有人要求放弃病童，有人想用宗教话术掩盖错误决定。\n核心选择: 帮牧师保住人心、揭穿虚假安慰、优先实际资源、在徐银和牧师之间调停。\n后果: 稳定人心会让学联更能行动；戳破信念可能短期崩溃但减少盲从；牧师会因 {{user}} 的选择改变说话方式。\n变量提示: 更新 npcs.pastor.side_quest、factions.student_union.notes、survival.mental_pressure。\n支线不得写成私人感情戏，必须围绕末日压力、怪物威胁、资源分配、道德困境或势力选择展开。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -269,8 +236,8 @@
       "uid": 61,
       "key": [],
       "keysecondary": [],
-      "comment": "支线-抉择",
-      "content": "抉择\n相关人物: 莎拉\n触发: 沿江搜刮队失联、药品清单中断、莎拉请求 {{user}} 参与救援或回收。\n第一段: 目标不是英雄救援，而是带回能让医院继续运转的东西：抗生素、纱布、燃料、床架零件、发电机配件。\n第二段: 搜刮队遭遇怪物，队员重伤无法移动，药箱和伤员不可能都安全带走。\n核心选择: 保药、保伤员、保队伍、引开怪物、放弃路线、请求兄弟会协助。\n后果: 保药救更多未来病人但牺牲眼前人；保伤员会让医院短期断供；莎拉不会轻易原谅漂亮话，只看结果。\n变量提示: 更新 npcs.sarah.side_quest、inventory.normal_items、factions.riverside_hospital.notes。\n支线不得写成私人感情戏，必须围绕末日压力、怪物威胁、资源分配、道德困境或势力选择展开。",
+      "comment": "人物支线-焦虑",
+      "content": "人物支线-焦虑\n相关人物: 石井雄介\n触发: {{user}} 受伤、感染风险上升、沿江医院缺药，或石井要求搜刮医疗物资。\n第一段: 入场券不是钱，可能是药、纱布、燃料、劳力、守夜、清创室帮工。石井会先判断 {{user}} 值不值得占床。\n第二段: 医疗资源冲突升级：一名暴露者需要隔离，一名孩子需要退烧药，一名搜刮者要求优先治疗。\n核心选择: 交物资换治疗、帮石井执行冷酷分诊、偷药救人、找韦斯特换检测方案、把沿江规则公开挑战。\n后果: 遵守沿江规则能换稳定医疗入口；偷药会救个体但损害营地；挑战规则可能逼石井承认例外。\n变量提示: 更新 npcs.ishii_yusuke.trust、factions.riverside_hospital.trust、survival.health/infection_risk。\n支线不得写成私人感情戏，必须围绕末日压力、怪物威胁、资源分配、道德困境或势力选择展开。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -302,8 +269,8 @@
       "uid": 62,
       "key": [],
       "keysecondary": [],
-      "comment": "支线-账本里的死路",
-      "content": "账本里的死路\n相关人物: 卡尔·J·雷耶斯\n触发: {{user}} 与兄弟会交易路线、购买情报、护送货物，或发现卡尔隐瞒路线风险。\n第一段: 卡尔卖的是可控风险。他会给 {{user}} 一条看似划算的路线，并提醒“便宜的路通常已经死人”。\n第二段: {{user}} 发现账本里缺了一段：怪物迁移、军方巡查、塌陷隧道、卢卡斯派失踪队伍。\n核心选择: 揭穿卡尔、替他补全风险继续交易、把路线卖给新都或沿江、用账本换卢卡斯合作。\n后果: 揭穿会动摇卡尔派信誉；合作可获得稳定交易入口；背叛会让兄弟会长期提价或设套。\n变量提示: 更新 npcs.carl_j_reyes.trust、factions.laiyi_brotherhood.internal_balance、quests.completed/failed。\n支线不得写成私人感情戏，必须围绕末日压力、怪物威胁、资源分配、道德困境或势力选择展开。",
+      "comment": "人物支线-抉择",
+      "content": "人物支线-抉择\n相关人物: 莎拉\n触发: 沿江搜刮队失联、药品清单中断、莎拉请求 {{user}} 参与救援或回收。\n第一段: 目标不是英雄救援，而是带回能让医院继续运转的东西：抗生素、纱布、燃料、床架零件、发电机配件。\n第二段: 搜刮队遭遇怪物，队员重伤无法移动，药箱和伤员不可能都安全带走。\n核心选择: 保药、保伤员、保队伍、引开怪物、放弃路线、请求兄弟会协助。\n后果: 保药救更多未来病人但牺牲眼前人；保伤员会让医院短期断供；莎拉不会轻易原谅漂亮话，只看结果。\n变量提示: 更新 npcs.sarah.side_quest、inventory.normal_items、factions.riverside_hospital.notes。\n支线不得写成私人感情戏，必须围绕末日压力、怪物威胁、资源分配、道德困境或势力选择展开。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -335,8 +302,8 @@
       "uid": 63,
       "key": [],
       "keysecondary": [],
-      "comment": "支线-不该进去的地方",
-      "content": "不该进去的地方\n相关人物: 卢卡斯·卡雷\n触发: {{user}} 接受卢卡斯高危路线、进入联邦沦陷区边缘，或寻找奇怪的刀。\n第一段: 卢卡斯带队进入一处不该进去的设施：塌陷医院、联邦仓库、地下通道、旧实验转运点均可。\n第二段: 队伍拿到真正值钱的东西，也唤醒或引来更高阶威胁。卢卡斯会把继续深入说得很有道理。\n核心选择: 跟他深入、强行撤退、救队员、抢关键物、把发现交给卡尔压制卢卡斯派。\n后果: 深入可能获得奇怪的刀和主线线索；撤退保命但错失机会；抢物会触发兄弟会内部对立。\n变量提示: 更新 npcs.lucas_carre.trust、mainline.key_items.strange_knife、factions.laiyi_brotherhood.internal_balance。\n支线不得写成私人感情戏，必须围绕末日压力、怪物威胁、资源分配、道德困境或势力选择展开。",
+      "comment": "人物支线-账本里的死路",
+      "content": "人物支线-账本里的死路\n相关人物: 卡尔·J·雷耶斯\n触发: {{user}} 与兄弟会交易路线、购买情报、护送货物，或发现卡尔隐瞒路线风险。\n第一段: 卡尔卖的是可控风险。他会给 {{user}} 一条看似划算的路线，并提醒“便宜的路通常已经死人”。\n第二段: {{user}} 发现账本里缺了一段：怪物迁移、军方巡查、塌陷隧道、卢卡斯派失踪队伍。\n核心选择: 揭穿卡尔、替他补全风险继续交易、把路线卖给新都或沿江、用账本换卢卡斯合作。\n后果: 揭穿会动摇卡尔派信誉；合作可获得稳定交易入口；背叛会让兄弟会长期提价或设套。\n变量提示: 更新 npcs.carl_j_reyes.trust、factions.laiyi_brotherhood.internal_balance、quests.completed/failed。\n支线不得写成私人感情戏，必须围绕末日压力、怪物威胁、资源分配、道德困境或势力选择展开。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -366,6 +333,237 @@
     },
     "64": {
       "uid": 64,
+      "key": [],
+      "keysecondary": [],
+      "comment": "人物支线-不该进去的地方",
+      "content": "人物支线-不该进去的地方\n相关人物: 卢卡斯·卡雷\n触发: {{user}} 接受卢卡斯高危路线、进入联邦沦陷区边缘，或寻找奇怪的刀。\n第一段: 卢卡斯带队进入一处不该进去的设施：塌陷医院、联邦仓库、地下通道、旧实验转运点均可。\n第二段: 队伍拿到真正值钱的东西，也唤醒或引来更高阶威胁。卢卡斯会把继续深入说得很有道理。\n核心选择: 跟他深入、强行撤退、救队员、抢关键物、把发现交给卡尔压制卢卡斯派。\n后果: 深入可能获得奇怪的刀和主线线索；撤退保命但错失机会；抢物会触发兄弟会内部对立。\n变量提示: 更新 npcs.lucas_carre.trust、mainline.key_items.strange_knife、factions.laiyi_brotherhood.internal_balance。\n支线不得写成私人感情戏，必须围绕末日压力、怪物威胁、资源分配、道德困境或势力选择展开。",
+      "constant": false,
+      "vectorized": false,
+      "selective": false,
+      "selectiveLogic": 0,
+      "addMemo": true,
+      "order": 400,
+      "position": 0,
+      "disable": true,
+      "enabled": false,
+      "prevent_recursion": true,
+      "delay_until_recursion": false,
+      "probability": 100,
+      "depth": 4,
+      "group": "",
+      "group_override": false,
+      "group_weight": 100,
+      "scan_depth": null,
+      "case_sensitive": false,
+      "match_whole_words": false,
+      "use_group_scoring": false,
+      "automation_id": "",
+      "role": 0,
+      "sticky": 0,
+      "cooldown": 0,
+      "delay": 0,
+      "display_index": 64
+    },
+    "65": {
+      "uid": 65,
+      "key": [],
+      "keysecondary": [],
+      "comment": "开局支线-山间猎场的夜视种",
+      "content": "开局支线-山间猎场的夜视种\n相关人物: 看火人\n触发: 选择\"看火人\"身份开局后自动激活。\n第一段: 下山途中经过废弃山林猎场，夜里有东西在反跟踪瞭望塔下来的路线——一只夜视种在树线间无声移动，停在废弃猎屋的阴影边缘观察玩家。\n第二段: 猎屋内有残留的受害者遗物和一具被拖进来的半具动物尸体，夜视种利用白日蛰伏特性藏在附近密林。\n核心选择: 趁天亮搜猎屋获取线索后撤离；设陷阱伏击夜视种；标记位置后绕行下山。\n后果: 搜猎屋可获得旧猎人的弹药与地图残片，但可能惊动蛰伏在附近的夜视种；设伏成功可了解夜视种弱点，失败会消耗弹药并暴露营地位置；标记绕行安全但会失去猎屋补给线索。\n变量提示: 更新 monster_knowledge.encountered_types 添加\"夜视种\"，inventory 增减物资，quests.completed 添加\"山间猎场的夜视种\"。\n支线不得写成私人感情戏，必须围绕末日压力、怪物威胁、资源分配、道德困境或势力选择展开。",
+      "constant": false,
+      "vectorized": false,
+      "selective": false,
+      "selectiveLogic": 0,
+      "addMemo": true,
+      "order": 400,
+      "position": 0,
+      "disable": true,
+      "enabled": false,
+      "prevent_recursion": true,
+      "delay_until_recursion": false,
+      "probability": 100,
+      "depth": 4,
+      "group": "",
+      "group_override": false,
+      "group_weight": 100,
+      "scan_depth": null,
+      "case_sensitive": false,
+      "match_whole_words": false,
+      "use_group_scoring": false,
+      "automation_id": "",
+      "role": 0,
+      "sticky": 0,
+      "cooldown": 0,
+      "delay": 0,
+      "display_index": 65
+    },
+    "66": {
+      "uid": 66,
+      "key": [],
+      "keysecondary": [],
+      "comment": "开局支线-被洗劫的物资中转点",
+      "content": "开局支线-被洗劫的物资中转点\n相关人物: 野外生存博主\n触发: 选择\"野外生存博主\"身份开局后自动激活。\n第一段: 前往隧道途中发现运输队的秘密物资中转点已被破坏——补给箱被撕裂，物资散落在一处浅水坑周围，数只食腐种正聚集在水源边进食残骸。\n第二段: 中转点仍有一些未被毁坏的补给，但食腐种数量较多且被气味吸引，任何大动作都会惊动它们。\n核心选择: 潜行搜刮少量物资撤离；投掷食物或噪声引开食腐种；利用地势制造障碍分隔食腐群后快速取物。\n后果: 潜行搜刮可获得部分补给品但增加暴露风险；投掷引开能安全获取更多物资但消耗自身储备；设置障碍分隔快速取物效率最高，但判断失误会被包围。\n变量提示: 更新 monster_knowledge.encountered_types 添加\"食腐种\"，inventory.normal_items 增减食物或工具，quests.completed 添加\"被洗劫的物资中转点\"。\n支线不得写成私人感情戏，必须围绕末日压力、怪物威胁、资源分配、道德困境或势力选择展开。",
+      "constant": false,
+      "vectorized": false,
+      "selective": false,
+      "selectiveLogic": 0,
+      "addMemo": true,
+      "order": 400,
+      "position": 0,
+      "disable": true,
+      "enabled": false,
+      "prevent_recursion": true,
+      "delay_until_recursion": false,
+      "probability": 100,
+      "depth": 4,
+      "group": "",
+      "group_override": false,
+      "group_weight": 100,
+      "scan_depth": null,
+      "case_sensitive": false,
+      "match_whole_words": false,
+      "use_group_scoring": false,
+      "automation_id": "",
+      "role": 0,
+      "sticky": 0,
+      "cooldown": 0,
+      "delay": 0,
+      "display_index": 66
+    },
+    "67": {
+      "uid": 67,
+      "key": [],
+      "keysecondary": [],
+      "comment": "开局支线-哨站铁丝网外的潜伏者",
+      "content": "开局支线-哨站铁丝网外的潜伏者\n相关人物: 边境哨站合同医生\n触发: 选择\"边境哨站合同医生\"身份开局后自动激活。\n第一段: 离开哨站前往11区的公路上遭遇昨夜铁丝网外的那只奔跑种——它正在公路正中央做蓄力观察，身体低伏，肌腱紧绷，还没决定冲刺。\n第二段: 奔跑种背后是废弃检查站，内部可能有防疫军遗留的装备和记录，但它守在唯一通道上。\n核心选择: 利用蓄力窗口快速穿过冲向检查站内；绕行从侧窗进入检查站；利用哨站急救物资制造刺激性气雾迫使奔跑种转移。\n后果: 快速穿过可进入检查站获取防疫军物资和旧撤离记录，但动作稍慢会被冲刺撞击；绕行耗时更多但安全；刺激性气雾能短期驱离奔跑种，但会消耗医疗物资。\n变量提示: 更新 monster_knowledge.encountered_types 添加\"奔跑种\"，inventory 增减物资，quests.completed 添加\"哨站铁丝网外的潜伏者\"。\n支线不得写成私人感情戏，必须围绕末日压力、怪物威胁、资源分配、道德困境或势力选择展开。",
+      "constant": false,
+      "vectorized": false,
+      "selective": false,
+      "selectiveLogic": 0,
+      "addMemo": true,
+      "order": 400,
+      "position": 0,
+      "disable": true,
+      "enabled": false,
+      "prevent_recursion": true,
+      "delay_until_recursion": false,
+      "probability": 100,
+      "depth": 4,
+      "group": "",
+      "group_override": false,
+      "group_weight": 100,
+      "scan_depth": null,
+      "case_sensitive": false,
+      "match_whole_words": false,
+      "use_group_scoring": false,
+      "automation_id": "",
+      "role": 0,
+      "sticky": 0,
+      "cooldown": 0,
+      "delay": 0,
+      "display_index": 67
+    },
+    "68": {
+      "uid": 68,
+      "key": [],
+      "keysecondary": [],
+      "comment": "开局支线-雪地冲刺的路标",
+      "content": "开局支线-雪地冲刺的路标\n相关人物: 极地科考越冬队员\n触发: 选择\"极地科考越冬队员\"身份开局后自动激活。\n第一段: 向南行进时，观测站外雪地上的异常脚印在废弃气象站附近变成奔跑种的冲刺轨迹——它用高速直线突进穿过开阔雪原，轨迹末端散落着被撞碎的旧设备。\n第二段: 废弃气象站内部有可用设备、数据和少量燃料，但奔跑种可能折返，且建筑结构因低温变得脆弱。\n核心选择: 趁冲刺轨迹方向远离时进站搜刮；利用冰面制造滑倒陷阱削弱奔跑种后对峙；点燃气象站残存燃料制造热信号引开它。\n后果: 进站可获得气象数据、科考站补给和低温线索；滑倒陷阱能有效限制奔跑种但需判断准确的归返时机；点火驱离消耗宝贵的燃料但最安全。\n变量提示: 更新 monster_knowledge.encountered_types 添加\"奔跑种\"，inventory.key_items 可能增加低温区域记录，quests.completed 添加\"雪地冲刺的路标\"。\n支线不得写成私人感情戏，必须围绕末日压力、怪物威胁、资源分配、道德困境或势力选择展开。",
+      "constant": false,
+      "vectorized": false,
+      "selective": false,
+      "selectiveLogic": 0,
+      "addMemo": true,
+      "order": 400,
+      "position": 0,
+      "disable": true,
+      "enabled": false,
+      "prevent_recursion": true,
+      "delay_until_recursion": false,
+      "probability": 100,
+      "depth": 4,
+      "group": "",
+      "group_override": false,
+      "group_weight": 100,
+      "scan_depth": null,
+      "case_sensitive": false,
+      "match_whole_words": false,
+      "use_group_scoring": false,
+      "automation_id": "",
+      "role": 0,
+      "sticky": 0,
+      "cooldown": 0,
+      "delay": 0,
+      "display_index": 68
+    },
+    "69": {
+      "uid": 69,
+      "key": [],
+      "keysecondary": [],
+      "comment": "开局支线-旧矿口的拖痕",
+      "content": "开局支线-旧矿口的拖痕\n相关人物: 深山巡护员\n触发: 选择\"深山巡护员\"身份开局后自动激活。\n第一段: 顺着足迹追踪到旧矿洞口，拖痕和散落的骨骼碎片表明一只夜视种在此筑巢。洞外有被反复碾压过的蕨类植物——它在白日蛰伏于矿道深处，夜晚才出洞活动。\n第二段: 矿道内部有前一批搜索者遗留的装备，以及矿壁上的旧联邦调查标记。\n核心选择: 趁白日进洞快速取走遗留装备后封堵洞口；在洞口设捕兽夹与砍刀伏击夜视种；标记位置沿旧林道下山通报。\n后果: 进洞可取回弹药、巡护日志补全线索和联邦标记照片，但矿道内可能不止一只夜视种；设伏能了解夜视种弱点且有机会清剿巢穴，但失败会消耗陷阱与弹药；标记下山安全但失去先手优势。\n变量提示: 更新 monster_knowledge.encountered_types 添加\"夜视种\"，inventory 增减物资，quests.completed 添加\"旧矿口的拖痕\"。\n支线不得写成私人感情戏，必须围绕末日压力、怪物威胁、资源分配、道德困境或势力选择展开。",
+      "constant": false,
+      "vectorized": false,
+      "selective": false,
+      "selectiveLogic": 0,
+      "addMemo": true,
+      "order": 400,
+      "position": 0,
+      "disable": true,
+      "enabled": false,
+      "prevent_recursion": true,
+      "delay_until_recursion": false,
+      "probability": 100,
+      "depth": 4,
+      "group": "",
+      "group_override": false,
+      "group_weight": 100,
+      "scan_depth": null,
+      "case_sensitive": false,
+      "match_whole_words": false,
+      "use_group_scoring": false,
+      "automation_id": "",
+      "role": 0,
+      "sticky": 0,
+      "cooldown": 0,
+      "delay": 0,
+      "display_index": 69
+    },
+    "70": {
+      "uid": 70,
+      "key": [],
+      "keysecondary": [],
+      "comment": "开局支线-礁石区溺水者",
+      "content": "开局支线-礁石区溺水者\n相关人物: 海岛灯塔看守\n触发: 选择\"海岛灯塔看守\"身份开局后自动激活。\n第一段: 离岛小艇行至礁石区时，一具仍能微弱活动的浸水感染者被潮水推向船侧——它的皮肤半透明发白，颈部挂着无法辨认的识别牌残片。\n第二段: 远处礁石上还有更多被冲散的漂浮物：木箱、救生衣碎片、一只浸水的军用背包。\n核心选择: 用桨推开感染者绕行靠岸；将其拖到礁石上检查识别牌残片；利用信号枪惊吓它远离后快速搜刮漂浮物。\n后果: 绕行最安全但失去所有线索；拖上礁石检查可获得海军或军方遗留身份信息，但近距离接触增加感染风险；信号枪惊吓能清出安全搜刮窗口但消耗信号弹。\n变量提示: 更新 monster_knowledge.encountered_types 添加\"普通感染者\"，inventory.key_items 可能增加身份残片线索，quests.completed 添加\"礁石区溺水者\"。\n支线不得写成私人感情戏，必须围绕末日压力、怪物威胁、资源分配、道德困境或势力选择展开。",
+      "constant": false,
+      "vectorized": false,
+      "selective": false,
+      "selectiveLogic": 0,
+      "addMemo": true,
+      "order": 400,
+      "position": 0,
+      "disable": true,
+      "enabled": false,
+      "prevent_recursion": true,
+      "delay_until_recursion": false,
+      "probability": 100,
+      "depth": 4,
+      "group": "",
+      "group_override": false,
+      "group_weight": 100,
+      "scan_depth": null,
+      "case_sensitive": false,
+      "match_whole_words": false,
+      "use_group_scoring": false,
+      "automation_id": "",
+      "role": 0,
+      "sticky": 0,
+      "cooldown": 0,
+      "delay": 0,
+      "display_index": 70
+    },
+    "71": {
+      "uid": 71,
       "key": [
         "请根据以下提供的信息开局"
       ],
@@ -399,10 +597,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 64
+      "display_index": 71
     },
-    "65": {
-      "uid": 65,
+    "72": {
+      "uid": 72,
       "key": [],
       "keysecondary": [],
       "comment": "[EJS]区域事件判定池",
@@ -432,14 +630,14 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 65
+      "display_index": 72
     },
-    "66": {
-      "uid": 66,
+    "73": {
+      "uid": 73,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-努尔山脉-山雾迷路",
-      "content": "区域事件-努尔山脉-山雾迷路\n地区: 努尔山脉\n触发画面: 山雾压低能见度，旧巡护道和兽道混在一起，路标上的油漆被潮气泡开。\n核心矛盾: 等雾会消耗体温和时间，硬走可能偏离路线并撞进感染者活动区。\n可互动对象: 巡护木桩、湿软脚印、断裂路标、山坡高点、远处水声。\n处理方向: {{user}} 可原地等雾、爬高辨向、沿水声走、做临时标记后回撤，或冒险穿林抢时间。\n收益/代价: 判断正确可节省路程或发现旧巡护点；判断错误会增加疲劳、迷路风险和物资消耗。\n变量提示: 可更新 user_profile.current_location、survival.fatigue、inventory.items、world_time.major_events。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-努尔山脉-山雾迷路。完成后不得再次触发。",
+      "content": "区域事件-努尔山脉-山雾迷路\n地区: 努尔山脉\n触发画面: 山雾压低能见度，旧巡护道和兽道混在一起，路标上的油漆被潮气泡开。\n核心矛盾: 等雾会消耗体温和时间，硬走可能偏离路线并撞进感染者活动区。\n可互动对象: 巡护木桩、湿软脚印、断裂路标、山坡高点、远处水声。\n处理方向: {{user}} 可原地等雾、爬高辨向、沿水声走、做临时标记后回撤，或冒险穿林抢时间。\n收益/代价: 判断正确可节省路程或发现旧巡护点；判断错误会增加疲劳、迷路风险和物资消耗。\n变量提示: 可更新 user_profile.current_location、survival.fatigue、inventory.normal_items、inventory.weapons_ammo、inventory.key_items、world_time.major_events。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-努尔山脉-山雾迷路。完成后不得再次触发。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -465,14 +663,14 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 66
+      "display_index": 73
     },
-    "67": {
-      "uid": 67,
+    "74": {
+      "uid": 74,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-努尔山脉-污染溪流",
-      "content": "区域事件-努尔山脉-污染溪流\n地区: 努尔山脉\n触发画面: 溪水看似清澈，岸边却有小动物尸体和黑色絮状物挂在石缝里。\n核心矛盾: 队伍需要水，但污染源可能来自上游感染体或研究残留。\n可互动对象: 溪流、尸体、简易滤水器、上游痕迹、沉在水底的金属牌。\n处理方向: {{user}} 可过滤煮沸、放弃取水、追查上游、采样封存，或冒险饮用换取短期续航。\n收益/代价: 处理稳妥可获得安全水源或污染线索；处理粗糙会提高感染风险、口渴压力或损坏滤水工具。\n变量提示: 可更新 survival.hunger_thirst、survival.infection_risk、inventory.items、monster_knowledge.notes。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-努尔山脉-污染溪流。完成后不得再次触发。",
+      "content": "区域事件-努尔山脉-污染溪流\n地区: 努尔山脉\n触发画面: 溪水看似清澈，岸边却有小动物尸体和黑色絮状物挂在石缝里。\n核心矛盾: 队伍需要水，但污染源可能来自上游感染体或研究残留。\n可互动对象: 溪流、尸体、简易滤水器、上游痕迹、沉在水底的金属牌。\n处理方向: {{user}} 可过滤煮沸、放弃取水、追查上游、采样封存，或冒险饮用换取短期续航。\n收益/代价: 处理稳妥可获得安全水源或污染线索；处理粗糙会提高感染风险、口渴压力或损坏滤水工具。\n变量提示: 可更新 survival.hunger_thirst、survival.infection_risk、inventory.normal_items、inventory.weapons_ammo、inventory.key_items、monster_knowledge.notes。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-努尔山脉-污染溪流。完成后不得再次触发。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -498,14 +696,14 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 67
+      "display_index": 74
     },
-    "68": {
-      "uid": 68,
+    "75": {
+      "uid": 75,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-努尔山脉-废弃猎屋",
-      "content": "区域事件-努尔山脉-废弃猎屋\n地区: 努尔山脉\n触发画面: 林中猎屋门半开，屋檐下挂着旧弹壳，门口陷阱被人近期重新布过。\n核心矛盾: 猎屋可能有补给，也可能是幸存者或怪物留下的诱饵。\n可互动对象: 门缝、猎夹、干粮箱、壁炉灰、被拖拽的血痕。\n处理方向: {{user}} 可搜屋、拆陷阱、留宿修整、绕屋观察，或直接撤离避免暴露。\n收益/代价: 可获得干粮、弹药或工具；也可能触发伏击、留下气味痕迹或引来夜视种。\n变量提示: 可更新 inventory.items、survival.fatigue、monster_knowledge.encountered_types、relationships。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-努尔山脉-废弃猎屋。完成后不得再次触发。",
+      "content": "区域事件-努尔山脉-废弃猎屋\n地区: 努尔山脉\n触发画面: 林中猎屋门半开，屋檐下挂着旧弹壳，门口陷阱被人近期重新布过。\n核心矛盾: 猎屋可能有补给，也可能是幸存者或怪物留下的诱饵。\n可互动对象: 门缝、猎夹、干粮箱、壁炉灰、被拖拽的血痕。\n处理方向: {{user}} 可搜屋、拆陷阱、留宿修整、绕屋观察，或直接撤离避免暴露。\n收益/代价: 可获得干粮、弹药或工具；也可能触发伏击、留下气味痕迹或引来夜视种。\n变量提示: 可更新 inventory.normal_items、inventory.weapons_ammo、inventory.key_items、survival.fatigue、monster_knowledge.encountered_types、relationships。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-努尔山脉-废弃猎屋。完成后不得再次触发。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -531,14 +729,14 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 68
+      "display_index": 75
     },
-    "69": {
-      "uid": 69,
+    "76": {
+      "uid": 76,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-努尔山脉-夜视种经过",
-      "content": "区域事件-努尔山脉-夜视种经过\n地区: 努尔山脉\n触发画面: 夜里有东西绕过火光和门缝，踩断枯枝后停住，没有立刻攻击。\n核心矛盾: 开火能争取主动，但声音会让山林里更多东西知道这里有人。\n可互动对象: 火堆、门缝、窗外影子、临时警戒线、旧式步枪或冷兵器。\n处理方向: {{user}} 可灭灯静止、反侦查、诱离、设陷阱，或开火逼退。\n收益/代价: 成功可获得夜视种行为线索；失败会受伤、暴露营地或消耗弹药。\n变量提示: 可更新 monster_knowledge.encountered_types、survival.health、inventory.items、world_time.major_events。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-努尔山脉-夜视种经过。完成后不得再次触发。",
+      "content": "区域事件-努尔山脉-夜视种经过\n地区: 努尔山脉\n触发画面: 夜里有东西绕过火光和门缝，踩断枯枝后停住，没有立刻攻击。\n核心矛盾: 开火能争取主动，但声音会让山林里更多东西知道这里有人。\n可互动对象: 火堆、门缝、窗外影子、临时警戒线、旧式步枪或冷兵器。\n处理方向: {{user}} 可灭灯静止、反侦查、诱离、设陷阱，或开火逼退。\n收益/代价: 成功可获得夜视种行为线索；失败会受伤、暴露营地或消耗弹药。\n变量提示: 可更新 monster_knowledge.encountered_types、survival.health、inventory.normal_items、inventory.weapons_ammo、inventory.key_items、world_time.major_events。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-努尔山脉-夜视种经过。完成后不得再次触发。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -564,14 +762,14 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 69
+      "display_index": 76
     },
-    "70": {
-      "uid": 70,
+    "77": {
+      "uid": 77,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-新都-配给争执",
-      "content": "区域事件-新都-配给争执\n地区: 新都\n触发画面: 配给队伍突然停住，有人指认前排私藏粮票，后面的人开始推搡。\n核心矛盾: 按规则处理能稳住秩序，但可能让真正挨饿的人被推出队伍。\n可互动对象: 粮票、配给箱、排队人群、仓储账本、索菲亚留下的复核标记。\n处理方向: {{user}} 可按规则处理、私下调解、交给安娜、请索菲亚查账，或趁乱保护某个弱者。\n收益/代价: 可提升新都信任或底层好感；偏袒会引发管理层警惕，粗暴处理会制造仇恨。\n变量提示: 可更新 factions.新都幸存者营地.trust、relationships、world_time.major_events、inventory.items。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-新都-配给争执。完成后不得再次触发。",
+      "content": "区域事件-新都-配给争执\n地区: 新都\n触发画面: 配给队伍突然停住，有人指认前排私藏粮票，后面的人开始推搡。\n核心矛盾: 按规则处理能稳住秩序，但可能让真正挨饿的人被推出队伍。\n可互动对象: 粮票、配给箱、排队人群、仓储账本、索菲亚留下的复核标记。\n处理方向: {{user}} 可按规则处理、私下调解、交给安娜、请索菲亚查账，或趁乱保护某个弱者。\n收益/代价: 可提升新都信任或底层好感；偏袒会引发管理层警惕，粗暴处理会制造仇恨。\n变量提示: 可更新 factions.新都幸存者营地.trust、relationships、world_time.major_events、inventory.normal_items、inventory.weapons_ammo、inventory.key_items。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-新都-配给争执。完成后不得再次触发。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -597,14 +795,14 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 70
+      "display_index": 77
     },
-    "71": {
-      "uid": 71,
+    "78": {
+      "uid": 78,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-新都-新人审查",
-      "content": "区域事件-新都-新人审查\n地区: 新都\n触发画面: 守门人要求外来者把包放到桌上，旁边有人盯着鞋底泥印判断来路。\n核心矛盾: 新都需要过滤风险，但审查也是剥夺外来者筹码的机会。\n可互动对象: 背包、临时登记表、守门人、试任务清单、隔离棚。\n处理方向: {{user}} 可提交物资、接受试任务、隐瞒关键物、拒绝搜查，或用情报换临时居住权。\n收益/代价: 配合可获得入城资格；强硬会失去信任，隐瞒被发现会留下长期污点。\n变量提示: 可更新 user_profile.current_goal、factions.新都幸存者营地.notes、inventory.items、story_flags。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-新都-新人审查。完成后不得再次触发。",
+      "content": "区域事件-新都-新人审查\n地区: 新都\n触发画面: 守门人要求外来者把包放到桌上，旁边有人盯着鞋底泥印判断来路。\n核心矛盾: 新都需要过滤风险，但审查也是剥夺外来者筹码的机会。\n可互动对象: 背包、临时登记表、守门人、试任务清单、隔离棚。\n处理方向: {{user}} 可提交物资、接受试任务、隐瞒关键物、拒绝搜查，或用情报换临时居住权。\n收益/代价: 配合可获得入城资格；强硬会失去信任，隐瞒被发现会留下长期污点。\n变量提示: 可更新 user_profile.current_goal、factions.新都幸存者营地.notes、inventory.normal_items、inventory.weapons_ammo、inventory.key_items、story_flags。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-新都-新人审查。完成后不得再次触发。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -630,10 +828,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 71
+      "display_index": 78
     },
-    "72": {
-      "uid": 72,
+    "79": {
+      "uid": 79,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-新都-墙外求救",
@@ -663,14 +861,14 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 72
+      "display_index": 79
     },
-    "73": {
-      "uid": 73,
+    "80": {
+      "uid": 80,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-新都-黑市交换",
-      "content": "区域事件-新都-黑市交换\n地区: 新都\n触发画面: 底层幸存者把 {{user}} 拉到棚屋背后，提出用药、弹药或路线换一个明显不合理的价码。\n核心矛盾: 黑市破坏分配秩序，却也是许多人绕开制度活下去的方式。\n可互动对象: 私藏药包、弹匣、手绘路线图、交易中间人、被遮住编号的配给袋。\n处理方向: {{user}} 可交易、举报、压价、追查货源，或反过来利用黑市传递假消息。\n收益/代价: 可获得急需物资或隐秘路线；也可能被索菲亚盯上、买到假货或欠下人情债。\n变量提示: 可更新 inventory.items、factions.新都幸存者营地.notes、relationships、current_goal。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-新都-黑市交换。完成后不得再次触发。",
+      "content": "区域事件-新都-黑市交换\n地区: 新都\n触发画面: 底层幸存者把 {{user}} 拉到棚屋背后，提出用药、弹药或路线换一个明显不合理的价码。\n核心矛盾: 黑市破坏分配秩序，却也是许多人绕开制度活下去的方式。\n可互动对象: 私藏药包、弹匣、手绘路线图、交易中间人、被遮住编号的配给袋。\n处理方向: {{user}} 可交易、举报、压价、追查货源，或反过来利用黑市传递假消息。\n收益/代价: 可获得急需物资或隐秘路线；也可能被索菲亚盯上、买到假货或欠下人情债。\n变量提示: 可更新 inventory.normal_items、inventory.weapons_ammo、inventory.key_items、factions.新都幸存者营地.notes、relationships、current_goal。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-新都-黑市交换。完成后不得再次触发。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -696,14 +894,14 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 73
+      "display_index": 80
     },
-    "74": {
-      "uid": 74,
+    "81": {
+      "uid": 81,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-11区-楼道声响",
-      "content": "区域事件-11区-楼道声响\n地区: 11区\n触发画面: 废楼楼道深处传来低声拖动，像人在搬东西，也像感染者拖着腿。\n核心矛盾: 楼里可能有物资或幸存者，但声音会把搜索变成近距离遭遇。\n可互动对象: 楼梯间、防火门、散落背包、血脚印、能响的铁管。\n处理方向: {{user}} 可搜查、绕开、设陷阱、呼叫同伴，或制造远处声响诱出目标。\n收益/代价: 可获得物资、幸存者线索或怪物信息；失败会受伤、暴露路线或被困在楼内。\n变量提示: 可更新 inventory.items、survival.health、monster_knowledge.notes、user_profile.current_location。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-11区-楼道声响。完成后不得再次触发。",
+      "content": "区域事件-11区-楼道声响\n地区: 11区\n触发画面: 废楼楼道深处传来低声拖动，像人在搬东西，也像感染者拖着腿。\n核心矛盾: 楼里可能有物资或幸存者，但声音会把搜索变成近距离遭遇。\n可互动对象: 楼梯间、防火门、散落背包、血脚印、能响的铁管。\n处理方向: {{user}} 可搜查、绕开、设陷阱、呼叫同伴，或制造远处声响诱出目标。\n收益/代价: 可获得物资、幸存者线索或怪物信息；失败会受伤、暴露路线或被困在楼内。\n变量提示: 可更新 inventory.normal_items、inventory.weapons_ammo、inventory.key_items、survival.health、monster_knowledge.notes、user_profile.current_location。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-11区-楼道声响。完成后不得再次触发。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -729,14 +927,14 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 74
+      "display_index": 81
     },
-    "75": {
-      "uid": 75,
+    "82": {
+      "uid": 82,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-11区-幸存者陷阱",
-      "content": "区域事件-11区-幸存者陷阱\n地区: 11区\n触发画面: 街边求救声旁有绊线和诱饵尸体，窗户里有一点反光。\n核心矛盾: 这是劫掠陷阱，也可能是走投无路的人用来阻止怪物靠近的防线。\n可互动对象: 绊线、诱饵尸体、反光镜、楼上观察点、藏在暗处的幸存者。\n处理方向: {{user}} 可拆陷阱、反埋伏、直接绕开、喊话谈判，或把陷阱改造成防怪物装置。\n收益/代价: 可获得工具、情报或临时同盟；失败会受伤、损失物品或与本地幸存者结仇。\n变量提示: 可更新 survival.health、inventory.items、relationships、factions.沿江医院营地.notes。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-11区-幸存者陷阱。完成后不得再次触发。",
+      "content": "区域事件-11区-幸存者陷阱\n地区: 11区\n触发画面: 街边求救声旁有绊线和诱饵尸体，窗户里有一点反光。\n核心矛盾: 这是劫掠陷阱，也可能是走投无路的人用来阻止怪物靠近的防线。\n可互动对象: 绊线、诱饵尸体、反光镜、楼上观察点、藏在暗处的幸存者。\n处理方向: {{user}} 可拆陷阱、反埋伏、直接绕开、喊话谈判，或把陷阱改造成防怪物装置。\n收益/代价: 可获得工具、情报或临时同盟；失败会受伤、损失物品或与本地幸存者结仇。\n变量提示: 可更新 survival.health、inventory.normal_items、inventory.weapons_ammo、inventory.key_items、relationships、factions.沿江医院营地.notes。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-11区-幸存者陷阱。完成后不得再次触发。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -762,14 +960,14 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 75
+      "display_index": 82
     },
-    "76": {
-      "uid": 76,
+    "83": {
+      "uid": 83,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-11区-旧诊所残药",
-      "content": "区域事件-11区-旧诊所残药\n地区: 11区\n触发画面: 小诊所柜台后还有药盒，地上却有近期翻找痕迹和一张被踩脏的儿童处方。\n核心矛盾: 药品能救人，但拿走它可能断掉另一个幸存者的最后机会。\n可互动对象: 药柜、病例夹、冰箱、血迹、通往后巷的脚印。\n处理方向: {{user}} 可快速搜药、细查病例、联系沿江医院营地、留下部分药，或追踪最近来过的人。\n收益/代价: 可获得医疗物资或感染线索；贪拿会降低后续求助空间，拖延会引来感染者。\n变量提示: 可更新 inventory.items、survival.infection_risk、factions.沿江医院营地.trust、story_flags。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-11区-旧诊所残药。完成后不得再次触发。",
+      "content": "区域事件-11区-旧诊所残药\n地区: 11区\n触发画面: 小诊所柜台后还有药盒，地上却有近期翻找痕迹和一张被踩脏的儿童处方。\n核心矛盾: 药品能救人，但拿走它可能断掉另一个幸存者的最后机会。\n可互动对象: 药柜、病例夹、冰箱、血迹、通往后巷的脚印。\n处理方向: {{user}} 可快速搜药、细查病例、联系沿江医院营地、留下部分药，或追踪最近来过的人。\n收益/代价: 可获得医疗物资或感染线索；贪拿会降低后续求助空间，拖延会引来感染者。\n变量提示: 可更新 inventory.normal_items、inventory.weapons_ammo、inventory.key_items、survival.infection_risk、factions.沿江医院营地.trust、story_flags。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-11区-旧诊所残药。完成后不得再次触发。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -795,14 +993,14 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 76
+      "display_index": 83
     },
-    "77": {
-      "uid": 77,
+    "84": {
+      "uid": 84,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-11区-废车堵路",
-      "content": "区域事件-11区-废车堵路\n地区: 11区\n触发画面: 废车和尸体堵住通路，车厢里有油味，远处感染者正被金属敲击声吸引。\n核心矛盾: 清路能节省路线，但任何大动作都会制造声音和气味。\n可互动对象: 废车、油箱、后备箱、尸体堆、可推开的路障。\n处理方向: {{user}} 可清障、搜车、改道、引开感染者，或用车辆做临时 barricade。\n收益/代价: 可得到燃料、工具或新路线；也可能耗体力、引发追逐或堵死回头路。\n变量提示: 可更新 user_profile.current_location、inventory.items、survival.fatigue、world_time.major_events。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-11区-废车堵路。完成后不得再次触发。",
+      "content": "区域事件-11区-废车堵路\n地区: 11区\n触发画面: 废车和尸体堵住通路，车厢里有油味，远处感染者正被金属敲击声吸引。\n核心矛盾: 清路能节省路线，但任何大动作都会制造声音和气味。\n可互动对象: 废车、油箱、后备箱、尸体堆、可推开的路障。\n处理方向: {{user}} 可清障、搜车、改道、引开感染者，或用车辆做临时 barricade。\n收益/代价: 可得到燃料、工具或新路线；也可能耗体力、引发追逐或堵死回头路。\n变量提示: 可更新 user_profile.current_location、inventory.normal_items、inventory.weapons_ammo、inventory.key_items、survival.fatigue、world_time.major_events。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-11区-废车堵路。完成后不得再次触发。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -828,10 +1026,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 77
+      "display_index": 84
     },
-    "78": {
-      "uid": 78,
+    "85": {
+      "uid": 85,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-11区-急诊插队",
@@ -861,14 +1059,14 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 78
+      "display_index": 85
     },
-    "79": {
-      "uid": 79,
+    "86": {
+      "uid": 86,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-11区-药柜清点",
-      "content": "区域事件-11区-药柜清点\n地区: 11区\n触发画面: 药柜封条完整，但抗生素和镇静剂数量对不上，登记本最后一页被撕掉。\n核心矛盾: 失药者可能是小偷，也可能是在私下救一个没资格上床位的人。\n可互动对象: 药柜、登记本、监控残片、值班护士、被隔离的伤员家属。\n处理方向: {{user}} 可查账、追小偷、补物资、替人隐瞒，或把药品流向作为交换筹码。\n收益/代价: 可获得医疗资源、医院信任或隐藏病例线索；公开处理会制造恐慌，隐瞒会留下把柄。\n变量提示: 可更新 factions.沿江医院营地.trust、inventory.items、relationships、story_flags。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-11区-药柜清点。完成后不得再次触发。",
+      "content": "区域事件-11区-药柜清点\n地区: 11区\n触发画面: 药柜封条完整，但抗生素和镇静剂数量对不上，登记本最后一页被撕掉。\n核心矛盾: 失药者可能是小偷，也可能是在私下救一个没资格上床位的人。\n可互动对象: 药柜、登记本、监控残片、值班护士、被隔离的伤员家属。\n处理方向: {{user}} 可查账、追小偷、补物资、替人隐瞒，或把药品流向作为交换筹码。\n收益/代价: 可获得医疗资源、医院信任或隐藏病例线索；公开处理会制造恐慌，隐瞒会留下把柄。\n变量提示: 可更新 factions.沿江医院营地.trust、inventory.normal_items、inventory.weapons_ammo、inventory.key_items、relationships、story_flags。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-11区-药柜清点。完成后不得再次触发。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -894,10 +1092,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 79
+      "display_index": 86
     },
-    "80": {
-      "uid": 80,
+    "87": {
+      "uid": 87,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-11区-暴露者隔离",
@@ -927,14 +1125,14 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 80
+      "display_index": 87
     },
-    "81": {
-      "uid": 81,
+    "88": {
+      "uid": 88,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-11区-手术缺材料",
-      "content": "区域事件-11区-手术缺材料\n地区: 11区\n触发画面: 手术做到一半，纱布、酒精、燃料或抗生素缺口突然暴露，石井没有时间再骂人。\n核心矛盾: 临时替代能救眼前的人，但会增加后遗症和感染风险。\n可互动对象: 手术台、清单、仓库钥匙、备用酒精、外出搜刮路线。\n处理方向: {{user}} 可去仓库、外出搜刮、拆别处物资临时替代、献出自有药品，或放弃手术保住更多资源。\n收益/代价: 可救下伤员并提高医院信任；失败会造成死亡、消耗稀缺物资或影响 {{user}} 自身治疗机会。\n变量提示: 可更新 survival.health、inventory.items、factions.沿江医院营地.trust、world_time.major_events。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-11区-手术缺材料。完成后不得再次触发。",
+      "content": "区域事件-11区-手术缺材料\n地区: 11区\n触发画面: 手术做到一半，纱布、酒精、燃料或抗生素缺口突然暴露，石井没有时间再骂人。\n核心矛盾: 临时替代能救眼前的人，但会增加后遗症和感染风险。\n可互动对象: 手术台、清单、仓库钥匙、备用酒精、外出搜刮路线。\n处理方向: {{user}} 可去仓库、外出搜刮、拆别处物资临时替代、献出自有药品，或放弃手术保住更多资源。\n收益/代价: 可救下伤员并提高医院信任；失败会造成死亡、消耗稀缺物资或影响 {{user}} 自身治疗机会。\n变量提示: 可更新 survival.health、inventory.normal_items、inventory.weapons_ammo、inventory.key_items、factions.沿江医院营地.trust、world_time.major_events。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-11区-手术缺材料。完成后不得再次触发。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -960,14 +1158,14 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 81
+      "display_index": 88
     },
-    "82": {
-      "uid": 82,
+    "89": {
+      "uid": 89,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-11区郊外-样本报警",
-      "content": "区域事件-11区郊外-样本报警\n地区: 11区郊外\n触发画面: 韦斯特研究所冷链柜报警，样本标签和登记表编号不一致，值班研究员脸色很差。\n核心矛盾: 协助处理能保住研究资料，但也可能替研究所掩盖旧实验来源。\n可互动对象: 冷链柜、样本管、登记表、备用电源、研究员权限卡。\n处理方向: {{user}} 可协助转移、追查来源、要求韦斯特解释、封存证据，或立刻远离污染区。\n收益/代价: 可获得拓展 J 边缘线索或研究所信任；失败会造成样本污染、感染风险或资料被销毁。\n变量提示: 可更新 factions.韦斯特研究所.trust、survival.infection_risk、story_flags、inventory.items。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-11区郊外-样本报警。完成后不得再次触发。",
+      "content": "区域事件-11区郊外-样本报警\n地区: 11区郊外\n触发画面: 韦斯特研究所冷链柜报警，样本标签和登记表编号不一致，值班研究员脸色很差。\n核心矛盾: 协助处理能保住研究资料，但也可能替研究所掩盖旧实验来源。\n可互动对象: 冷链柜、样本管、登记表、备用电源、研究员权限卡。\n处理方向: {{user}} 可协助转移、追查来源、要求韦斯特解释、封存证据，或立刻远离污染区。\n收益/代价: 可获得拓展 J 边缘线索或研究所信任；失败会造成样本污染、感染风险或资料被销毁。\n变量提示: 可更新 factions.韦斯特研究所.trust、survival.infection_risk、story_flags、inventory.normal_items、inventory.weapons_ammo、inventory.key_items。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-11区郊外-样本报警。完成后不得再次触发。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -993,10 +1191,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 82
+      "display_index": 89
     },
-    "83": {
-      "uid": 83,
+    "90": {
+      "uid": 90,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-11区郊外-实验区断电",
@@ -1026,10 +1224,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 83
+      "display_index": 90
     },
-    "84": {
-      "uid": 84,
+    "91": {
+      "uid": 91,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-11区郊外-匿名病例档案",
@@ -1059,10 +1257,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 84
+      "display_index": 91
     },
-    "85": {
-      "uid": 85,
+    "92": {
+      "uid": 92,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-11区郊外-血样请求",
@@ -1092,14 +1290,14 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 85
+      "display_index": 92
     },
-    "86": {
-      "uid": 86,
+    "93": {
+      "uid": 93,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-封锁线-通行盘查",
-      "content": "区域事件-封锁线-通行盘查\n地区: 封锁线\n触发画面: 防疫军拦下 {{user}}，要求检查物资、伤口和路线来源，枪口没有完全放低。\n核心矛盾: 配合能换通行机会，但也可能失去关键物资或暴露不能说的来路。\n可互动对象: 检查桌、伤口记录、通行证、士兵、阿德勒签发的旧标记。\n处理方向: {{user}} 可配合、隐瞒、贿赂、出示证据、请求见阿德勒，或绕行避开检查。\n收益/代价: 可获得通行、军方信任或路线情报；失败会被扣押、没收物资或标记为高风险对象。\n变量提示: 可更新 factions.临时联邦防疫军.trust、inventory.items、user_profile.current_location、story_flags。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-封锁线-通行盘查。完成后不得再次触发。",
+      "content": "区域事件-封锁线-通行盘查\n地区: 封锁线\n触发画面: 防疫军拦下 {{user}}，要求检查物资、伤口和路线来源，枪口没有完全放低。\n核心矛盾: 配合能换通行机会，但也可能失去关键物资或暴露不能说的来路。\n可互动对象: 检查桌、伤口记录、通行证、士兵、阿德勒签发的旧标记。\n处理方向: {{user}} 可配合、隐瞒、贿赂、出示证据、请求见阿德勒，或绕行避开检查。\n收益/代价: 可获得通行、军方信任或路线情报；失败会被扣押、没收物资或标记为高风险对象。\n变量提示: 可更新 factions.临时联邦防疫军.trust、inventory.normal_items、inventory.weapons_ammo、inventory.key_items、user_profile.current_location、story_flags。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-封锁线-通行盘查。完成后不得再次触发。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -1125,10 +1323,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 86
+      "display_index": 93
     },
-    "87": {
-      "uid": 87,
+    "94": {
+      "uid": 94,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-封锁线-旧撤离名单",
@@ -1158,14 +1356,14 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 87
+      "display_index": 94
     },
-    "88": {
-      "uid": 88,
+    "95": {
+      "uid": 95,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-封锁线-枪声信号",
-      "content": "区域事件-封锁线-枪声信号\n地区: 封锁线\n触发画面: 远处短促枪声后出现求救灯号，节奏不像民用求救，也不像标准军号。\n核心矛盾: 接近可能救到人或拿到情报，也可能走进诱饵区。\n可互动对象: 灯号、枪声方向、旧壕沟、望远镜、可被引动的感染者群。\n处理方向: {{user}} 可接近、观望、绕开、反向设伏，或把怪物引向灯号源。\n收益/代价: 可获得武器、军方残片或幸存者；失败会陷入交火、暴露位置或造成无辜者死亡。\n变量提示: 可更新 inventory.items、survival.health、factions.临时联邦防疫军.notes、current_goal。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-封锁线-枪声信号。完成后不得再次触发。",
+      "content": "区域事件-封锁线-枪声信号\n地区: 封锁线\n触发画面: 远处短促枪声后出现求救灯号，节奏不像民用求救，也不像标准军号。\n核心矛盾: 接近可能救到人或拿到情报，也可能走进诱饵区。\n可互动对象: 灯号、枪声方向、旧壕沟、望远镜、可被引动的感染者群。\n处理方向: {{user}} 可接近、观望、绕开、反向设伏，或把怪物引向灯号源。\n收益/代价: 可获得武器、军方残片或幸存者；失败会陷入交火、暴露位置或造成无辜者死亡。\n变量提示: 可更新 inventory.normal_items、inventory.weapons_ammo、inventory.key_items、survival.health、factions.临时联邦防疫军.notes、current_goal。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-封锁线-枪声信号。完成后不得再次触发。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -1191,14 +1389,14 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 88
+      "display_index": 95
     },
-    "89": {
-      "uid": 89,
+    "96": {
+      "uid": 96,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-封锁线-无人哨卡",
-      "content": "区域事件-封锁线-无人哨卡\n地区: 封锁线\n触发画面: 哨卡无人但设备仍在运行，终端锁着旧命令缓存，杯子里的水还没完全干。\n核心矛盾: 这里刚被放弃不久，搜刮越久，越可能撞见回来的人或追来的东西。\n可互动对象: 终端、武器柜、无线电、岗哨日志、血迹被擦过的地板。\n处理方向: {{user}} 可搜物资、破译终端、破坏设备、快速离开，或留下假痕迹误导后续追兵。\n收益/代价: 可获得军方残片、补给或路线；失败会触发警报、招来巡逻或暴露 {{user}} 的行动轨迹。\n变量提示: 可更新 inventory.items、story_flags、factions.临时联邦防疫军.notes、user_profile.current_location。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-封锁线-无人哨卡。完成后不得再次触发。",
+      "content": "区域事件-封锁线-无人哨卡\n地区: 封锁线\n触发画面: 哨卡无人但设备仍在运行，终端锁着旧命令缓存，杯子里的水还没完全干。\n核心矛盾: 这里刚被放弃不久，搜刮越久，越可能撞见回来的人或追来的东西。\n可互动对象: 终端、武器柜、无线电、岗哨日志、血迹被擦过的地板。\n处理方向: {{user}} 可搜物资、破译终端、破坏设备、快速离开，或留下假痕迹误导后续追兵。\n收益/代价: 可获得军方残片、补给或路线；失败会触发警报、招来巡逻或暴露 {{user}} 的行动轨迹。\n变量提示: 可更新 inventory.normal_items、inventory.weapons_ammo、inventory.key_items、story_flags、factions.临时联邦防疫军.notes、user_profile.current_location。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-封锁线-无人哨卡。完成后不得再次触发。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -1224,10 +1422,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 89
+      "display_index": 96
     },
-    "90": {
-      "uid": 90,
+    "97": {
+      "uid": 97,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-联邦沦陷区-母巢气味",
@@ -1257,14 +1455,14 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 90
+      "display_index": 97
     },
-    "91": {
-      "uid": 91,
+    "98": {
+      "uid": 98,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-联邦沦陷区-毒气残留",
-      "content": "区域事件-联邦沦陷区-毒气残留\n地区: 联邦沦陷区\n触发画面: 低处残留刺激性气体，尸体姿态显示他们曾试图向高处爬。\n核心矛盾: 绕行安全但耗时，快速穿越可能保住路线却伤害身体。\n可互动对象: 低洼路面、尸体、防护布、火源、通风井。\n处理方向: {{user}} 可绕行、制作防护、快速穿越、点火测试，或利用地形把追来的怪物引入毒气区。\n收益/代价: 可节省路线或发现毒气种线索；失败会损伤健康、污染装备或堵死后续路线。\n变量提示: 可更新 survival.health、inventory.items、monster_knowledge.encountered_types、user_profile.current_location。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-联邦沦陷区-毒气残留。完成后不得再次触发。",
+      "content": "区域事件-联邦沦陷区-毒气残留\n地区: 联邦沦陷区\n触发画面: 低处残留刺激性气体，尸体姿态显示他们曾试图向高处爬。\n核心矛盾: 绕行安全但耗时，快速穿越可能保住路线却伤害身体。\n可互动对象: 低洼路面、尸体、防护布、火源、通风井。\n处理方向: {{user}} 可绕行、制作防护、快速穿越、点火测试，或利用地形把追来的怪物引入毒气区。\n收益/代价: 可节省路线或发现毒气种线索；失败会损伤健康、污染装备或堵死后续路线。\n变量提示: 可更新 survival.health、inventory.normal_items、inventory.weapons_ammo、inventory.key_items、monster_knowledge.encountered_types、user_profile.current_location。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-联邦沦陷区-毒气残留。完成后不得再次触发。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -1290,14 +1488,14 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 91
+      "display_index": 98
     },
-    "92": {
-      "uid": 92,
+    "99": {
+      "uid": 99,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-联邦沦陷区-融合型痕迹",
-      "content": "区域事件-联邦沦陷区-融合型痕迹\n地区: 联邦沦陷区\n触发画面: 墙体破裂和拖痕显示大型融合体刚经过，地上残留多组不属于同一身体的组织。\n核心矛盾: 追踪能了解高阶怪物，但也可能让 {{user}} 主动接近无法正面处理的目标。\n可互动对象: 拖痕、破墙、残骸、可倒塌结构、血肉组织样本。\n处理方向: {{user}} 可追踪、躲避、设警戒、搜残骸，或布置声音诱饵确认它的反应。\n收益/代价: 可更新融合型情报或获得样本；失败会遭遇重伤、装备损坏或暴露逃生路线。\n变量提示: 可更新 monster_knowledge.encountered_types、survival.health、inventory.items、story_flags。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-联邦沦陷区-融合型痕迹。完成后不得再次触发。",
+      "content": "区域事件-联邦沦陷区-融合型痕迹\n地区: 联邦沦陷区\n触发画面: 墙体破裂和拖痕显示大型融合体刚经过，地上残留多组不属于同一身体的组织。\n核心矛盾: 追踪能了解高阶怪物，但也可能让 {{user}} 主动接近无法正面处理的目标。\n可互动对象: 拖痕、破墙、残骸、可倒塌结构、血肉组织样本。\n处理方向: {{user}} 可追踪、躲避、设警戒、搜残骸，或布置声音诱饵确认它的反应。\n收益/代价: 可更新融合型情报或获得样本；失败会遭遇重伤、装备损坏或暴露逃生路线。\n变量提示: 可更新 monster_knowledge.encountered_types、survival.health、inventory.normal_items、inventory.weapons_ammo、inventory.key_items、story_flags。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-联邦沦陷区-融合型痕迹。完成后不得再次触发。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -1323,14 +1521,14 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 92
+      "display_index": 99
     },
-    "93": {
-      "uid": 93,
+    "100": {
+      "uid": 100,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-联邦沦陷区-失效冷库",
-      "content": "区域事件-联邦沦陷区-失效冷库\n地区: 联邦沦陷区\n触发画面: 冷库外层断电，内层还有微弱低温，门缝里结着不像普通霜的黑色晶粒。\n核心矛盾: 冷库可能保存黑光相关样本，也可能是早期事故的污染点。\n可互动对象: 冷库门、备用电源、温控表、样本架、韦斯特研究所旧标记。\n处理方向: {{user}} 可强开、找电源、标记位置、通知韦斯特，或先封住入口避免他人误入。\n收益/代价: 可获得黑光样本线索或关键物；失败会破坏冷链、释放污染或引来研究所和军方争夺。\n变量提示: 可更新 story_flags、mainline.active、inventory.items、factions.韦斯特研究所.notes。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-联邦沦陷区-失效冷库。完成后不得再次触发。",
+      "content": "区域事件-联邦沦陷区-失效冷库\n地区: 联邦沦陷区\n触发画面: 冷库外层断电，内层还有微弱低温，门缝里结着不像普通霜的黑色晶粒。\n核心矛盾: 冷库可能保存黑光相关样本，也可能是早期事故的污染点。\n可互动对象: 冷库门、备用电源、温控表、样本架、韦斯特研究所旧标记。\n处理方向: {{user}} 可强开、找电源、标记位置、通知韦斯特，或先封住入口避免他人误入。\n收益/代价: 可获得黑光样本线索或关键物；失败会破坏冷链、释放污染或引来研究所和军方争夺。\n变量提示: 可更新 story_flags、mainline.active、inventory.normal_items、inventory.weapons_ammo、inventory.key_items、factions.韦斯特研究所.notes。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-联邦沦陷区-失效冷库。完成后不得再次触发。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -1356,14 +1554,14 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 93
+      "display_index": 100
     },
-    "94": {
-      "uid": 94,
+    "101": {
+      "uid": 101,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-伊甸港-漂流箱",
-      "content": "区域事件-伊甸港-漂流箱\n地区: 伊甸港\n触发画面: 海面漂来密封箱，外壳有军方旧封条和冷藏警示，箱体还在规律滴水。\n核心矛盾: 箱子可能是补给，也可能是不该离开冷链的危险物。\n可互动对象: 密封箱、封条、冷藏警示、潮线、可用来拖拽的绳索。\n处理方向: {{user}} 可打捞、放任、埋藏、拆封，或先记录编号交给某个势力换情报。\n收益/代价: 可得到补给或主线边缘线索；失败会暴露位置、污染海岸或引发势力争夺。\n变量提示: 可更新 inventory.items、story_flags、factions.临时联邦防疫军.notes、current_goal。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-伊甸港-漂流箱。完成后不得再次触发。",
+      "content": "区域事件-伊甸港-漂流箱\n地区: 伊甸港\n触发画面: 海面漂来密封箱，外壳有军方旧封条和冷藏警示，箱体还在规律滴水。\n核心矛盾: 箱子可能是补给，也可能是不该离开冷链的危险物。\n可互动对象: 密封箱、封条、冷藏警示、潮线、可用来拖拽的绳索。\n处理方向: {{user}} 可打捞、放任、埋藏、拆封，或先记录编号交给某个势力换情报。\n收益/代价: 可得到补给或主线边缘线索；失败会暴露位置、污染海岸或引发势力争夺。\n变量提示: 可更新 inventory.normal_items、inventory.weapons_ammo、inventory.key_items、story_flags、factions.临时联邦防疫军.notes、current_goal。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-伊甸港-漂流箱。完成后不得再次触发。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -1389,10 +1587,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 94
+      "display_index": 101
     },
-    "95": {
-      "uid": 95,
+    "102": {
+      "uid": 102,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-伊甸港-雾中灯号",
@@ -1422,14 +1620,14 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 95
+      "display_index": 102
     },
-    "96": {
-      "uid": 96,
+    "103": {
+      "uid": 103,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-伊甸港-潮水封路",
-      "content": "区域事件-伊甸港-潮水封路\n地区: 伊甸港\n触发画面: 潮水切断礁石路，回灯塔或上岸都需要等时机，背包开始被海风浸湿。\n核心矛盾: 等待安全但耗资源，冒险涉水可能保住时机却丢掉装备。\n可互动对象: 潮汐线、礁石、背包、绳索、临时高点。\n处理方向: {{user}} 可冒险涉水、等待、绕行、丢弃负重，或用绳索建立返回点。\n收益/代价: 可保住路线或发现隐蔽入口；失败会增加疲劳、损坏物资或被困到夜间。\n变量提示: 可更新 survival.fatigue、inventory.items、user_profile.current_location、world_time.day_period。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-伊甸港-潮水封路。完成后不得再次触发。",
+      "content": "区域事件-伊甸港-潮水封路\n地区: 伊甸港\n触发画面: 潮水切断礁石路，回灯塔或上岸都需要等时机，背包开始被海风浸湿。\n核心矛盾: 等待安全但耗资源，冒险涉水可能保住时机却丢掉装备。\n可互动对象: 潮汐线、礁石、背包、绳索、临时高点。\n处理方向: {{user}} 可冒险涉水、等待、绕行、丢弃负重，或用绳索建立返回点。\n收益/代价: 可保住路线或发现隐蔽入口；失败会增加疲劳、损坏物资或被困到夜间。\n变量提示: 可更新 survival.fatigue、inventory.normal_items、inventory.weapons_ammo、inventory.key_items、user_profile.current_location、world_time.day_period。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-伊甸港-潮水封路。完成后不得再次触发。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -1455,14 +1653,14 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 96
+      "display_index": 103
     },
-    "97": {
-      "uid": 97,
+    "104": {
+      "uid": 104,
       "key": [],
       "keysecondary": [],
       "comment": "区域事件-伊甸港-港口静默",
-      "content": "区域事件-伊甸港-港口静默\n地区: 伊甸港\n触发画面: 码头没有人声，但新鲜拖痕通向仓库，仓库门内侧有金属摩擦声。\n核心矛盾: 仓库可能有补给或幸存者，也可能已经被怪物当成巢穴边缘。\n可互动对象: 仓库门、拖痕、吊车、油桶、破损货柜。\n处理方向: {{user}} 可潜入、呼喊、放火引开、撤离，或先切断仓库另一侧出口。\n收益/代价: 可获得港口物资、船用燃料或怪物线索；失败会陷入仓库遭遇、引燃危险品或堵死港口路线。\n变量提示: 可更新 inventory.items、monster_knowledge.notes、survival.health、user_profile.current_location。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-伊甸港-港口静默。完成后不得再次触发。",
+      "content": "区域事件-伊甸港-港口静默\n地区: 伊甸港\n触发画面: 码头没有人声，但新鲜拖痕通向仓库，仓库门内侧有金属摩擦声。\n核心矛盾: 仓库可能有补给或幸存者，也可能已经被怪物当成巢穴边缘。\n可互动对象: 仓库门、拖痕、吊车、油桶、破损货柜。\n处理方向: {{user}} 可潜入、呼喊、放火引开、撤离，或先切断仓库另一侧出口。\n收益/代价: 可获得港口物资、船用燃料或怪物线索；失败会陷入仓库遭遇、引燃危险品或堵死港口路线。\n变量提示: 可更新 inventory.normal_items、inventory.weapons_ammo、inventory.key_items、monster_knowledge.notes、survival.health、user_profile.current_location。\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 区域事件-伊甸港-港口静默。完成后不得再次触发。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -1488,10 +1686,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 97
+      "display_index": 104
     },
-    "98": {
-      "uid": 98,
+    "105": {
+      "uid": 105,
       "key": [],
       "keysecondary": [],
       "comment": "[EJS]天气昼夜怪物压力池",
@@ -1521,10 +1719,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 98
+      "display_index": 105
     },
-    "99": {
-      "uid": 99,
+    "106": {
+      "uid": 106,
       "key": [],
       "keysecondary": [],
       "comment": "环境压力-夜晚-声响逼近",
@@ -1554,10 +1752,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 99
+      "display_index": 106
     },
-    "100": {
-      "uid": 100,
+    "107": {
+      "uid": 107,
       "key": [],
       "keysecondary": [],
       "comment": "环境压力-夜晚-守夜疲劳",
@@ -1587,10 +1785,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 100
+      "display_index": 107
     },
-    "101": {
-      "uid": 101,
+    "108": {
+      "uid": 108,
       "key": [],
       "keysecondary": [],
       "comment": "环境压力-黎明-低温返潮",
@@ -1620,10 +1818,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 101
+      "display_index": 108
     },
-    "102": {
-      "uid": 102,
+    "109": {
+      "uid": 109,
       "key": [],
       "keysecondary": [],
       "comment": "环境压力-暴雨-视线中断",
@@ -1653,10 +1851,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 102
+      "display_index": 109
     },
-    "103": {
-      "uid": 103,
+    "110": {
+      "uid": 110,
       "key": [],
       "keysecondary": [],
       "comment": "环境压力-暴雨-痕迹冲刷",
@@ -1686,10 +1884,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 103
+      "display_index": 110
     },
-    "104": {
-      "uid": 104,
+    "111": {
+      "uid": 111,
       "key": [],
       "keysecondary": [],
       "comment": "环境压力-山雾-方向丢失",
@@ -1719,10 +1917,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 104
+      "display_index": 111
     },
-    "105": {
-      "uid": 105,
+    "112": {
+      "uid": 112,
       "key": [],
       "keysecondary": [],
       "comment": "环境压力-寒潮-体温下降",
@@ -1752,10 +1950,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 105
+      "display_index": 112
     },
-    "106": {
-      "uid": 106,
+    "113": {
+      "uid": 113,
       "key": [],
       "keysecondary": [],
       "comment": "环境压力-闷热-腐败加速",
@@ -1785,10 +1983,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 106
+      "display_index": 113
     },
-    "107": {
-      "uid": 107,
+    "114": {
+      "uid": 114,
       "key": [],
       "keysecondary": [],
       "comment": "怪物压力-沦陷期-低阶感染者群",
@@ -1818,10 +2016,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 107
+      "display_index": 114
     },
-    "108": {
-      "uid": 108,
+    "115": {
+      "uid": 115,
       "key": [],
       "keysecondary": [],
       "comment": "怪物压力-末日期初期-潜伏伏击",
@@ -1851,10 +2049,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 108
+      "display_index": 115
     },
-    "109": {
-      "uid": 109,
+    "116": {
+      "uid": 116,
       "key": [],
       "keysecondary": [],
       "comment": "怪物压力-末日期中期-寻声迁移",
@@ -1884,10 +2082,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 109
+      "display_index": 116
     },
-    "110": {
-      "uid": 110,
+    "117": {
+      "uid": 117,
       "key": [],
       "keysecondary": [],
       "comment": "怪物压力-末日期末期-毒气封路",
@@ -1917,10 +2115,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 110
+      "display_index": 117
     },
-    "111": {
-      "uid": 111,
+    "118": {
+      "uid": 118,
       "key": [],
       "keysecondary": [],
       "comment": "怪物压力-巢化期-母巢边缘",
@@ -1950,10 +2148,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 111
+      "display_index": 118
     },
-    "112": {
-      "uid": 112,
+    "119": {
+      "uid": 119,
       "key": [],
       "keysecondary": [],
       "comment": "怪物压力-重建期-残巢回流",
@@ -1983,7 +2181,7 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 112
+      "display_index": 119
     }
   }
 }

@@ -1,8 +1,8 @@
 {
   "name": "感染-02-势力与关键物",
   "entries": {
-    "24": {
-      "uid": 24,
+    "25": {
+      "uid": 25,
       "key": [
         "努尔山脉",
         "山脉",
@@ -37,10 +37,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 24
+      "display_index": 25
     },
-    "25": {
-      "uid": 25,
+    "26": {
+      "uid": 26,
       "key": [
         "新都",
         "新都幸存者营地"
@@ -73,10 +73,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 25
+      "display_index": 26
     },
-    "26": {
-      "uid": 26,
+    "27": {
+      "uid": 27,
       "key": [
         "11区",
         "沿江医院营地",
@@ -110,10 +110,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 26
+      "display_index": 27
     },
-    "27": {
-      "uid": 27,
+    "28": {
+      "uid": 28,
       "key": [
         "11区郊外",
         "韦斯特研究所",
@@ -147,10 +147,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 27
+      "display_index": 28
     },
-    "28": {
-      "uid": 28,
+    "29": {
+      "uid": 29,
       "key": [
         "封锁线",
         "防疫军",
@@ -185,10 +185,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 28
+      "display_index": 29
     },
-    "29": {
-      "uid": 29,
+    "30": {
+      "uid": 30,
       "key": [
         "联邦沦陷区",
         "母巢",
@@ -196,7 +196,7 @@
       ],
       "keysecondary": [],
       "comment": "地区-联邦沦陷区",
-      "content": "地区-联邦沦陷区\n地区定位: 原联邦核心区，灾难最深处，也是黑光-III 和母巢真相最集中的区域。\n环境特征: 高楼残骸、毒气低地、异常黏连的街面、失效冷库、实验设施遗址和被生物结构改写的室内空间。\n秩序状态: 人类秩序基本消失，只有临时搜索队、兄弟会高危路线和少数军方残留痕迹。\n主要风险: 母巢影响、融合型、毒气种、路径塌陷、样本污染和无法预测的怪物迁移。\n常见资源: 高价值科研资料、军方遗留设备、稀缺药剂、黑光样本线索和危险物资。\n相关势力/NPC: 韦斯特研究所、临时联邦防疫军、莱伊兄弟会、卢卡斯·卡雷。\n演绎要点: 进入这里应像进入一具巨大的病体；资源越值钱，越说明它靠近事故核心。",
+      "content": "地区-联邦沦陷区\n地区定位: 原联邦核心区，灾难最深处，也是黑光-III 和母巢真相最集中的区域。\n现实数据: 病毒泄露后72小时内感染率达98%，灾难首周约11亿人感染变异，幸存者称其为沦陷区。数字在幸存者聚集地里口耳相传，难以核实但无人否认。\n环境特征: 高楼残骸、毒气低地、异常黏连的街面、失效冷库、实验设施遗址和被生物结构改写的室内空间。\n秩序状态: 人类秩序基本消失，只有临时搜索队、兄弟会高危路线和少数军方残留痕迹。\n主要风险: 母巢影响、融合型、毒气种、路径塌陷、样本污染和无法预测的怪物迁移。\n常见资源: 高价值科研资料、军方遗留设备、稀缺药剂、黑光样本线索和危险物资。\n相关势力/NPC: 韦斯特研究所、临时联邦防疫军、莱伊兄弟会、卢卡斯·卡雷。\n演绎要点: 进入这里应像进入一具巨大的病体；资源越值钱，越说明它靠近事故核心。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -222,10 +222,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 29
+      "display_index": 30
     },
-    "30": {
-      "uid": 30,
+    "31": {
+      "uid": 31,
       "key": [
         "伊甸港",
         "灯塔",
@@ -260,10 +260,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 30
+      "display_index": 31
     },
-    "31": {
-      "uid": 31,
+    "32": {
+      "uid": 32,
       "key": [
         "新都幸存者营地",
         "新都"
@@ -296,10 +296,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 31
+      "display_index": 32
     },
-    "32": {
-      "uid": 32,
+    "33": {
+      "uid": 33,
       "key": [
         "莱伊兄弟会",
         "新都-11区废墟路线"
@@ -332,10 +332,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 32
+      "display_index": 33
     },
-    "33": {
-      "uid": 33,
+    "34": {
+      "uid": 34,
       "key": [
         "韦斯特研究所",
         "11区郊外"
@@ -368,10 +368,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 33
+      "display_index": 34
     },
-    "34": {
-      "uid": 34,
+    "35": {
+      "uid": 35,
       "key": [
         "学联互助团",
         "新都周边临时避难点"
@@ -404,10 +404,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 34
+      "display_index": 35
     },
-    "35": {
-      "uid": 35,
+    "36": {
+      "uid": 36,
       "key": [
         "临时联邦防疫军",
         "封锁线与大型避难区"
@@ -440,10 +440,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 35
+      "display_index": 36
     },
-    "36": {
-      "uid": 36,
+    "37": {
+      "uid": 37,
       "key": [
         "沿江医院营地",
         "11区"
@@ -476,10 +476,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 36
+      "display_index": 37
     },
-    "37": {
-      "uid": 37,
+    "38": {
+      "uid": 38,
       "key": [
         "黑光-III 低温样本匣"
       ],
@@ -511,10 +511,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 37
+      "display_index": 38
     },
-    "38": {
-      "uid": 38,
+    "39": {
+      "uid": 39,
       "key": [
         "拓展 J 临床记录盘"
       ],
@@ -546,10 +546,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 38
+      "display_index": 39
     },
-    "39": {
-      "uid": 39,
+    "40": {
+      "uid": 40,
       "key": [
         "联邦防疫军封锁指令芯片"
       ],
@@ -581,10 +581,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 39
+      "display_index": 40
     },
-    "40": {
-      "uid": 40,
+    "41": {
+      "uid": 41,
       "key": [
         "食蚁兽预测模型核心"
       ],
@@ -616,10 +616,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 40
+      "display_index": 41
     },
-    "41": {
-      "uid": 41,
+    "42": {
+      "uid": 42,
       "key": [
         "奇怪的刀"
       ],
@@ -651,7 +651,7 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 41
+      "display_index": 42
     }
   }
 }

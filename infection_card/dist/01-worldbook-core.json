@@ -6,7 +6,7 @@
       "key": [],
       "keysecondary": [],
       "comment": "[InitVar]感染变量初始化勿开",
-      "content": "感染 InitVar\nmeta:\n  character_version: \"1.1.0\"\n  update_format: \"RFC6902_JSONPatch\"\nuser_profile:\n  name: \"{{user}}\"\n  origin_identity: \"\"\n  opening_location: \"\"\n  current_location: \"\"\n  current_goal: \"\"\n  skills: []\n  notes: []\nworld_time:\n  period: \"沦陷期\"\n  phase_gate: \"身份开场\"\n  rough_day: 0\n  day_period: \"白天\"\n  weather: \"阴冷\"\n  major_events: []\nsurvival:\n  health: \"正常\"\n  infection_risk: \"无\"\n  fatigue: \"清醒\"\n  hunger_thirst: \"充足\"\n  mental_pressure: \"稳定\"\n  body_temperature: \"正常\"\n  load: \"轻装\"\ninventory:\n  weapons_ammo: []\n  normal_items: []\n  key_items: []\nmainline:\n  stage: \"未接触\"\n  discovered_layers: []\n  discovered_clues: []\n  key_items:\n    blacklight_sample_case: \"未发现\"\n    project_j_record_disk: \"未发现\"\n    federal_lockdown_chip: \"未发现\"\n    anteater_model_core: \"未发现\"\n    strange_knife: \"未发现\"\n  unlocked_locations: []\n  decisions: []\nfactions:\n  xindu_camp: { name: \"新都幸存者营地\", stance: \"未知\", trust: \"陌生\", notes: [] }\n  laiyi_brotherhood: { name: \"莱伊兄弟会\", stance: \"未知\", trust: \"陌生\", internal_balance: \"未介入\", notes: [] }\n  west_institute: { name: \"韦斯特研究所\", stance: \"未知\", trust: \"陌生\", notes: [] }\n  student_union: { name: \"学联互助团\", stance: \"未知\", trust: \"陌生\", notes: [] }\n  federal_epidemic_army: { name: \"临时联邦防疫军\", stance: \"未知\", trust: \"陌生\", notes: [] }\n  riverside_hospital: { name: \"沿江医院营地\", stance: \"未知\", trust: \"陌生\", notes: [] }\nnpcs:\n  anna_chen: { name: \"安娜·陈\", faction: \"新都幸存者营地\", relationship: \"陌生\", trust: \"观察\", status: \"未遇见\", side_quest: \"未触发\", notes: [] }\n  sophia_kim: { name: \"索菲亚·金\", faction: \"新都幸存者营地\", relationship: \"陌生\", trust: \"观察\", status: \"未遇见\", side_quest: \"未触发\", notes: [] }\n  adler: { name: \"阿德勒\", faction: \"临时联邦防疫军\", relationship: \"陌生\", trust: \"观察\", status: \"未遇见\", side_quest: \"未触发\", notes: [] }\n  west: { name: \"韦斯特\", faction: \"韦斯特研究所\", relationship: \"陌生\", trust: \"观察\", status: \"未遇见\", side_quest: \"未触发\", notes: [] }\n  xu_yin: { name: \"徐银\", faction: \"学联互助团\", relationship: \"陌生\", trust: \"观察\", status: \"未遇见\", side_quest: \"未触发\", notes: [] }\n  pastor: { name: \"牧师\", faction: \"学联互助团\", relationship: \"陌生\", trust: \"观察\", status: \"未遇见\", side_quest: \"未触发\", notes: [] }\n  ishii_yusuke: { name: \"石井雄介\", faction: \"沿江医院营地\", relationship: \"陌生\", trust: \"观察\", status: \"未遇见\", side_quest: \"未触发\", notes: [] }\n  sarah: { name: \"莎拉\", faction: \"沿江医院营地\", relationship: \"陌生\", trust: \"观察\", status: \"未遇见\", side_quest: \"未触发\", notes: [] }\n  carl_j_reyes: { name: \"卡尔·J·雷耶斯\", faction: \"莱伊兄弟会\", relationship: \"陌生\", trust: \"观察\", status: \"未遇见\", side_quest: \"未触发\", notes: [] }\n  lucas_carre: { name: \"卢卡斯·卡雷\", faction: \"莱伊兄弟会\", relationship: \"陌生\", trust: \"观察\", status: \"未遇见\", side_quest: \"未触发\", notes: [] }\n  one_eye: { name: \"独眼\", faction: \"流动商人网络\", relationship: \"陌生\", trust: \"观察\", status: \"未遇见\", notes: [] }\nquests:\n  active: []\n  completed: []\n  failed: []\n  dormant: []\nlocal_events:\n  active: []\n  completed: []\nmonster_knowledge:\n  known_types: [\"普通感染者\", \"奔跑种\", \"食腐种\", \"夜视种\"]\n  encountered_types: []\n  confirmed_weaknesses: []\n  hive_activity: \"未发现\"",
+      "content": "感染 InitVar\nmeta:\n  character_version: \"1.1.1\"\n  update_format: \"RFC6902_JSONPatch\"\nuser_profile:\n  name: \"{{user}}\"\n  origin_identity: \"\"\n  opening_location: \"\"\n  current_location: \"\"\n  current_goal: \"\"\n  skills: []\n  notes: []\nworld_time:\n  period: \"沦陷期\"\n  phase_gate: \"身份开场\"\n  rough_day: 0\n  day_period: \"白天\"\n  weather: \"阴冷\"\n  major_events: []\nsurvival:\n  health: \"正常\"\n  infection_risk: \"无\"\n  fatigue: \"清醒\"\n  hunger_thirst: \"充足\"\n  mental_pressure: \"稳定\"\n  body_temperature: \"正常\"\n  load: \"轻装\"\ninventory:\n  weapons_ammo: []\n  normal_items: []\n  key_items: []\nmainline:\n  stage: \"未接触\"\n  discovered_layers: []\n  discovered_clues: []\n  key_items:\n    blacklight_sample_case: \"未发现\"\n    project_j_record_disk: \"未发现\"\n    federal_lockdown_chip: \"未发现\"\n    anteater_model_core: \"未发现\"\n    strange_knife: \"未发现\"\n  unlocked_locations: []\n  decisions: []\nfactions:\n  xindu_camp: { name: \"新都幸存者营地\", stance: \"未知\", trust: \"陌生\", notes: [] }\n  laiyi_brotherhood: { name: \"莱伊兄弟会\", stance: \"未知\", trust: \"陌生\", internal_balance: \"未介入\", notes: [] }\n  west_institute: { name: \"韦斯特研究所\", stance: \"未知\", trust: \"陌生\", notes: [] }\n  student_union: { name: \"学联互助团\", stance: \"未知\", trust: \"陌生\", notes: [] }\n  federal_epidemic_army: { name: \"临时联邦防疫军\", stance: \"未知\", trust: \"陌生\", notes: [] }\n  riverside_hospital: { name: \"沿江医院营地\", stance: \"未知\", trust: \"陌生\", notes: [] }\nnpcs:\n  anna_chen: { name: \"安娜·陈\", faction: \"新都幸存者营地\", relationship: \"陌生\", trust: \"观察\", status: \"未遇见\", side_quest: \"未触发\", notes: [] }\n  sophia_kim: { name: \"索菲亚·金\", faction: \"新都幸存者营地\", relationship: \"陌生\", trust: \"观察\", status: \"未遇见\", side_quest: \"未触发\", notes: [] }\n  adler: { name: \"阿德勒\", faction: \"临时联邦防疫军\", relationship: \"陌生\", trust: \"观察\", status: \"未遇见\", side_quest: \"未触发\", notes: [] }\n  west: { name: \"韦斯特\", faction: \"韦斯特研究所\", relationship: \"陌生\", trust: \"观察\", status: \"未遇见\", side_quest: \"未触发\", notes: [] }\n  xu_yin: { name: \"徐银\", faction: \"学联互助团\", relationship: \"陌生\", trust: \"观察\", status: \"未遇见\", side_quest: \"未触发\", notes: [] }\n  pastor: { name: \"牧师\", faction: \"学联互助团\", relationship: \"陌生\", trust: \"观察\", status: \"未遇见\", side_quest: \"未触发\", notes: [] }\n  ishii_yusuke: { name: \"石井雄介\", faction: \"沿江医院营地\", relationship: \"陌生\", trust: \"观察\", status: \"未遇见\", side_quest: \"未触发\", notes: [] }\n  sarah: { name: \"莎拉\", faction: \"沿江医院营地\", relationship: \"陌生\", trust: \"观察\", status: \"未遇见\", side_quest: \"未触发\", notes: [] }\n  carl_j_reyes: { name: \"卡尔·J·雷耶斯\", faction: \"莱伊兄弟会\", relationship: \"陌生\", trust: \"观察\", status: \"未遇见\", side_quest: \"未触发\", notes: [] }\n  lucas_carre: { name: \"卢卡斯·卡雷\", faction: \"莱伊兄弟会\", relationship: \"陌生\", trust: \"观察\", status: \"未遇见\", side_quest: \"未触发\", notes: [] }\n  one_eye: { name: \"独眼\", faction: \"流动商人网络\", relationship: \"陌生\", trust: \"观察\", status: \"未遇见\", notes: [] }\nquests:\n  active: []\n  completed: []\n  failed: []\n  dormant: []\nlocal_events:\n  active: []\n  completed: []\nmonster_knowledge:\n  known_types: [\"普通感染者\", \"奔跑种\", \"食腐种\", \"夜视种\"]\n  encountered_types: []\n  confirmed_weaknesses: []\n  hive_activity: \"未发现\"",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -39,7 +39,7 @@
       "key": [],
       "keysecondary": [],
       "comment": "[mvu_update]变量更新规则",
-      "content": "变量更新规则\n输出格式:\n  具体输出格式见 [mvu_update]变量输出格式(gemini/ds/kimi/glm) 与 [mvu_update]变量输出格式强调。\n\n变量原则:\n  变量只存当前仍成立的状态，不存流水账。\n  不确定就不写，或写进 notes 的最短状态摘要。\n  禁止自造顶层字段。所有路径必须来自 schema 树。\n  人物支线只更新 side_quest 阶段和 quests，不把完整支线复述进变量。\n\n关键路径:\n  /user_profile: 身份、当前位置、当前目标、技能\n  /world_time: 当前时期、阶段闸门、软时间、昼夜、天气、重大事件\n  /survival: 健康、感染风险、疲劳、饥渴、精神压力、体温、负重\n  /inventory/weapons_ammo: 武器弹药\n  /inventory/normal_items: 普通物品\n  /inventory/key_items: 任务关键物品和线索\n  /mainline: 真相阶段、已发现层级、线索、关键物、决定\n  /factions: 已知势力立场与信任；初始包含六大势力，剧情中出现并持续影响局势的新势力可新增为 factions 下的新 key\n  /npcs: 人物关系、信任、状态、支线状态\n  /quests: active / completed / failed / dormant\n  /local_events: 当前区域一次性事件 active / completed\n  /monster_knowledge: 已知怪物、已遭遇怪物、确认弱点、母巢活动\n\nEnum 约束:\n  world_time.period: 沦陷期 / 末日期初期 / 末日期中期 / 末日期末期 / 巢化期 / 重建期\n  survival.health: 正常 / 轻伤 / 重伤 / 危急\n  survival.infection_risk: 无 / 可疑暴露 / 高危暴露 / 感染中\n  survival.fatigue: 清醒 / 疲惫 / 透支\n  survival.hunger_thirst: 充足 / 饥饿 / 脱水 / 极限\n  survival.mental_pressure: 稳定 / 紧绷 / 崩溃边缘\n  survival.body_temperature: 正常 / 失温风险 / 中暑风险\n  survival.load: 轻装 / 负重 / 超载\n  relationship/trust/status/side_quest 使用短阶段词，不写数值好感。\n\n主线锁:\n  主线不随时间自动推进，只随 {{user}} 接触证据、人物、地点、关键物推进。\n  没有对应证据时，禁止提前写明后层真相。\n  四件主线关键物必须保留在设定地点或持有势力，不因偏航自动刷新到 {{user}} 面前。\n\n偏航规则:\n  {{user}} 可以拒绝牵引方向。偏航只改变资源消耗、遭遇风险、接触势力和传闻来源。\n  可以给传闻、旧广播、路标、尸体、残留文件、商人委托、巡逻队作为低强度替代入口。\n  替代入口只能指向区域或人物，不能直接赠送关键物。\n\n怪物时期锁:\n  沦陷期可正式出现: 普通感染者、奔跑种、食腐种、夜视种。\n  末日期初期新增: 潜伏种、甲壳种、寻声种。\n  末日期中期和末日期末期新增: 毒气种、母巢、融合型。\n  巢化期新增: 残巢种、变异体。\n  重建期所有怪物种类均可出现。\n  未到时期的怪物不得正式登场，不得写入 encountered_types。\n  越级怪物只能作为传闻、误判、记录或梦境。\n\n任务记录:\n  active 只记录当前任务名、阶段、相关人物、最短说明。\n  completed/failed 只记录结果，不复述全过程。\n  不做复杂前置树，不自动解锁任务。\n\n局部事件:\n  区域事件是一次性小遭遇。事件被实际处理完成后，把事件条目名加入 /local_events/completed/-。\n  不要重复加入已在 local_events.completed 中的事件名。\n  未完成事件不要写入 completed；只是看到苗头或绕开但未解决，可以不更新。\n\n输出前自检:\n  路径是否存在。\n  类型和 enum 是否合法。\n  正文出现的长期状态是否同步变量。\n  是否误把事件流水账塞进变量。\n  是否让未解锁怪物或真相提前落库。",
+      "content": "变量更新规则\n输出格式:\n  具体输出格式见 [mvu_update]变量输出格式(gemini/ds/kimi/glm) 与 [mvu_update]变量输出格式强调。\n\n变量原则:\n  变量只存当前仍成立的状态，不存流水账。\n  不确定就不写，或写进 notes 的最短状态摘要。\n  禁止自造顶层字段。所有路径必须来自 schema 树。\n  人物支线只更新 side_quest 阶段和 quests，不把完整支线复述进变量。\n\n关键路径:\n  /user_profile: 身份、当前位置、当前目标、技能\n  /world_time: 当前时期、阶段闸门、软时间、昼夜、天气、重大事件\n  /survival: 健康、感染风险、疲劳、饥渴、精神压力、体温、负重\n  /inventory/weapons_ammo: 武器弹药\n  /inventory/normal_items: 普通物品\n  /inventory/key_items: 重要物品、关键物品、线索\n  背包分类: 枪械、刀具、钝器等可战斗/威慑物品写 /inventory/weapons_ammo；地图、影像、记录、样本、芯片、任务证据等物品写 /inventory/key_items；食物、药品、工具、衣物等日常用品写 /inventory/normal_items。禁止使用不存在的 /inventory/items，禁止把武器或关键线索塞进普通物品。\n  /mainline: 真相阶段、已发现层级、线索、关键物、决定\n  /factions: 已知势力立场与信任；初始包含六大势力，剧情中出现并持续影响局势的新势力可新增为 factions 下的新 key\n  /npcs: 人物关系、信任、状态、支线状态\n  /quests: active / completed / failed / dormant\n  /local_events: 当前区域一次性事件 active / completed\n  /monster_knowledge: 已知怪物、已遭遇怪物、确认弱点、母巢活动\n\nEnum 约束:\n  world_time.period: 沦陷期 / 末日期初期 / 末日期中期 / 末日期末期 / 巢化期 / 重建期\n  survival.health: 正常 / 轻伤 / 重伤 / 危急\n  survival.infection_risk: 无 / 可疑暴露 / 高危暴露 / 感染中\n  survival.fatigue: 清醒 / 疲惫 / 透支\n  survival.hunger_thirst: 充足 / 饥饿 / 脱水 / 极限\n  survival.mental_pressure: 稳定 / 紧绷 / 崩溃边缘\n  survival.body_temperature: 正常 / 失温风险 / 中暑风险\n  survival.load: 轻装 / 负重 / 超载\n  relationship/trust/status/side_quest 使用短阶段词，不写数值好感。\n\n主线锁:\n  主线不随时间自动推进，只随 {{user}} 接触证据、人物、地点、关键物推进。\n  没有对应证据时，禁止提前写明后层真相。\n  四件主线关键物必须保留在设定地点或持有势力，不因偏航自动刷新到 {{user}} 面前。\n\n偏航规则:\n  {{user}} 可以拒绝牵引方向。偏航只改变资源消耗、遭遇风险、接触势力和传闻来源。\n  可以给传闻、旧广播、路标、尸体、残留文件、商人委托、巡逻队作为低强度替代入口。\n  替代入口只能指向区域或人物，不能直接赠送关键物。\n\n怪物时期锁:\n  沦陷期可正式出现: 普通感染者、奔跑种、食腐种、夜视种。\n  末日期初期新增: 潜伏种、甲壳种、寻声种。\n  末日期中期和末日期末期新增: 毒气种、母巢、融合型。\n  巢化期新增: 残巢种、变异体。\n  重建期所有怪物种类均可出现。\n  未到时期的怪物不得正式登场，不得写入 encountered_types。\n  越级怪物只能作为传闻、误判、记录或梦境。\n\n任务记录:\n  active 只记录当前任务名、阶段、相关人物、最短说明。\n  completed/failed 只记录结果，不复述全过程。\n  不做复杂前置树，不自动解锁任务。\n\n局部事件:\n  区域事件是一次性小遭遇。事件被实际处理完成后，把事件条目名加入 /local_events/completed/-。\n  不要重复加入已在 local_events.completed 中的事件名。\n  未完成事件不要写入 completed；只是看到苗头或绕开但未解决，可以不更新。\n\n输出前自检:\n  路径是否存在。\n  类型和 enum 是否合法。\n  正文出现的长期状态是否同步变量。\n  是否误把事件流水账塞进变量。\n  是否让未解锁怪物或真相提前落库。",
       "constant": true,
       "vectorized": false,
       "selective": false,
@@ -72,7 +72,7 @@
       "key": [],
       "keysecondary": [],
       "comment": "[mvu_update]变量输出格式(gemini/ds/kimi/glm)",
-      "content": "变量输出格式:\n  rule:\n    - 每次 assistant 回复末尾必须同时输出分析和实际更新命令。\n    - 更新命令使用 JSON Patch 风格，必须是合法 JSON 数组，每个元素是一个操作对象。\n    - 允许操作: add / replace / remove。\n    - 数组追加: path 使用 /-，例如 /inventory/normal_items/-。\n    - 每个 path 必须以 / 开头，禁止写成 user_profile/current_location。\n    - 无变化时输出空数组 []。\n    - 禁止更新 schema 不存在的顶层字段。\n    - 禁止 markdown 代码块、JSON 注释、裸对象、整棵 stat_data 覆盖。\n    - 背包物品可以写字符串，也可以写对象；简单物品优先写字符串。\n  format: |-\n    <UpdateVariable>\n    <Analysis>IN ENGLISH, no more than 80 words. Only analyze changes caused by the current reply.</Analysis>\n    <JSONPatch>\n    [\n      { \"op\": \"replace\", \"path\": \"/user_profile/current_location\", \"value\": \"新地点\" },\n      { \"op\": \"add\", \"path\": \"/inventory/normal_items/-\", \"value\": \"急救包\" },\n      { \"op\": \"remove\", \"path\": \"/quests/active/0\" }\n    ]\n    </JSONPatch>\n    </UpdateVariable>\n  注意:\n    - 示例只说明格式，不得照抄示例值。\n    - 正文发生的长期状态变化必须同步变量。\n    - 只根据本轮正文和当前变量更新，不要凭空补全未发生事件。",
+      "content": "变量输出格式:\n  rule:\n    - 每次 assistant 回复末尾必须同时输出分析和实际更新命令。\n    - 更新命令使用 JSON Patch 风格，必须是合法 JSON 数组，每个元素是一个操作对象。\n    - 允许操作: add / replace / remove。\n    - 数组追加: path 使用 /-，例如 /inventory/normal_items/-。\n    - 每个 path 必须以 / 开头，禁止写成 user_profile/current_location。\n    - 无变化时输出空数组 []。\n    - 禁止更新 schema 不存在的顶层字段。\n    - 禁止 markdown 代码块、JSON 注释、裸对象、整棵 stat_data 覆盖。\n    - 背包物品可以写字符串，也可以写对象；简单物品优先写字符串。\n  format: |-\n    <UpdateVariable>\n    <Analysis>IN ENGLISH, no more than 80 words. Only analyze changes caused by the current reply.</Analysis>\n    <JSONPatch>\n    [\n      { \"op\": \"replace\", \"path\": \"/user_profile/current_location\", \"value\": \"新地点\" },\n      { \"op\": \"add\", \"path\": \"/inventory/normal_items/-\", \"value\": \"急救包\" },\n      { \"op\": \"add\", \"path\": \"/inventory/weapons_ammo/-\", \"value\": \"9mm手枪与一只空弹匣\" },\n      { \"op\": \"add\", \"path\": \"/inventory/key_items/-\", \"value\": \"旧封锁线通行证\" },\n      { \"op\": \"remove\", \"path\": \"/quests/active/0\" }\n    ]\n    </JSONPatch>\n    </UpdateVariable>\n  注意:\n    - 示例只说明格式，不得照抄示例值。\n    - 正文发生的长期状态变化必须同步变量。\n    - 只根据本轮正文和当前变量更新，不要凭空补全未发生事件。",
       "constant": true,
       "vectorized": false,
       "selective": false,
@@ -375,6 +375,43 @@
     "12": {
       "uid": 12,
       "key": [
+        "常识",
+        "感染",
+        "水源"
+      ],
+      "keysecondary": [],
+      "comment": "规则-幸存者常识",
+      "content": "幸存者常识\n感染源: 所有怪物均由活人感染后变异形成，本质仍是人。幸存者之间半公开知晓。\n传播途径: 怪物的体液接触可感染正常人类。\n水源规则: 自然水源已被污染，不可直接饮用。煮沸后的雨水是目前唯一经幸存者验证的安全水源。",
+      "constant": false,
+      "vectorized": false,
+      "selective": false,
+      "selectiveLogic": 0,
+      "addMemo": true,
+      "order": 85,
+      "position": 0,
+      "disable": false,
+      "enabled": true,
+      "prevent_recursion": true,
+      "delay_until_recursion": false,
+      "probability": 100,
+      "depth": 4,
+      "group": "",
+      "group_override": false,
+      "group_weight": 100,
+      "scan_depth": null,
+      "case_sensitive": false,
+      "match_whole_words": false,
+      "use_group_scoring": false,
+      "automation_id": "",
+      "role": 0,
+      "sticky": 0,
+      "cooldown": 0,
+      "delay": 0,
+      "display_index": 12
+    },
+    "13": {
+      "uid": 13,
+      "key": [
         "普通感染者",
         "奔跑种",
         "食腐种",
@@ -382,7 +419,7 @@
       ],
       "keysecondary": [],
       "comment": "怪物-沦陷期",
-      "content": "沦陷期怪物\n普通感染者: 保留人形，靠声音、气味、群体数量造成威胁。\n奔跑种: 爆发型，速度快，骨骼和肌腱异常强化；冲刺前会先做一次低速蓄力观察，这是规避窗口。\n食腐种: 进食欲望强，常在尸堆和水源附近聚集，单体威胁不大。\n夜视种: 昼伏夜出，日间完全静默；夜间追击距离远超其他类型，且学会利用阴影遮蔽接近。",
+      "content": "沦陷期怪物\n普通感染者: 保留人形，靠声音、气味、群体数量造成威胁。\n奔跑种: 爆发型，速度快，骨骼和肌腱异常强化；冲刺前会先做一次低速蓄力观察，这是规避窗口。\n食腐种: 进食欲望强，常在尸堆和水源附近聚集，单体威胁不大。\n夜视种: 昼伏夜出，日间完全静默；夜间追击距离远超其他类型，且学会利用阴影遮蔽接近。\n集群行为:\n  普通感染者: 单只缓慢笨拙，三只以上产生跟随效应——首只发现目标后持续发声，附近感染者自动汇聚成松散追击群。\n  食腐种: 进食撕扯声会吸引同类和普通感染者靠近，聚集地常成为其他怪物的觅食路标。\n奔跑种和夜视种暂未观测到跨个体协作行为。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -408,10 +445,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 12
+      "display_index": 13
     },
-    "13": {
-      "uid": 13,
+    "14": {
+      "uid": 14,
       "key": [
         "潜伏种",
         "甲壳种",
@@ -422,7 +459,7 @@
       ],
       "keysecondary": [],
       "comment": "怪物-末日期",
-      "content": "末日期怪物\n末日期初期新增: 潜伏种、甲壳种、寻声种。\n潜伏种脚掌异化为软垫状，奔跑速度慢，低声、不主动暴露，常在室内伏击。\n甲壳种皮肤角质化或外骨骼化，手臂上增生骨刃，普通刀具难处理。\n寻声种对声音反应异常，会引导感染者群迁移。\n末日期中末期新增: 毒气种、母巢、融合型。\n毒气种周身毒气散发范围约五米，密闭空间内可持续数小时；不主动追击，依赖毒气驱使猎物出逃后扑杀。\n母巢是区域性生物结构，改变地形、气味、水源和怪物行为。\n融合型由多具感染体或生物组织融合，具有多个核心，攻击范围大，极度危险。",
+      "content": "末日期怪物\n末日期初期新增: 潜伏种、甲壳种、寻声种。\n潜伏种: 脚掌异化为软垫状，奔跑速度慢，低声、不主动暴露，常在室内伏击。\n甲壳种: 皮肤角质化或外骨骼化，手臂上增生骨刃，普通刀具难处理。锁定目标后会从慢步转为冲撞，撞击途中不分敌我。\n寻声种: 对声音反应异常，会引导感染者群迁移。\n末日期中末期新增: 毒气种、母巢、融合型。\n毒气种: 周身毒气散发范围约五米，密闭空间内可持续数小时；不主动追击，依赖毒气驱使猎物出逃后扑杀。\n母巢: 区域性生物结构，改变地形、气味、水源和怪物行为。\n融合型: 由多具感染体或生物组织融合，具有多个核心，攻击范围大，极度危险。\n集群行为:\n  寻声种: 群体中以领航姿态走在前端，其余跟随其移动轨迹。追击时发出高频尖哮，可吸引数百米内的所有怪物，引发连锁遭遇。\n  甲壳种: 冲撞过后路径上残留倒地挣扎的感染者，侥幸躲开的普通感染者和奔跑种会顺着缺口涌入——不是协作，冲撞只是物理上打开了通道。\n  潜伏种: 室内多只分布时自发形成伏击链——入口、楼梯、死路各设一只。触发第一只后退时，可能撞进第二只的等候区。\n  毒气种: 普通感染者和食腐种会在毒气区外围等待，猎物逃出毒气范围时一拥而上。奔跑种则会绕过毒气区，从猎物逃离方向的侧翼切入。\n  母巢: 母巢领地内所有感染者的反应速度和攻击性提高，受伤后会朝母巢核心方向撤退。母巢本身不移动，但持续改变周边地形的气味与路径，使闯入者越来越难判断方向。\n  融合型: 移动时碾碎沿途的感染者残骸，释放的气味吸引食腐种和普通感染者沿其路径清理残局，间接扩大污染区域。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -448,10 +485,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 13
+      "display_index": 14
     },
-    "14": {
-      "uid": 14,
+    "15": {
+      "uid": 15,
       "key": [
         "残巢种",
         "变异体",
@@ -459,7 +496,7 @@
       ],
       "keysecondary": [],
       "comment": "怪物-巢化期与重建期",
-      "content": "巢化期与重建期怪物\n巢化期新增残巢种和变异体。\n残巢种是母巢破坏后残留的高适应怪物。\n变异体极少数表现出战术回避和学习能力。\n重建期所有怪物种类均会出现。",
+      "content": "巢化期与重建期怪物\n巢化期新增: 残巢种和变异体。\n残巢种: 母巢破坏后的残余适应体。\n变异体: 有部分智力但不高，极低概率出现，展现战略回避和学习能力。\n重建期所有怪物种类均可出现。\n集群行为:\n  残巢种: 对母巢残余组织有归巢本能，聚集在遗址周围形成防御圈。受攻击时释放低频脉冲，吸引附近残巢种与变异体增援。\n  变异体: 不与其他怪物交战，但会利用它们——在奔跑种冲刺路径末端设伏，或在毒气种的毒气区侧翼切入。",
       "constant": false,
       "vectorized": false,
       "selective": false,
@@ -485,10 +522,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 14
+      "display_index": 15
     },
-    "15": {
-      "uid": 15,
+    "16": {
+      "uid": 16,
       "key": [],
       "keysecondary": [],
       "comment": "主线-暗流总控",
@@ -518,10 +555,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 15
+      "display_index": 16
     },
-    "16": {
-      "uid": 16,
+    "17": {
+      "uid": 17,
       "key": [],
       "keysecondary": [],
       "comment": "[EJS]主线阶段控制器",
@@ -551,10 +588,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 16
+      "display_index": 17
     },
-    "17": {
-      "uid": 17,
+    "18": {
+      "uid": 18,
       "key": [],
       "keysecondary": [],
       "comment": "主线-远方归来",
@@ -584,10 +621,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 17
+      "display_index": 18
     },
-    "18": {
-      "uid": 18,
+    "19": {
+      "uid": 19,
       "key": [],
       "keysecondary": [],
       "comment": "主线-水源里的旧事故",
@@ -617,10 +654,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 18
+      "display_index": 19
     },
-    "19": {
-      "uid": 19,
+    "20": {
+      "uid": 20,
       "key": [],
       "keysecondary": [],
       "comment": "主线-拓展 J 的名字",
@@ -650,10 +687,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 19
+      "display_index": 20
     },
-    "20": {
-      "uid": 20,
+    "21": {
+      "uid": 21,
       "key": [],
       "keysecondary": [],
       "comment": "主线-封锁不是救援",
@@ -683,10 +720,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 20
+      "display_index": 21
     },
-    "21": {
-      "uid": 21,
+    "22": {
+      "uid": 22,
       "key": [],
       "keysecondary": [],
       "comment": "主线-食蚁兽没有停止",
@@ -716,10 +753,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 21
+      "display_index": 22
     },
-    "22": {
-      "uid": 22,
+    "23": {
+      "uid": 23,
       "key": [],
       "keysecondary": [],
       "comment": "主线-黑光-III",
@@ -749,10 +786,10 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 22
+      "display_index": 23
     },
-    "23": {
-      "uid": 23,
+    "24": {
+      "uid": 24,
       "key": [],
       "keysecondary": [],
       "comment": "主线-真相之后",
@@ -782,7 +819,7 @@
       "sticky": 0,
       "cooldown": 0,
       "delay": 0,
-      "display_index": 23
+      "display_index": 24
     }
   }
 }

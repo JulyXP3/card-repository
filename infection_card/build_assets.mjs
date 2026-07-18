@@ -14,17 +14,18 @@ for (const file of readdirSync(outDir)) {
 }
 
 let uid = 1;
-const version = "v1.1";
+const version = "v1.1.1";
 
-function makeInitPatch(identity, location, itemsStr, skillsStr) {
+function makeInitPatch(identity, location, inventory, skillsStr) {
   const skills = skillsStr.split('、').map(s => s.trim()).filter(Boolean);
-  const items = itemsStr.split('、').map(s => s.trim()).filter(Boolean);
   const patches = [
     { op: "replace", path: "/user_profile/origin_identity", value: identity },
     { op: "replace", path: "/user_profile/opening_location", value: location },
     { op: "replace", path: "/user_profile/current_location", value: location },
     { op: "replace", path: "/user_profile/skills", value: skills },
-    { op: "replace", path: "/inventory/normal_items", value: items },
+    { op: "replace", path: "/inventory/weapons_ammo", value: inventory.weapons_ammo || [] },
+    { op: "replace", path: "/inventory/normal_items", value: inventory.normal_items || [] },
+    { op: "replace", path: "/inventory/key_items", value: inventory.key_items || [] },
     { op: "replace", path: "/world_time/phase_gate", value: "身份开场" },
     { op: "replace", path: "/world_time/rough_day", value: 1 },
   ];
@@ -44,6 +45,7 @@ function formatComment(comment) {
       "偏航规则与证据闸门",
       "状态栏占位符输出规则",
       "时间与时期推进",
+      "幸存者常识",
     ].includes(name)
   )
     return `规则-${name}`;
@@ -107,7 +109,9 @@ function formatComment(comment) {
     return `人物-${name}`;
   if (name === "自定义身份开场规则")
     return `开场-${name}`;
-  return `支线-${name}`;
+  if (name.startsWith("开局支线-") || name.startsWith("人物支线-"))
+    return name;
+  return `人物支线-${name}`;
 }
 
 function entry(
@@ -176,7 +180,7 @@ function writeJson(name, data) {
 
 const initVar = `感染 InitVar ${version}
 meta:
-  character_version: "1.1.0"
+  character_version: "1.1.1"
   update_format: "RFC6902_JSONPatch"
 user_profile:
   name: "{{user}}"
@@ -266,7 +270,8 @@ const updateRules = `变量更新规则 ${version}
   /survival: 健康、感染风险、疲劳、饥渴、精神压力、体温、负重
   /inventory/weapons_ammo: 武器弹药
   /inventory/normal_items: 普通物品
-  /inventory/key_items: 任务关键物品和线索
+  /inventory/key_items: 重要物品、关键物品、线索
+  背包分类: 枪械、刀具、钝器等可战斗/威慑物品写 /inventory/weapons_ammo；地图、影像、记录、样本、芯片、任务证据等物品写 /inventory/key_items；食物、药品、工具、衣物等日常用品写 /inventory/normal_items。禁止使用不存在的 /inventory/items，禁止把武器或关键线索塞进普通物品。
   /mainline: 真相阶段、已发现层级、线索、关键物、决定
   /factions: 已知势力立场与信任；初始包含六大势力，剧情中出现并持续影响局势的新势力可新增为 factions 下的新 key
   /npcs: 人物关系、信任、状态、支线状态
@@ -339,6 +344,8 @@ const updateFormat = `变量输出格式:
     [
       { "op": "replace", "path": "/user_profile/current_location", "value": "新地点" },
       { "op": "add", "path": "/inventory/normal_items/-", "value": "急救包" },
+      { "op": "add", "path": "/inventory/weapons_ammo/-", "value": "9mm手枪与一只空弹匣" },
+      { "op": "add", "path": "/inventory/key_items/-", "value": "旧封锁线通行证" },
       { "op": "remove", "path": "/quests/active/0" }
     ]
     </JSONPatch>
@@ -541,13 +548,18 @@ const coreEntries = [
     { keys: ["怪物", "感染者", "变异"], order: 80 },
   ),
   entry(
+    "[mvu_plot]幸存者常识",
+    `幸存者常识 ${version}\n感染源: 所有怪物均由活人感染后变异形成，本质仍是人。幸存者之间半公开知晓。\n传播途径: 怪物的体液接触可感染正常人类。\n水源规则: 自然水源已被污染，不可直接饮用。煮沸后的雨水是目前唯一经幸存者验证的安全水源。`,
+    { keys: ["常识", "感染", "水源"], order: 85 },
+  ),
+  entry(
     "[mvu_plot]沦陷期怪物",
-    `沦陷期怪物 ${version}\n普通感染者: 保留人形，靠声音、气味、群体数量造成威胁。\n奔跑种: 爆发型，速度快，骨骼和肌腱异常强化；冲刺前会先做一次低速蓄力观察，这是规避窗口。\n食腐种: 进食欲望强，常在尸堆和水源附近聚集，单体威胁不大。\n夜视种: 昼伏夜出，日间完全静默；夜间追击距离远超其他类型，且学会利用阴影遮蔽接近。`,
+    `沦陷期怪物 ${version}\n普通感染者: 保留人形，靠声音、气味、群体数量造成威胁。\n奔跑种: 爆发型，速度快，骨骼和肌腱异常强化；冲刺前会先做一次低速蓄力观察，这是规避窗口。\n食腐种: 进食欲望强，常在尸堆和水源附近聚集，单体威胁不大。\n夜视种: 昼伏夜出，日间完全静默；夜间追击距离远超其他类型，且学会利用阴影遮蔽接近。\n集群行为:\n  普通感染者: 单只缓慢笨拙，三只以上产生跟随效应——首只发现目标后持续发声，附近感染者自动汇聚成松散追击群。\n  食腐种: 进食撕扯声会吸引同类和普通感染者靠近，聚集地常成为其他怪物的觅食路标。\n奔跑种和夜视种暂未观测到跨个体协作行为。`,
     { keys: ["普通感染者", "奔跑种", "食腐种", "夜视种"], order: 90 },
   ),
   entry(
     "[mvu_plot]末日期怪物",
-    `末日期怪物 ${version}\n末日期初期新增: 潜伏种、甲壳种、寻声种。\n潜伏种脚掌异化为软垫状，奔跑速度慢，低声、不主动暴露，常在室内伏击。\n甲壳种皮肤角质化或外骨骼化，手臂上增生骨刃，普通刀具难处理。\n寻声种对声音反应异常，会引导感染者群迁移。\n末日期中末期新增: 毒气种、母巢、融合型。\n毒气种周身毒气散发范围约五米，密闭空间内可持续数小时；不主动追击，依赖毒气驱使猎物出逃后扑杀。\n母巢是区域性生物结构，改变地形、气味、水源和怪物行为。\n融合型由多具感染体或生物组织融合，具有多个核心，攻击范围大，极度危险。`,
+    `末日期怪物 ${version}\n末日期初期新增: 潜伏种、甲壳种、寻声种。\n潜伏种: 脚掌异化为软垫状，奔跑速度慢，低声、不主动暴露，常在室内伏击。\n甲壳种: 皮肤角质化或外骨骼化，手臂上增生骨刃，普通刀具难处理。锁定目标后会从慢步转为冲撞，撞击途中不分敌我。\n寻声种: 对声音反应异常，会引导感染者群迁移。\n末日期中末期新增: 毒气种、母巢、融合型。\n毒气种: 周身毒气散发范围约五米，密闭空间内可持续数小时；不主动追击，依赖毒气驱使猎物出逃后扑杀。\n母巢: 区域性生物结构，改变地形、气味、水源和怪物行为。\n融合型: 由多具感染体或生物组织融合，具有多个核心，攻击范围大，极度危险。\n集群行为:\n  寻声种: 群体中以领航姿态走在前端，其余跟随其移动轨迹。追击时发出高频尖哮，可吸引数百米内的所有怪物，引发连锁遭遇。\n  甲壳种: 冲撞过后路径上残留倒地挣扎的感染者，侥幸躲开的普通感染者和奔跑种会顺着缺口涌入——不是协作，冲撞只是物理上打开了通道。\n  潜伏种: 室内多只分布时自发形成伏击链——入口、楼梯、死路各设一只。触发第一只后退时，可能撞进第二只的等候区。\n  毒气种: 普通感染者和食腐种会在毒气区外围等待，猎物逃出毒气范围时一拥而上。奔跑种则会绕过毒气区，从猎物逃离方向的侧翼切入。\n  母巢: 母巢领地内所有感染者的反应速度和攻击性提高，受伤后会朝母巢核心方向撤退。母巢本身不移动，但持续改变周边地形的气味与路径，使闯入者越来越难判断方向。\n  融合型: 移动时碾碎沿途的感染者残骸，释放的气味吸引食腐种和普通感染者沿其路径清理残局，间接扩大污染区域。`,
     {
       keys: ["潜伏种", "甲壳种", "寻声种", "毒气种", "母巢", "融合型"],
       order: 100,
@@ -555,7 +567,7 @@ const coreEntries = [
   ),
   entry(
     "[mvu_plot]巢化期与重建期怪物",
-    `巢化期与重建期怪物 ${version}\n巢化期新增残巢种和变异体。\n残巢种是母巢破坏后残留的高适应怪物。\n变异体极少数表现出战术回避和学习能力。\n重建期所有怪物种类均会出现。`,
+    `巢化期与重建期怪物 ${version}\n巢化期新增: 残巢种和变异体。\n残巢种: 母巢破坏后的残余适应体。\n变异体: 有部分智力但不高，极低概率出现，展现战略回避和学习能力。\n重建期所有怪物种类均可出现。\n集群行为:\n  残巢种: 对母巢残余组织有归巢本能，聚集在遗址周围形成防御圈。受攻击时释放低频脉冲，吸引附近残巢种与变异体增援。\n  变异体: 不与其他怪物交战，但会利用它们——在奔跑种冲刺路径末端设伏，或在毒气种的毒气区侧翼切入。`,
     { keys: ["残巢种", "变异体", "重建期"], order: 110 },
   ),
   entry(
@@ -641,7 +653,7 @@ const regionData = [
   [
     "联邦沦陷区",
     ["联邦沦陷区", "母巢", "中央实验室"],
-    `地区定位: 原联邦核心区，灾难最深处，也是黑光-III 和母巢真相最集中的区域。\n环境特征: 高楼残骸、毒气低地、异常黏连的街面、失效冷库、实验设施遗址和被生物结构改写的室内空间。\n秩序状态: 人类秩序基本消失，只有临时搜索队、兄弟会高危路线和少数军方残留痕迹。\n主要风险: 母巢影响、融合型、毒气种、路径塌陷、样本污染和无法预测的怪物迁移。\n常见资源: 高价值科研资料、军方遗留设备、稀缺药剂、黑光样本线索和危险物资。\n相关势力/NPC: 韦斯特研究所、临时联邦防疫军、莱伊兄弟会、卢卡斯·卡雷。\n演绎要点: 进入这里应像进入一具巨大的病体；资源越值钱，越说明它靠近事故核心。`,
+    `地区定位: 原联邦核心区，灾难最深处，也是黑光-III 和母巢真相最集中的区域。\n现实数据: 病毒泄露后72小时内感染率达98%，灾难首周约11亿人感染变异，幸存者称其为沦陷区。数字在幸存者聚集地里口耳相传，难以核实但无人否认。\n环境特征: 高楼残骸、毒气低地、异常黏连的街面、失效冷库、实验设施遗址和被生物结构改写的室内空间。\n秩序状态: 人类秩序基本消失，只有临时搜索队、兄弟会高危路线和少数军方残留痕迹。\n主要风险: 母巢影响、融合型、毒气种、路径塌陷、样本污染和无法预测的怪物迁移。\n常见资源: 高价值科研资料、军方遗留设备、稀缺药剂、黑光样本线索和危险物资。\n相关势力/NPC: 韦斯特研究所、临时联邦防疫军、莱伊兄弟会、卢卡斯·卡雷。\n演绎要点: 进入这里应像进入一具巨大的病体；资源越值钱，越说明它靠近事故核心。`,
   ],
   [
     "伊甸港",
@@ -1003,7 +1015,7 @@ const npcEntries = npcDetails.map((npc) =>
 
 const questData = [
   [
-    "观察期",
+    "人物支线-观察期",
     "安娜·陈",
     `触发: {{user}} 首次进入新都、申请居住权、提交物资或被巡逻队带到安娜面前。
 第一段: 安娜不给信任，只给观察期。任务可以是守门、搬运、清点、夜巡、处理插队冲突、陪同小队回收药品。
@@ -1013,7 +1025,7 @@ const questData = [
 变量提示: 更新 factions.xindu_camp.trust、npcs.anna_chen.trust、quests.active/completed，必要时记录 current_goal。`,
   ],
   [
-    "缺口",
+    "人物支线-缺口",
     "索菲亚·金",
     `触发: 新都仓库短缺、分配队伍被抢、索菲亚要求 {{user}} 协助查账或跟踪搬运路线。
 第一段: 线索从小处开始：鞋底面粉、空药瓶、夜间后墙脚印、账本上重复签名。
@@ -1023,7 +1035,7 @@ const questData = [
 变量提示: 更新 npcs.sophia_kim.side_quest，factions.xindu_camp.notes，必要时给 inventory.normal_items 增减物资。`,
   ],
   [
-    "封锁线以北",
+    "人物支线-封锁线以北",
     "阿德勒",
     `触发: {{user}} 需要穿越封锁线、找到旧撤离点、携带军方记录碎片，或被阿德勒扣留盘问。
 第一段: 阿德勒先给低风险任务：确认路标、护送病患、回收失联巡逻队识别牌、检查旧撤离点是否还有活人。
@@ -1033,7 +1045,7 @@ const questData = [
 变量提示: 更新 npcs.adler.trust、factions.federal_epidemic_army.stance、mainline.key_items.federal_lockdown_chip。`,
   ],
   [
-    "失败样本",
+    "人物支线-失败样本",
     "韦斯特",
     `触发: {{user}} 带回感染样本、进入韦斯特研究所、需要治疗感染风险，或取得拓展 J 相关记录。
 第一段: 韦斯特要求样本、血液、病例或冷链材料。他不承诺治愈，只承诺减少盲目。
@@ -1043,7 +1055,7 @@ const questData = [
 变量提示: 更新 npcs.west.side_quest、mainline.key_items.project_j_record_disk、survival.infection_risk。`,
   ],
   [
-    "不能被写进损耗栏的人",
+    "人物支线-不能被写进损耗栏的人",
     "徐银",
     `触发: 学联避难点暴露、学生队伍求援、老人孩子需要转移，或新都拒绝接收一批高风险人员。
 第一段: 徐银给出名单、路线和现实限制：车少、药少、能走的人少，夜里怪物会靠近。
@@ -1053,7 +1065,7 @@ const questData = [
 变量提示: 更新 npcs.xu_yin.trust、factions.student_union.trust、quests.completed/failed，必要时写 world_time.major_events。`,
   ],
   [
-    "上帝是否动摇",
+    "人物支线-上帝是否动摇",
     "牧师",
     `触发: 学联孩子死亡、临终陪伴、避难点恐慌、牧师请求 {{user}} 寻药或护送孩子。
 第一段: 牧师不是给答案的人，而是让人撑过今晚的人。他会请 {{user}} 做一件很实际的事：找退烧药、带回遗物、护送孩子、阻止失控祷告集会。
@@ -1063,7 +1075,7 @@ const questData = [
 变量提示: 更新 npcs.pastor.side_quest、factions.student_union.notes、survival.mental_pressure。`,
   ],
   [
-    "焦虑",
+    "人物支线-焦虑",
     "石井雄介",
     `触发: {{user}} 受伤、感染风险上升、沿江医院缺药，或石井要求搜刮医疗物资。
 第一段: 入场券不是钱，可能是药、纱布、燃料、劳力、守夜、清创室帮工。石井会先判断 {{user}} 值不值得占床。
@@ -1073,7 +1085,7 @@ const questData = [
 变量提示: 更新 npcs.ishii_yusuke.trust、factions.riverside_hospital.trust、survival.health/infection_risk。`,
   ],
   [
-    "抉择",
+    "人物支线-抉择",
     "莎拉",
     `触发: 沿江搜刮队失联、药品清单中断、莎拉请求 {{user}} 参与救援或回收。
 第一段: 目标不是英雄救援，而是带回能让医院继续运转的东西：抗生素、纱布、燃料、床架零件、发电机配件。
@@ -1083,7 +1095,7 @@ const questData = [
 变量提示: 更新 npcs.sarah.side_quest、inventory.normal_items、factions.riverside_hospital.notes。`,
   ],
   [
-    "账本里的死路",
+    "人物支线-账本里的死路",
     "卡尔·J·雷耶斯",
     `触发: {{user}} 与兄弟会交易路线、购买情报、护送货物，或发现卡尔隐瞒路线风险。
 第一段: 卡尔卖的是可控风险。他会给 {{user}} 一条看似划算的路线，并提醒“便宜的路通常已经死人”。
@@ -1093,7 +1105,7 @@ const questData = [
 变量提示: 更新 npcs.carl_j_reyes.trust、factions.laiyi_brotherhood.internal_balance、quests.completed/failed。`,
   ],
   [
-    "不该进去的地方",
+    "人物支线-不该进去的地方",
     "卢卡斯·卡雷",
     `触发: {{user}} 接受卢卡斯高危路线、进入联邦沦陷区边缘，或寻找奇怪的刀。
 第一段: 卢卡斯带队进入一处不该进去的设施：塌陷医院、联邦仓库、地下通道、旧实验转运点均可。
@@ -1102,6 +1114,66 @@ const questData = [
 后果: 深入可能获得奇怪的刀和主线线索；撤退保命但错失机会；抢物会触发兄弟会内部对立。
 变量提示: 更新 npcs.lucas_carre.trust、mainline.key_items.strange_knife、factions.laiyi_brotherhood.internal_balance。`,
   ],
+  [
+    "开局支线-山间猎场的夜视种",
+    "看火人",
+    `触发: 选择"看火人"身份开局后自动激活。
+第一段: 下山途中经过废弃山林猎场，夜里有东西在反跟踪瞭望塔下来的路线——一只夜视种在树线间无声移动，停在废弃猎屋的阴影边缘观察玩家。
+第二段: 猎屋内有残留的受害者遗物和一具被拖进来的半具动物尸体，夜视种利用白日蛰伏特性藏在附近密林。
+核心选择: 趁天亮搜猎屋获取线索后撤离；设陷阱伏击夜视种；标记位置后绕行下山。
+后果: 搜猎屋可获得旧猎人的弹药与地图残片，但可能惊动蛰伏在附近的夜视种；设伏成功可了解夜视种弱点，失败会消耗弹药并暴露营地位置；标记绕行安全但会失去猎屋补给线索。
+变量提示: 更新 monster_knowledge.encountered_types 添加"夜视种"，inventory 增减物资，quests.completed 添加"山间猎场的夜视种"。`,
+  ],
+  [
+    "开局支线-被洗劫的物资中转点",
+    "野外生存博主",
+    `触发: 选择"野外生存博主"身份开局后自动激活。
+第一段: 前往隧道途中发现运输队的秘密物资中转点已被破坏——补给箱被撕裂，物资散落在一处浅水坑周围，数只食腐种正聚集在水源边进食残骸。
+第二段: 中转点仍有一些未被毁坏的补给，但食腐种数量较多且被气味吸引，任何大动作都会惊动它们。
+核心选择: 潜行搜刮少量物资撤离；投掷食物或噪声引开食腐种；利用地势制造障碍分隔食腐群后快速取物。
+后果: 潜行搜刮可获得部分补给品但增加暴露风险；投掷引开能安全获取更多物资但消耗自身储备；设置障碍分隔快速取物效率最高，但判断失误会被包围。
+变量提示: 更新 monster_knowledge.encountered_types 添加"食腐种"，inventory.normal_items 增减食物或工具，quests.completed 添加"被洗劫的物资中转点"。`,
+  ],
+  [
+    "开局支线-哨站铁丝网外的潜伏者",
+    "边境哨站合同医生",
+    `触发: 选择"边境哨站合同医生"身份开局后自动激活。
+第一段: 离开哨站前往11区的公路上遭遇昨夜铁丝网外的那只奔跑种——它正在公路正中央做蓄力观察，身体低伏，肌腱紧绷，还没决定冲刺。
+第二段: 奔跑种背后是废弃检查站，内部可能有防疫军遗留的装备和记录，但它守在唯一通道上。
+核心选择: 利用蓄力窗口快速穿过冲向检查站内；绕行从侧窗进入检查站；利用哨站急救物资制造刺激性气雾迫使奔跑种转移。
+后果: 快速穿过可进入检查站获取防疫军物资和旧撤离记录，但动作稍慢会被冲刺撞击；绕行耗时更多但安全；刺激性气雾能短期驱离奔跑种，但会消耗医疗物资。
+变量提示: 更新 monster_knowledge.encountered_types 添加"奔跑种"，inventory 增减物资，quests.completed 添加"哨站铁丝网外的潜伏者"。`,
+  ],
+  [
+    "开局支线-雪地冲刺的路标",
+    "极地科考越冬队员",
+    `触发: 选择"极地科考越冬队员"身份开局后自动激活。
+第一段: 向南行进时，观测站外雪地上的异常脚印在废弃气象站附近变成奔跑种的冲刺轨迹——它用高速直线突进穿过开阔雪原，轨迹末端散落着被撞碎的旧设备。
+第二段: 废弃气象站内部有可用设备、数据和少量燃料，但奔跑种可能折返，且建筑结构因低温变得脆弱。
+核心选择: 趁冲刺轨迹方向远离时进站搜刮；利用冰面制造滑倒陷阱削弱奔跑种后对峙；点燃气象站残存燃料制造热信号引开它。
+后果: 进站可获得气象数据、科考站补给和低温线索；滑倒陷阱能有效限制奔跑种但需判断准确的归返时机；点火驱离消耗宝贵的燃料但最安全。
+变量提示: 更新 monster_knowledge.encountered_types 添加"奔跑种"，inventory.key_items 可能增加低温区域记录，quests.completed 添加"雪地冲刺的路标"。`,
+  ],
+  [
+    "开局支线-旧矿口的拖痕",
+    "深山巡护员",
+    `触发: 选择"深山巡护员"身份开局后自动激活。
+第一段: 顺着足迹追踪到旧矿洞口，拖痕和散落的骨骼碎片表明一只夜视种在此筑巢。洞外有被反复碾压过的蕨类植物——它在白日蛰伏于矿道深处，夜晚才出洞活动。
+第二段: 矿道内部有前一批搜索者遗留的装备，以及矿壁上的旧联邦调查标记。
+核心选择: 趁白日进洞快速取走遗留装备后封堵洞口；在洞口设捕兽夹与砍刀伏击夜视种；标记位置沿旧林道下山通报。
+后果: 进洞可取回弹药、巡护日志补全线索和联邦标记照片，但矿道内可能不止一只夜视种；设伏能了解夜视种弱点且有机会清剿巢穴，但失败会消耗陷阱与弹药；标记下山安全但失去先手优势。
+变量提示: 更新 monster_knowledge.encountered_types 添加"夜视种"，inventory 增减物资，quests.completed 添加"旧矿口的拖痕"。`,
+  ],
+  [
+    "开局支线-礁石区溺水者",
+    "海岛灯塔看守",
+    `触发: 选择"海岛灯塔看守"身份开局后自动激活。
+第一段: 离岛小艇行至礁石区时，一具仍能微弱活动的浸水感染者被潮水推向船侧——它的皮肤半透明发白，颈部挂着无法辨认的识别牌残片。
+第二段: 远处礁石上还有更多被冲散的漂浮物：木箱、救生衣碎片、一只浸水的军用背包。
+核心选择: 用桨推开感染者绕行靠岸；将其拖到礁石上检查识别牌残片；利用信号枪惊吓它远离后快速搜刮漂浮物。
+后果: 绕行最安全但失去所有线索；拖上礁石检查可获得海军或军方遗留身份信息，但近距离接触增加感染风险；信号枪惊吓能清出安全搜刮窗口但消耗信号弹。
+变量提示: 更新 monster_knowledge.encountered_types 添加"普通感染者"，inventory.key_items 可能增加身份残片线索，quests.completed 添加"礁石区溺水者"。`,
+  ],
 ];
 
 const openings = [
@@ -1109,96 +1181,128 @@ const openings = [
     "看火人开场",
     "看火人",
     "努尔山脉-旧防火瞭望塔",
-    "旧式步枪与少量子弹、手摇无线电、防火斧、努尔山脉巡查图、巧克力、牛肉干、保温杯",
+    {
+      weapons_ammo: ["旧式步枪与少量子弹", "防火斧"],
+      normal_items: ["手摇无线电", "巧克力", "牛肉干", "保温杯"],
+      key_items: ["努尔山脉巡查图"],
+    },
     "高处观察、林火与风向判断、耐孤独",
-    `努尔山脉的旧防火瞭望塔已经很久没有收到正式呼叫了。最后一份纸质巡查表被压在窗边, 铅笔字被潮气洇开。你在这里守了几个月, 最初还按时记录烟柱、风向和林线变化, 但后来的记录变多了：山下的公路没再出现车辆, 林子里的鸟群迅速迁徙, 大型野兽总是暴躁不已。
+    `努尔山脉的旧防火瞭望塔已经很久没有收到正式呼叫了。最后一份纸质巡查表压在窗边，铅笔字被潮气洇开。你在这里守了几个月，最初还按时记录烟柱、风向和林线变化，后来记得更多了：山下的公路没再出现车辆，林子里的鸟群迅速迁徙，大型野兽开始频繁地表现出暴躁的迹象。
 
 昨天晚上无线电响了。
 
-频道里的杂音很重, 除了里面有人反复念着"联邦区域"之外其他都很难辨认, 后面又收到了疑似军方的频率, 几段破碎的词句从电流中挤出来：封锁、转运失败、不要走山口。随后只剩一阵像呼吸一样的低噪。
+频道里的杂音很重，除了有人反复念着"联邦...区域..."之外其他都很难辨认，后面又收到了疑似军方的频率，几段破碎的词句从电流里挤出来："封锁...转运失败...不要走山口..."。随后只剩一阵像呼吸一样的低噪。
 
-你站到瞭望台外, 风从山脊上呼啸而过。远处林线正在移动, 不是鹿群, 看不清楚是什么。几簇黑影在树间停下, 像是在观察坡度。更远处, 新都方向的天空没有城市光, 只有一层灰红色的反光。
+你站到瞭望台外，风从山脊上呼啸而过。远处林线正在移动，看不清楚是什么动物，几簇黑影在树间停下，像是在观察坡度。更远处，新都方向的天空看不见光亮，只有一层灰红色的反光。
 
-塔里还有旧式步枪、少量子弹、手摇无线电、防火斧和努尔山脉巡查图。水不多, 食物也不多。你决定离开这座塔下山, 去弄清楚山外到底发生了什么。`,
+塔里还有旧式步枪、少量子弹、手摇无线电、防火斧和努尔山脉巡查图。水不多，食物也不多。
+
+早晨, 下山途中你在废弃山林猎场边缘停住了——树线间有一双反射着微弱天光的眼睛。它没有移动，只是站在猎屋阴影的边沿看你，那双眼睛先扫了一下你肩上的步枪，又落回到你身上。猎屋门口有新拖痕，门缝里明显能看到渗出了血。那不是普通人，或者说那还算是人吗？他没有后退，也不冲过来，就这样跟你对峙着。`,
   ],
   [
     "野外生存博主开场",
     "野外生存博主",
     "努尔山脉-边缘废弃露营基地",
-    "运动相机与备用存储卡、多功能刀、轻便滤水器、野外背包、太阳能充电宝、肉干、大容量水壶",
+    {
+      weapons_ammo: ["多功能刀"],
+      normal_items: ["轻便滤水器", "野外背包", "太阳能充电宝", "肉干", "大容量水壶"],
+      key_items: ["运动相机与备用存储卡"],
+    },
     "临时庇护搭建、水源与食物辨识、抓拍高手",
-    `废弃露营基地的招牌倒在泥里, 上面还残留着灾难前的彩色广告。你曾经在类似地方拍过太多视频：如何过滤溪水, 如何用湿木生火, 如何在没有帐篷时撑过雨夜。那时候评论区总有人说, 真到了末日你一定活得很好。
+    `废弃露营基地的招牌倒在泥里，上面还残留着灾难前的彩色广告。你在类似地方拍过太多视频：教观众们怎么过滤溪水，怎么用湿木生火，怎么在没有帐篷的雨夜里撑过来。那时候评论区总有人说要是有天世界末日了你一定活得很好。
 
-相机还在工作, 电量不多, 功能一切正常。你原本只是想回看几天前拍到的山路, 确认自己有没有错过人类活动的痕迹。画面里先是雾, 树影, 废弃栈道, 然后是一队武装运输人员。他们走得很快, 肩上有枪, 几个人抬着一只冷藏箱。箱体侧面有被泥抹掉的标识, 仍能看出联邦旧封条的轮廓。
+相机还在，电量不多，还能拍。你只是回看前几天拍的山路，想看看有没有漏掉人迹。在画面里先是雾，树影，废弃栈道，然后是一队武装运输人员。他们走得很快，肩上有枪，几个人抬着一只冷藏箱。箱侧抹过泥，勉强能看得出联邦旧封条的轮廓。
 
-你反复播放那段影像。队伍没有往新都走, 而是绕向更偏的山道。镜头最后几秒, 他们拐进了一个隧道中看不见了。
+你反复播放那段影像。队伍没有往新都走，绕向了更偏的山道。镜头最后几秒，他们拐进隧道，看不到了。
 
-基地周围很安静。滤水器、野外背包、多功能刀都还在, 但肉干没多少了。你站起身开始收拾东西准备离开, 或许可以把这段影像当成筹码, 去找愿意交换情报的人。`,
+基地周围很安静。滤水器、野外背包、多功能刀都还在，肉干没多少了。你站起身收拾东西。这段影像或许值点钱，找人换情报时也算是多了个筹码。
+
+前往隧道的山腰小道上，你先闻见了一股酸腐味儿，像死水泡烂了的肉。沿着味道过去，一处物资中转点被藤蔓遮了大半，补给箱撕烂了散在地上，浅水坑周围蹲着五六只奇怪的"人"，背脊佝偻着，正埋头撕扯一具看不出原形的尸体。耳朵没朝这边转，看来还没惊动它们。你压低了呼吸。隧道入口不远了。`,
   ],
   [
     "边境哨站合同医生开场",
     "边境哨站合同医生",
     "联邦沦陷区北面-废弃边境哨站",
-    "急救包、基础抗生素、便携体温计与检测试纸、边境哨站医疗记录、干脆面、军用水壶",
+    {
+      normal_items: ["急救包", "基础抗生素", "便携体温计与检测试纸", "干脆面", "军用水壶"],
+      key_items: ["边境哨站医疗记录"],
+    },
     "伤情分诊、感染风险识别、低资源治疗、外科缝合",
-    `废弃边境哨站的医务室里有一股消毒水、霉味和血混在一起的味道。你在这里做合同医生, 本来只负责处理擦伤、冻伤、胃病和偶尔的斗殴。后来通讯断了, 换岗的人没来, 哨站外的路被封住, 甚至来送物资的人来的频次也急剧减少。
+    `废弃边境哨站的医务室里有一股消毒水、霉味和血混在一起的味道。你在这里做合同医生，本来只处理擦伤、冻伤、胃病和偶尔的斗殴。后来通讯断了，换岗的人没来，哨站外的路被堵了，送物资的也越来越少了。
 
-你前几天给一个受伤的军人包扎时, 他好心提醒你最好赶快离开这里, 这里没有大伙想象的那么安全。夜里, 封锁线方向亮起灯号。不是求救灯, 也不是常规识别。几次短闪后, 远处传来枪声, 然后是更长的寂静。许久之后, 你听见哨站后方的铁丝网被什么东西慢慢拨动。声音很轻, 像有人用指甲试探金属, 你没敢开门。
+前几天你给一个受伤的军人包扎，他低声跟你说最好快走，这里没大伙想的那么安全。夜里，封锁线方向亮起灯号。那并非求救灯，也不是常规识别。几次短闪之后，远处传来枪声，然后是更长的寂静。你听见哨站后方的铁丝网被什么东西慢慢拨动，声音很轻，像有人用指甲在试金属的韧性，你没敢开门。
 
-第二天清晨, 你在那里发现了一堆碎纸, 你将它们拼起来, 只能辨别出一句被划了几道线的话：北面样本转运失败, 接触者需就地隔离。下面的签名被墨水涂黑, 只剩一个识别码一样的东西。
+第二天清晨，你在那里发现一堆碎纸，拼起来勉强认出几个字："北面样本转运失败，接触者需就地隔离"。签名被墨水涂黑，只剩一串不知道是编号还是代码的东西。
 
-现在手里有急救包、基础抗生素、便携体温计、检测试纸和那几页医疗记录。你能判断伤情, 能包扎, 还有一手精湛的医术。可最难判断的是方向：向封锁线走, 可能遇到军方, 也可能遇到他们想拦住的东西；向南走, 迟早要进入新都或11区的秩序里。
+你手里有急救包、基础抗生素、便携体温计、检测试纸和那几页医疗记录。你会判断伤情，懂如何缝合伤口。现在的问题是如何选择：往封锁线走，可能遇到军方，也可能遇到他们想拦住的东西；往南走，迟早要进新都或11区的地界。
 
-你挠了挠头不再犹豫, 赶紧收拾东西起身向11区出发。`,
+公路被废弃车辆切成几段。绕过第二辆锈掉的货车，你看见了三十米外，一个人伏在公路正中央，四肢撑地，背肌一条一条地鼓起来。他匍匐得很低，但粗重的呼吸声隔很远都听得见。昨夜铁丝网外那个试着拨动金属的，说不定就是这种怪物。`,
   ],
   [
     "极地科考越冬队员开场",
     "极地科考越冬队员",
     "联邦沦陷区北面-极寒隔离观测站",
-    "保温服、低温样本箱、卫星定位终端、科考站维修工具、能量棒、牛肉罐头、保温杯",
+    {
+      normal_items: ["保温服", "卫星定位终端", "科考站维修工具", "能量棒", "牛肉罐头", "保温杯"],
+      key_items: ["低温样本箱"],
+    },
     "低温生存、设备维护、科考知识",
-    `极寒隔离观测站的供暖系统又停了。你戴着手套拆开发电机外壳, 听见屋外的狂风在金属墙外刮过, 简直像有人用刀背刮门。越冬队早就散了, 有人乘撤离机离开, 有人留在雪线另一头失联。你被吩咐留下来维护数据链, 等一个可能再也不会来的接收确认。
+    `极寒隔离观测站的供暖系统又停了。你戴着手套拆开发电机外壳，屋外的风刮在金属墙上，像有人拿刀背在那儿划。越冬队早就散了，有人乘撤离机离开，有人留在雪线另一头再没消息。你被留在这维护数据链，等一个恐怕永远不会来的调离通知。
 
-凌晨, 一阵疑似无人机的声音将你吵醒, 同时卫星定位终端收到一段信息。发送源显示为联邦核心区旧实验网络, 时间混乱, 内容残缺, 但有一串编号反复出现：黑光-III 样本链。你从未见过这样的类似命名规则。那不是普通气象样本, 也不像地质材料。
+凌晨，疑似无人机的声音把你吵醒。卫星定位终端收到一段信息，发送源是联邦核心区旧实验网络，时间混乱，内容残缺，有一串编号反复出现："黑光-III样本链"。你从没见过这类命名。不像是气象样本，也不像地质材料。
 
-你走到外面, 发现屋外有一个低温样本箱, 你打开外层保险扣, 看见箱内并非你熟悉的科考样本, 而是一枚带有联邦旧封条的内匣。封条边缘像被人重新压过, 标签已经模糊不清。
+你走出去，屋外有一个低温样本箱。打开外层保险扣，里面不是你熟悉的科考样本，而一个带联邦旧封条的内匣。封条一眼就能看出有人动过，标签早已模糊不清。
 
-观测站外的雪地上出现了脚印。不是人的, 也不像大型野兽。它们停在排风口附近, 绕了几圈, 又朝南方消失。你有保温服、低温样本箱、卫星定位终端和维修工具。这里很不安全, 你决定向南走。`,
+早晨，观测站外的雪地上出现了"人"的脚印，它们停在排风口附近，绕了几圈，朝南消失了。你有保温服、低温样本箱、卫星定位终端和维修工具。这地方不能再待了。
+
+动身往南走了大概两公里，你发现了一处废弃气象站，但有个坏消息：这里有脚印，这脚印跨度猛地拉长，踩出了一处处浅坑，一路撞穿了气象站的旧铝合金护栏。被撞碎的零件散在雪里，还冒着机油蒸汽。撞护栏的那个人，如果还能叫人的话，应该刚离开不久。`,
   ],
   [
     "深山巡护员开场",
     "深山巡护员",
     "努尔山脉-深处巡护站",
-    "巡护砍刀、绳索与登山扣、捕兽夹、山区巡护日志、登山包、葡萄干、水壶、芝麻馕",
+    {
+      weapons_ammo: ["巡护砍刀", "捕兽夹"],
+      normal_items: ["绳索与登山扣", "登山包", "葡萄干", "水壶", "芝麻馕"],
+      key_items: ["山区巡护日志"],
+    },
     "追踪与反追踪、山地穿行、陷阱布置、草药专家",
-    `努尔山脉深处的巡护站比地图上更孤单。木门被风吹得轻轻发响, 墙上的旧照片还停在灾难前的植被调查季。你熟悉这里的每条兽道、每处滑坡、每片山谷。你在这片山脉追踪过无数的盗猎者和迷路游客, 最近却出现了一些不寻常的踪迹。
+    `努尔山脉深处的巡护站比地图上更孤单。木门被风吹得吱吱作响，墙上的旧照片还印着几个月前的针叶林。你熟悉这里的每条兽道、每处滑坡、每片山谷。你在这片山脉追踪过不少盗猎者和迷路的游客，最近却出现了一些不寻常的踪迹。
 
-连续几天, 你在旧林道附近发现同一种足迹。它不属于熊, 也不像普通人。拖痕很轻, 停顿点却很清楚, 像那东西知道什么时候该压低声音。更奇怪的是, 足迹旁边还有人为刻下的路线标记。不是官方巡护标识, 反而像是迷路的人留下的痕迹。
+连续几天，你在旧林道附近发现同一种足迹。不是熊的，也不像普通人。拖痕很轻，停顿点却很清楚，像在刻意控制落脚。更奇怪的是，足迹旁边还有刻下的路线记号。不是官方巡护标识，倒像迷路的人留下的。
 
-巡护日志最后一页被你写得很满：夜间有远距离追击声, 山谷水源疑似被污染, 东侧坡道出现不明拖拽痕。你把砍刀、绳索、登山扣、捕兽夹等物品收进包里。
+巡护日志最后一页被你写满了：夜间有远距离追击声，山谷水源疑似被污染，东侧坡道出现不明拖拽痕。你把巡护砍刀、登山绳、捕兽夹收进包里。
 
-你可以顺着足迹往深处查, 弄清楚山里到底多了什么, 也可以沿旧林道下山。无论哪条路, 都可能把你带向新都边缘。山外的世界已然转变, 但山里这些变化也不太寻常。`,
+沿着足迹往深处查，经过一条旧林道，从这里下山可以直通新都的边缘。山外已经变了，山里也不太平。
+
+足迹在一个旧矿洞口停住了。洞口外的蕨类被碾成盘状，有什么东西在这里反复卧伏过。几片碎骨散在碎石间，洞壁上有你认得的旧联邦白色调查标记。洞里的气味不好闻，白天的光只照到洞口就进不去了，里面还是暗的。你看巡护日志上画的那些可能的夜间记录路线，起点和终点全在这附近。`,
   ],
   [
     "海岛灯塔看守开场",
     "海岛灯塔看守",
     "伊甸港-外海旧灯塔岛",
-    "信号灯维护工具、航海图、手持信号枪、牛肉罐头、水壶",
+    {
+      weapons_ammo: ["手持信号枪"],
+      normal_items: ["信号灯维护工具", "牛肉罐头", "水壶"],
+      key_items: ["航海图", "军方旧封条密封箱"],
+    },
     "海况与信号判断、设备维修、孤岛生存",
-    `伊甸港外海的旧灯塔每晚仍会亮几次, 已经很久没有船按航线返港了, 但这已经成了你的工作习惯。海雾很浓, 岸上的港口灯不知何时开始不再亮起了。偶尔有漂浮物从海面上经过, 木箱、救生衣、桅杆, 有时还有一些尸体。
+    `伊甸港外海的旧灯塔每晚还会亮几次，已经很久没有船按航线返港了，但这不影响你继续开灯。海雾很浓，岸上的港口灯不知什么时候灭了。偶尔有漂浮物经过，木箱、救生衣、桅杆，偶尔还有尸体。
 
-今晚, 远处有船只打来灯号。
+今晚，远处有船打来灯号。
 
-它没有靠岸, 也没有报身份。灯号断断续续, 只重复一个方向和一组旧军方编码。你回灯后, 对方沉默了很久, 随后一只密封箱被小艇推到礁石附近。等你赶到岸边时, 小艇已经离开, 海面只剩发动机声被雾吞掉。
+它没靠岸，也没报身份。灯号断断续续，一直重复着戒备信号。你回灯之后，对方沉默了很久，靠岸停了一会儿之后又开走了。你赶到岸边，发现有一个密封箱在礁石附近。
 
-箱子上有军方旧封条, 收件标识被刮掉, 边角还残留冷藏警示。你没有立刻打开。灯塔仓库里只剩信号灯维护工具、航海图、手持信号枪、少量牛肉罐头和淡水。你费了一番功夫才把那个箱子捞上来, 这只箱子显然是被故意送过来的, 为什么, 你不知道。
+箱子上有军方旧封条，收件标识被刮掉了，边角还残留冷藏警示。你没有立刻打开。灯塔仓库里只剩信号灯维护工具、航海图、手持信号枪、少量牛肉罐头和淡水。你费了些劲才把那只箱子捞上来。箱子是故意送到这里的，为什么？你不知道。
 
-海况正在变坏, 这几天海里时不时能看到一些奇怪的动物游过, 你决定尽快离开, 前往伊甸港或者新都。`,
+海况在变坏，这几天海里时不时能看见一些奇怪的东西游过。你决定尽快离开，去伊甸港，或者新都。
+
+第二天，你准备万全后拿出备用的小艇离开，划到灯塔岛与大陆之间的礁石区时，水底阴影里浮上来一个人。浪把他推到船舷边，皮肤泡得惨白，颈部挂着被海水腐蚀的类似身份牌一样的东西。他的嘴角还在动。不像活人，也不像纯粹的尸体。远处礁石间散落着被冲散的木箱和一只浸水的绿色军用背包，你意识到有什么东西在海里出过事，时间还不长。`,
   ],
 ];
 
 const sideQuestMap = Object.fromEntries(
-  questData.map(([name, npc]) => [npc, `支线-${name}`]),
+  questData.map(([name, npc]) => [npc, name]),
 );
 const sideQuestController = `@@preprocessing
 <%_
@@ -1215,7 +1319,7 @@ function blPushQuest(npcName) {
 for (var i = 0; i < blQuestActive.length; i++) {
   var q = blQuestActive[i];
   var qText = typeof q === 'string' ? q : JSON.stringify(q);
-  Object.keys(blSideMap).forEach(function(npcName) { if (qText.includes(npcName) || qText.includes(blSideMap[npcName].replace('支线-', ''))) blPushQuest(npcName); });
+  Object.keys(blSideMap).forEach(function(npcName) { if (qText.includes(npcName) || qText.includes(blSideMap[npcName].replace('人物支线-', '').replace('开局支线-', ''))) blPushQuest(npcName); });
 }
 if (blQuestLoc.includes('新都')) { blPushQuest('安娜·陈'); blPushQuest('索菲亚·金'); }
 if (blQuestLoc.includes('封锁线') || blQuestLoc.includes('哨站') || blQuestLoc.includes('防疫军')) blPushQuest('阿德勒');
@@ -1223,9 +1327,11 @@ if (blQuestLoc.includes('韦斯特') || blQuestLoc.includes('研究所')) blPush
 if (blQuestLoc.includes('学联') || blQuestLoc.includes('避难点')) { blPushQuest('徐银'); blPushQuest('牧师'); }
 if (blQuestLoc.includes('沿江') || blQuestLoc.includes('医院')) { blPushQuest('石井雄介'); blPushQuest('莎拉'); }
 if (blQuestLoc.includes('兄弟会') || blQuestLoc.includes('莱伊')) { blPushQuest('卡尔·J·雷耶斯'); blPushQuest('卢卡斯·卡雷'); }
+var blOriginId = getvar('stat_data.user_profile.origin_identity', { defaults: '' }) || '';
+if (blOriginId) blPushQuest(blOriginId);
 var blQuestShown = 0;
 _%>
-<%_ for (var i = 0; i < blQuestCandidates.length && blQuestShown < 2; i++) { var qName = blQuestCandidates[i]; if (!blQuestCompleted.includes(qName.replace('支线-', '')) && !blQuestCompleted.includes(qName) && !blQuestFailed.includes(qName.replace('支线-', '')) && !blQuestFailed.includes(qName)) { blQuestShown++; _%>
+<%_ for (var i = 0; i < blQuestCandidates.length && blQuestShown < 2; i++) { var qName = blQuestCandidates[i]; if (!blQuestCompleted.includes(qName.replace('人物支线-', '').replace('开局支线-', '')) && !blQuestCompleted.includes(qName) && !blQuestFailed.includes(qName.replace('人物支线-', '').replace('开局支线-', '')) && !blQuestFailed.includes(qName)) { blQuestShown++; _%>
 <%- await getwi(qName) %>
 <%_ }} _%>`;
 
@@ -1435,7 +1541,7 @@ const regionalEventEntries = [
         const eventName = `区域事件-${region}-${name}`;
         return entry(
           eventName,
-          `${eventName}\n地区: ${region}\n${text}\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 ${eventName}。完成后不得再次触发。`,
+          `${eventName}\n地区: ${region}\n${text.replaceAll("inventory.items", "inventory.normal_items、inventory.weapons_ammo、inventory.key_items")}\n一次性规则: 本事件完成后，变量更新必须 add 到 /local_events/completed/-，value 使用完整事件名 ${eventName}。完成后不得再次触发。`,
           { enabled: false, order: 391 + regionIndex * 10 + eventIndex },
         );
       }),
@@ -1555,7 +1661,7 @@ function scriptJson(name, id, content, info) {
   };
 }
 
-const loaderScript = `// 感染 MVU 加载器 v1.1\nimport 'https://testingcf.jsdelivr.net/gh/MagicalAstrogy/MagVarUpdate/artifact/bundle.js';\n`;
+const loaderScript = `// 感染 MVU 加载器 v1.1.1\nimport 'https://testingcf.jsdelivr.net/gh/MagicalAstrogy/MagVarUpdate/artifact/bundle.js';\n`;
 
 const schemaScript = `// 感染 Schema v1.0\n// v1.0: 初版变量结构\nimport { registerMvuSchema } from 'https://testingcf.jsdelivr.net/gh/StageDog/tavern_resource/dist/util/mvu_zod.js';\n\nconst str = (d = '') => z.string().default(d).catch(d);\nconst num = (d = 0) => z.coerce.number().default(d).catch(d);\nconst arr = () => z.array(z.any()).default([]).catch([]);\nconst item = z.object({ id: str(), name: str(), quantity: z.union([z.string(), z.number()]).default(1).catch(1), subtype: str(), status: str(), note: str() }).default({}).catch({});\nconst relation = z.object({ name: str(), faction: str(), relationship: str('陌生'), trust: str('观察'), status: str('未遇见'), side_quest: str('未触发'), notes: arr() }).default({}).catch({});\nconst faction = z.object({ name: str(), stance: str('未知'), trust: str('陌生'), internal_balance: str(''), notes: arr() }).default({}).catch({});\n\nexport const Schema = z.object({\n  meta: z.object({ character_version: str('0.1.0'), update_format: str('RFC6902_JSONPatch') }).default({}).catch({}),\n  user_profile: z.object({ name: str('{{user}}'), origin_identity: str(), opening_location: str(), current_location: str(), current_goal: str(), skills: arr(), notes: arr() }).default({}).catch({}),\n  world_time: z.object({ period: str('沦陷期'), phase_gate: str('身份开场'), rough_day: num(0), major_events: arr() }).default({}).catch({}),\n  survival: z.object({ health: str('正常'), infection_risk: str('无'), fatigue: str('清醒'), hunger_thirst: str('充足'), mental_pressure: str('稳定'), body_temperature: str('正常'), load: str('轻装') }).default({}).catch({}),\n  inventory: z.object({ weapons_ammo: z.array(item).default([]).catch([]), normal_items: z.array(item).default([]).catch([]), key_items: z.array(item).default([]).catch([]) }).default({}).catch({}),\n  mainline: z.object({ stage: str('未接触'), discovered_layers: arr(), discovered_clues: arr(), key_items: z.object({ blacklight_sample_case: str('未发现'), project_j_record_disk: str('未发现'), federal_lockdown_chip: str('未发现'), anteater_model_core: str('未发现'), strange_knife: str('未发现') }).default({}).catch({}), unlocked_locations: arr(), decisions: arr() }).default({}).catch({}),\n  factions: z.object({ xindu_camp: faction, laiyi_brotherhood: faction, west_institute: faction, student_union: faction, federal_epidemic_army: faction, riverside_hospital: faction }).default({}).catch({}),\n  npcs: z.object({ anna_chen: relation, sophia_kim: relation, adler: relation, west: relation, xu_yin: relation, pastor: relation, ishii_yusuke: relation, sarah: relation, carl_j_reyes: relation, lucas_carre: relation, one_eye: relation }).default({}).catch({}),\n  quests: z.object({ active: arr(), completed: arr(), failed: arr(), dormant: arr() }).default({}).catch({}),\n  monster_knowledge: z.object({ known_types: z.array(z.string()).default(['普通感染者', '奔跑种', '食腐种', '夜视种']).catch(['普通感染者', '奔跑种', '食腐种', '夜视种']), encountered_types: arr(), confirmed_weaknesses: arr(), hive_activity: str('未发现') }).default({}).catch({}),\n}).default({}).catch({});\n\n$(() => { registerMvuSchema(Schema); });\n`;
 
@@ -1606,12 +1712,12 @@ const registeredSchemaScript = weatherSchemaScript.includes(
       ";\n\n$(() => registerMvuSchema(Schema));\n",
     );
 const releaseSchemaScript = registeredSchemaScript
-  .replace("// 感染 Schema v1.0", "// 感染 Schema v1.1")
+.replace("// 感染 Schema v1.0", "// 感染 Schema v1.1.1")
   .replace(
     "// v1.0: 初版变量结构",
-    "// v1.0: 初版变量结构\n// v1.1: 开场选择器与身份开场变量初始化",
+    "// v1.0: 初版变量结构\n// v1.1: 开场选择器与身份开场变量初始化\n// v1.1.1: 世界书修订、开局支线怪物遭遇、幸存者常识、集群行为",
   )
-  .replace("character_version: str('0.1.0')", "character_version: str('1.1.0')");
+  .replace("character_version: str('0.1.0')", "character_version: str('1.1.1')");
 writeJson(
   "06-mvu-schema-script.json",
   scriptJson(
@@ -1737,7 +1843,7 @@ writeJson(
   ),
 );
 
-const greetingInitContent = `// 感染 开场变量初始化 v1.1\n// 从 alternate_greeting 的 <UpdateVariable><JSONPatch> 块初始化 stat_data\n(async () => {\n  await waitGlobalInitialized('TavernHelper');\n  await waitGlobalInitialized('Mvu');\n\n  function initFromGreeting() {\n    try {\n      const ctx = SillyTavern.getContext();\n      if (!ctx || !Array.isArray(ctx.chat) || !ctx.chat[0]) return;\n      const mes = ctx.chat[0];\n      if (!mes || typeof mes.mes !== 'string') return;\n      const stat = TavernHelper.variables.stat_data;\n      if (stat && stat.user_profile && stat.user_profile.origin_identity && stat.user_profile.origin_identity !== '') return;\n      const m = mes.mes.match(/<UpdateVariable>[\\\\s\\\\S]*?<JSONPatch>([\\\\s\\\\S]*?)<\\\\/JSONPatch>[\\\\s\\\\S]*?<\\\\/UpdateVariable>/i);\n      if (!m) return;\n      const patches = JSON.parse(m[1].trim());\n      if (!Array.isArray(patches)) return;\n      const data = stat || {};\n      for (const p of patches) {\n        if (p.op === 'replace' || p.op === 'add') {\n          const parts = p.path.replace(/^\\\\//, '').split('/');\n          let cur = data;\n          for (let i = 0; i < parts.length - 1; i++) {\n            if (typeof cur[parts[i]] !== 'object' || cur[parts[i]] === null) cur[parts[i]] = {};\n            cur = cur[parts[i]];\n          }\n          cur[parts[parts.length - 1]] = p.value;\n        }\n      }\n      if (!stat) TavernHelper.variables.stat_data = data;\n      if (typeof Mvu.notifyUpdate === 'function') Mvu.notifyUpdate();\n    } catch (e) { /* silent */ }\n  }\n\n  function onChatLoaded() {\n    setTimeout(initFromGreeting, 500);\n  }\n\n  try { eventOn('chat_id_changed', onChatLoaded); } catch (e) {}\n  try { eventOn('message_rendered', onChatLoaded); } catch (e) {}\n  try { if (Mvu && typeof Mvu.eventOn === 'function') Mvu.eventOn('mag_variable_initiailized', initFromGreeting); } catch (e) {}\n  setTimeout(onChatLoaded, 1500);\n})();`;
+const greetingInitContent = `// 感染 开场变量初始化 v1.1.1\n// 从 alternate_greeting 的 <UpdateVariable><JSONPatch> 块初始化 stat_data\n(async () => {\n  await waitGlobalInitialized('TavernHelper');\n  await waitGlobalInitialized('Mvu');\n\n  function initFromGreeting() {\n    try {\n      const ctx = SillyTavern.getContext();\n      if (!ctx || !Array.isArray(ctx.chat) || !ctx.chat[0]) return;\n      const mes = ctx.chat[0];\n      if (!mes || typeof mes.mes !== 'string') return;\n      const stat = TavernHelper.variables.stat_data;\n      if (stat && stat.user_profile && stat.user_profile.origin_identity && stat.user_profile.origin_identity !== '') return;\n      const m = mes.mes.match(/<UpdateVariable>[\\\\s\\\\S]*?<JSONPatch>([\\\\s\\\\S]*?)<\\\\/JSONPatch>[\\\\s\\\\S]*?<\\\\/UpdateVariable>/i);\n      if (!m) return;\n      const patches = JSON.parse(m[1].trim());\n      if (!Array.isArray(patches)) return;\n      const data = stat || {};\n      for (const p of patches) {\n        if (p.op === 'replace' || p.op === 'add') {\n          const parts = p.path.replace(/^\\\\//, '').split('/');\n          let cur = data;\n          for (let i = 0; i < parts.length - 1; i++) {\n            if (typeof cur[parts[i]] !== 'object' || cur[parts[i]] === null) cur[parts[i]] = {};\n            cur = cur[parts[i]];\n          }\n          cur[parts[parts.length - 1]] = p.value;\n        }\n      }\n      if (!stat) TavernHelper.variables.stat_data = data;\n      if (typeof Mvu.notifyUpdate === 'function') Mvu.notifyUpdate();\n    } catch (e) { /* silent */ }\n  }\n\n  function onChatLoaded() {\n    setTimeout(initFromGreeting, 500);\n  }\n\n  try { eventOn('chat_id_changed', onChatLoaded); } catch (e) {}\n  try { eventOn('message_rendered', onChatLoaded); } catch (e) {}\n  try { if (Mvu && typeof Mvu.eventOn === 'function') Mvu.eventOn('mag_variable_initiailized', initFromGreeting); } catch (e) {}\n  setTimeout(onChatLoaded, 1500);\n})();`;
 
 writeJson(
   "08-mvu-greeting-init.json",
@@ -1828,7 +1934,7 @@ const tags = field(cardText, "tags")
   .split(",")
   .map((x) => x.trim())
   .filter(Boolean);
-const characterVersion = field(cardText, "character_version") || "1.1.0";
+const characterVersion = field(cardText, "character_version") || "1.1.1";
 const firstMes = section(cardText, "README 开场页");
 const identityGreetings = openings.map(([name, identity, loc, items, skills, text]) =>
   `${text}\n\n${makeInitPatch(identity, loc, items, skills)}\n\n<StatusPlaceHolderImpl/>`
@@ -1903,14 +2009,14 @@ const card = {
     },
     character_book: {
       name: "感染-内嵌世界书",
-      description: "感染完整内嵌世界书 v1.1",
+      description: "感染完整内嵌世界书 v1.1.1",
       extensions: {},
       entries: characterBookEntries,
     },
   },
 };
 
-writeJson("infection-card-v1.1.json", card);
+writeJson("infection-card-v1.1.1.json", card);
 
 console.log(
   `Generated ${uid - 1} worldbook entries and 2 script JSON files in ${outDir}`,
